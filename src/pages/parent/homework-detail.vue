@@ -43,13 +43,28 @@
           <text class="section-title">学生作答</text>
         </view>
         <view class="section-content">
+          <!-- 图片网格：最多显示7张 -->
           <view class="image-grid">
-            <view class="image-item" v-for="i in 4" :key="i">
-              <view class="image-placeholder">
-                <text class="placeholder-text">图片{{ i }}</text>
+            <view
+              class="image-item"
+              v-for="(img, index) in displayImages"
+              :key="index"
+              @click="previewImage(index)"
+            >
+              <image :src="img" class="homework-image" mode="aspectFill" />
+              <!-- 第7张图片显示剩余数量角标 -->
+              <view v-if="index === 6 && hasMoreImages" class="more-badge">
+                <text class="more-text">+{{ remainingCount }}</text>
               </view>
             </view>
           </view>
+
+          <!-- 查看全部按钮（仅当图片超过7张时显示） -->
+          <view v-if="hasMoreImages" class="view-all-btn" @click="previewImage(0)">
+            <text class="btn-icon">🖼️</text>
+            <text class="btn-text">查看全部{{ homeworkImages.length }}张图片</text>
+          </view>
+
           <text class="submit-time">⏰ 提交时间:2025-10-15 17:30</text>
         </view>
       </view>
@@ -99,13 +114,100 @@
 </template>
 
 <script setup>
+import { ref, computed } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
+import ParentTabBar from '@/components/ParentTabBar.vue'
 
-const goBack = () => {
-  uni.navigateBack()
+// 作业图片列表（使用测试图片）
+// 微信小程序中需要使用 /static/ 开头的绝对路径
+const homeworkImages = ref([
+  '/static/test/1.jpg',
+  '/static/test/2.jpg',
+  '/static/test/3.jpg',
+  '/static/test/4.jpg',
+  '/static/test/5.jpg',
+  '/static/test/6.jpg',
+  '/static/test/7.jpg',
+  '/static/test/3.jpg',
+  '/static/test/4.jpg',
+  '/static/test/5.jpg'
+])
+
+/**
+ * 显示的图片列表（最多7张）
+ */
+const displayImages = computed(() => {
+  return homeworkImages.value.slice(0, 7)
+})
+
+/**
+ * 是否有更多图片
+ */
+const hasMoreImages = computed(() => {
+  return homeworkImages.value.length > 7
+})
+
+/**
+ * 剩余图片数量
+ */
+const remainingCount = computed(() => {
+  return homeworkImages.value.length - 7
+})
+
+/**
+ * 预览图片
+ * @param {number} current - 当前图片索引
+ */
+const previewImage = async (current) => {
+  try {
+    // 微信小程序的 uni.previewImage 对本地图片支持有限
+    // 需要先通过 getImageInfo 获取图片的临时路径
+    const imagePromises = homeworkImages.value.map(src => {
+      return new Promise((resolve, reject) => {
+        uni.getImageInfo({
+          src: src,
+          success: (res) => {
+            console.log('getImageInfo成功:', res.path)
+            resolve(res.path) // 返回图片的临时路径
+          },
+          fail: (err) => {
+            console.error('getImageInfo失败:', err)
+            resolve(src) // 失败时返回原路径
+          }
+        })
+      })
+    })
+
+    // 等待所有图片信息获取完成
+    const imagePaths = await Promise.all(imagePromises)
+
+    console.log('预览图片 - 转换后的路径:', imagePaths)
+
+    // 使用转换后的路径预览图片
+    uni.previewImage({
+      current: imagePaths[current], // 当前图片的临时路径
+      urls: imagePaths, // 所有图片的临时路径
+      success: () => {
+        console.log('预览图片成功')
+      },
+      fail: (err) => {
+        console.error('预览图片失败:', err)
+        uni.showToast({
+          title: '预览失败',
+          icon: 'none',
+          duration: 2000
+        })
+      }
+    })
+  } catch (err) {
+    console.error('预览过程出错:', err)
+    uni.showToast({
+      title: '预览失败',
+      icon: 'none',
+      duration: 2000
+    })
+  }
 }
-
-
 </script>
 
 <style scoped>
@@ -292,6 +394,7 @@ const goBack = () => {
   white-space: pre-line;
 }
 
+/* 图片网格 */
 .image-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -299,24 +402,79 @@ const goBack = () => {
   margin-bottom: 24rpx;
 }
 
+/* 图片项容器 */
 .image-item {
+  position: relative;  /* 为角标定位 */
   aspect-ratio: 1;
+  border-radius: 16rpx;
+  overflow: hidden;
+  border: 4rpx solid #10b981;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.image-placeholder {
+.image-item:active {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+/* 作业图片 */
+.homework-image {
   width: 100%;
   height: 100%;
-  background-color: #e5e7eb;
-  border-radius: 16rpx;
-  border: 4rpx solid #10b981;
+}
+
+/* 更多图片角标（显示在第7张图片右上角） */
+.more-badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);  /* 加深半透明黑色背景 */
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1;  /* 确保在图片上方 */
 }
 
-.placeholder-text {
-  font-size: 20rpx;
-  color: #6b7280;
+/* 角标文字 */
+.more-text {
+  font-size: 56rpx;  /* 增大字号 */
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.5);  /* 添加文字阴影 */
+}
+
+/* 查看全部按钮 */
+.view-all-btn {
+  background: linear-gradient(to right, #10b981, #059669);
+  border-radius: 24rpx;
+  padding: 24rpx 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  margin-bottom: 24rpx;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.view-all-btn:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* 按钮图标 */
+.btn-icon {
+  font-size: 36rpx;
+}
+
+/* 按钮文字 */
+.btn-text {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #ffffff;
 }
 
 .submit-time {
@@ -406,36 +564,4 @@ const goBack = () => {
   color: #6b7280;
   line-height: 1.5;
 }
-
-.tabbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #ffffff;
-  border-top: 1rpx solid #e5e7eb;
-  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.05);
-  display: flex;
-  padding: 16rpx 0;
-}
-
-.tabbar-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8rpx;
-  padding: 16rpx 0;
-  color: #9ca3af;
-}
-
-.tabbar-item-active {
-  color: #0ea5e9;
-}
-
-
-
-
-
-
 </style>
