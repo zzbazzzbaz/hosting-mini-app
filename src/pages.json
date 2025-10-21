@@ -1,16 +1,59 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	"pages": [
 		{
-			"path": "pages/index/index",
+			"path": "pages/parent/home-unlogged",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText": "托管小程序",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/parent/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/parent/home",
+			"style": {
+				"navigationBarTitleText": "首页",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/parent/homework-list",
+			"style": {
+				"navigationBarTitleText": "作业信息",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/parent/homework-detail",
+			"style": {
+				"navigationBarTitleText": "作业详情",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/parent/checkin",
+			"style": {
+				"navigationBarTitleText": "签到信息",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/parent/publish-homework",
+			"style": {
+				"navigationBarTitleText": "发布作业",
+				"navigationStyle": "custom"
 			}
 		}
 	],
 	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "托管小程序",
+		"navigationBarBackgroundColor": "#0EA5E9",
+		"backgroundColor": "#F0F9FF"
 	}
 }
