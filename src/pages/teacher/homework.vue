@@ -28,7 +28,6 @@ const goPublish=()=>uni.navigateTo({url:'/pages/teacher/publish'})
 <style scoped>
 .page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);padding-top:144rpx;padding-bottom:128rpx}
 
-
 .list{padding:32rpx 48rpx;display:flex;flex-direction:column;gap:24rpx}
 .item{background:#fff;border-radius:32rpx;box-shadow:0 4rpx 16rpx rgba(0,0,0,0.06);padding:40rpx;display:flex;justify-content:space-between;align-items:center}
 .left{display:flex;align-items:center;gap:32rpx}
@@ -40,9 +39,5 @@ const goPublish=()=>uni.navigateTo({url:'/pages/teacher/publish'})
 .num{font-size:28rpx}
 .completed{color:#10b981}
 .pending{color:#ef4444}
-
-
-
-
 
 </style>

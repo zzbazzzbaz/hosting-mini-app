@@ -420,38 +420,4 @@ const stats = ref({
   line-height: 1.5;
 }
 
-/* 底部导航栏 */
-.tabbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #ffffff;
-  border-top: 1rpx solid #e5e7eb;
-  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.05);
-  display: flex;
-  padding: 16rpx 0;
-}
-
-.tabbar-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8rpx;
-  padding: 16rpx 0;
-  color: #9ca3af;
-}
-
-.tabbar-item-active {
-  color: #0ea5e9;
-}
-
-
-
-
-
-
-
-
 </style>

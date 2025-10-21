@@ -217,46 +217,6 @@ const previewImage = async (current) => {
   padding-top:144rpx;padding-bottom: 128rpx;
 }
 
-.header {
-  background: linear-gradient(to right, #0ea5e9, #3b82f6);
-  padding: 48rpx;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.back-btn {
-  width: 64rpx;
-  height: 64rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 16rpx;
-  transition: background-color 0.2s;
-}
-
-.back-btn:active {
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-.back-icon {
-  font-size: 64rpx;
-  color: #ffffff;
-  font-weight: bold;
-}
-
-.header-title {
-  flex: 1;
-  font-size: 48rpx;
-  font-weight: bold;
-  color: #ffffff;
-  text-align: center;
-}
-
-.placeholder {
-  width: 64rpx;
-}
-
 .content {
   padding: 48rpx;
   display: flex;

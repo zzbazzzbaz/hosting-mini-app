@@ -25,8 +25,6 @@ const goBack=()=>uni.navigateBack()
 </script>
 <style scoped>
 .page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);padding-top:144rpx}
-
-
 .placeholder{width:64rpx}
 .content{padding:48rpx}
 .student-card{background:#fff;border-radius:32rpx;box-shadow:0 4rpx 16rpx rgba(0,0,0,0.06);padding:40rpx;margin-bottom:32rpx;display:flex;align-items:center;gap:32rpx}

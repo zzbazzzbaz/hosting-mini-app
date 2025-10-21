@@ -69,21 +69,10 @@ const goToPublish=()=>uni.navigateTo({url:'/pages/teacher/publish'})
 .stat-red{border-left:8rpx solid #ef4444}
 .stat-orange{border-left:8rpx solid #f97316}
 
-
-
-
-
-
 .value{display:block;font-size:60rpx;font-weight:bold;margin-bottom:8rpx}
 .stat-blue .value{color:#3b82f6}
 .stat-green .value{color:#10b981}
 .stat-red .value{color:#ef4444}
 .stat-orange .value{color:#f97316}
-
-
-
-
-
-
 
 </style>

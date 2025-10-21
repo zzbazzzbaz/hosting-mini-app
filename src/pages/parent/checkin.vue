@@ -55,28 +55,18 @@ const checkinList = ref([
 .stat-label{display:block;font-size:28rpx;color:#6b7280;margin-top:8rpx}
 .list-container{padding:0 48rpx;display:flex;flex-direction:column;gap:24rpx}
 .checkin-item{background:#fff;border-radius:32rpx;box-shadow:0 4rpx 16rpx rgba(0,0,0,0.06);padding:40rpx;display:flex;align-items:center;justify-content:space-between}
-.checkin-item-absent{border-left:8rpx solid #ef4444}
 .checkin-info{display:flex;align-items:center;gap:32rpx;flex:1}
 .checkin-icon{width:112rpx;height:112rpx;border-radius:24rpx;display:flex;align-items:center;justify-content:center}
-.icon-checked{background:linear-gradient(135deg,#10b981,#059669)}
-.icon-absent{background:linear-gradient(135deg,#ef4444,#ec4899)}
 .icon-text{font-size:56rpx;color:#fff}
 .checkin-details{display:flex;flex-direction:column}
 .checkin-date{font-size:36rpx;font-weight:bold;color:#1f2937}
 .checkin-time{font-size:28rpx;color:#6b7280;margin-top:8rpx}
 .status-tag{display:inline-block;margin-top:16rpx;padding:8rpx 24rpx;border-radius:999rpx}
-.status-checked{background:#d1fae5}
-.status-absent{background:#fee2e2}
 .status-text{font-size:28rpx;font-weight:600}
 .status-checked .status-text{color:#10b981}
 .status-absent .status-text{color:#ef4444}
 .photo-box{width:160rpx;height:160rpx;border-radius:24rpx;overflow:hidden;border:4rpx solid #10b981}
 .photo-placeholder{width:100%;height:100%;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:64rpx}
 .contact-btn{padding:24rpx 32rpx;background:#0ea5e9;color:#fff;font-size:28rpx;font-weight:500;border-radius:16rpx;border:none}
-
-
-
-
-
 
 </style>

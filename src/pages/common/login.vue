@@ -223,17 +223,6 @@ const handleLogin = () => {
   gap: 16rpx;
 }
 
-.role-btn-active {
-  background-color: #0ea5e9;
-  color: #ffffff;
-  box-shadow: 0 8rpx 16rpx rgba(14, 165, 233, 0.3);
-}
-
-.role-btn-inactive {
-  background-color: #f3f4f6;
-  color: #6b7280;
-}
-
 .role-icon {
   font-size: 36rpx;
 }

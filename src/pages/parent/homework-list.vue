@@ -201,22 +201,6 @@ const gotoDetail = (item) => {
   flex-shrink: 0;
 }
 
-.homework-icon-blue {
-  background: linear-gradient(135deg, #0ea5e9, #3b82f6);
-}
-
-.homework-icon-red {
-  background: linear-gradient(135deg, #ef4444, #ec4899);
-}
-
-.homework-icon-green {
-  background: linear-gradient(135deg, #10b981, #059669);
-}
-
-.homework-icon-purple {
-  background: linear-gradient(135deg, #a855f7, #ec4899);
-}
-
 .icon-text {
   font-size: 48rpx;
 }
@@ -245,15 +229,6 @@ const gotoDetail = (item) => {
   padding: 12rpx 24rpx;
   border-radius: 999rpx;
 }
-
-.status-completed {
-  background-color: #d1fae5;
-}
-
-.status-pending {
-  background-color: #fee2e2;
-}
-
 .status-icon {
   font-size: 32rpx;
 }
@@ -279,15 +254,6 @@ const gotoDetail = (item) => {
   justify-content: space-between;
   padding: 0 40rpx 40rpx;
   font-size: 28rpx;
-}
-
-.footer-text-normal {
-  color: #9ca3af;
-}
-
-.footer-text-warning {
-  color: #ef4444;
-  font-weight: 500;
 }
 
 .arrow-icon {
