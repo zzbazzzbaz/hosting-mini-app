@@ -136,10 +136,9 @@ const handleLogin = () => {
       url: '/pages/parent/home'
     })
   } else {
-    // 教师端暂未开发
-    uni.showToast({
-      title: '教师端功能即将上线,敬请期待!',
-      icon: 'none'
+    // 教师端登录成功后跳转到教师首页
+    uni.reLaunch({
+      url: '/pages/teacher/home'
     })
   }
 }

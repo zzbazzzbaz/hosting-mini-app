@@ -1,14 +1,14 @@
 {
 	"pages": [
 		{
-			"path": "pages/parent/home-unlogged",
+			"path": "pages/common/home-unlogged",
 			"style": {
 				"navigationBarTitleText": "托管小程序",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/parent/login",
+			"path": "pages/common/login",
 			"style": {
 				"navigationBarTitleText": "登录",
 				"navigationStyle": "custom"
@@ -46,6 +46,48 @@
 			"path": "pages/parent/publish-homework",
 			"style": {
 				"navigationBarTitleText": "发布作业",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/teacher/home",
+			"style": {
+				"navigationBarTitleText": "教师工作台",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/teacher/checkin",
+			"style": {
+				"navigationBarTitleText": "签到信息",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/teacher/homework",
+			"style": {
+				"navigationBarTitleText": "作业信息",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/teacher/homework-detail",
+			"style": {
+				"navigationBarTitleText": "作业详情",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/teacher/publish",
+			"style": {
+				"navigationBarTitleText": "发布作业",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/teacher/publish-detail",
+			"style": {
+				"navigationBarTitleText": "发布作业详情",
 				"navigationStyle": "custom"
 			}
 		}

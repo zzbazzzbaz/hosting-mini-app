@@ -129,7 +129,7 @@
  */
 const gotoLogin = () => {
   uni.navigateTo({
-    url: '/pages/parent/login'
+    url: '/pages/common/login'
   })
 }
 </script>
