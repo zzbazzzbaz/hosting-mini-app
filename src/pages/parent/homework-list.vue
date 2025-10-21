@@ -110,7 +110,7 @@ const gotoDetail = (item) => {
 .page {
   min-height: 100vh;
   background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  padding-bottom: 128rpx;
+  padding-top:144rpx;padding-bottom: 128rpx;
 }
 
 .filter-section {

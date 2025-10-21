@@ -66,7 +66,7 @@ const goToPage = (page) => {
 
   // 如果点击的不是当前页面，则跳转
   if (routes[page] && page !== props.activeTab) {
-    uni.navigateTo({
+    uni.reLaunch({
       url: routes[page]
     })
   }

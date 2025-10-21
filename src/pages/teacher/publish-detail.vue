@@ -26,7 +26,7 @@ const chooseImage=()=>uni.chooseImage({count:9,success:(res)=>console.log(res)})
 const submit=()=>{if(!form.value.subject)return uni.showToast({title:'请选择科目',icon:'none'});if(!form.value.content)return uni.showToast({title:'请输入作业内容',icon:'none'});uni.showToast({title:'发布成功',icon:'success'});setTimeout(()=>uni.navigateBack(),1500)}
 </script>
 <style scoped>
-.page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff,#e0f2fe)}
+.page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);padding-top:144rpx}
 .form{padding:48rpx}
 .card{background:#fff;border-radius:32rpx;box-shadow:0 4rpx 16rpx rgba(0,0,0,0.06);padding:40rpx;margin-bottom:32rpx}
 .label{display:block;font-size:28rpx;font-weight:600;color:#374151;margin-bottom:24rpx}

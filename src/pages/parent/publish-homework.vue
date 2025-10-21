@@ -3,22 +3,29 @@
     <!-- 使用PageHeader组件 -->
     <PageHeader title="发布作业" />
     <view class="form-container">
-      <view class="form-card">
-        <text class="form-label">📅 日期组件(默认当天)</text>
-        <picker mode="date" :value="formData.date" @change="onDateChange">
-          <view class="picker-box"><text>{{ formData.date }}</text></view>
-        </picker>
+      <!-- 日期和科目选择器并排在同一行 -->
+      <view class="form-row">
+        <view class="form-card form-card-half">
+          <text class="form-label">📅 日期</text>
+          <picker mode="date" :value="formData.date" @change="onDateChange">
+            <view class="picker-box"><text>{{ formData.date }}</text></view>
+          </picker>
+        </view>
+        <view class="form-card form-card-half">
+          <text class="form-label">📚 科目</text>
+          <picker :range="subjects" @change="onSubjectChange">
+            <view class="picker-box"><text>{{ formData.subject || '请选择科目' }}</text><text class="arrow">▼</text></view>
+          </picker>
+        </view>
       </view>
-      <view class="form-card">
-        <text class="form-label">📚 请选择科目</text>
-        <picker :range="subjects" @change="onSubjectChange">
-          <view class="picker-box"><text>{{ formData.subject || '请选择科目' }}</text><text class="arrow">▼</text></view>
-        </picker>
-      </view>
+
+      <!-- 作业说明独立一行 -->
       <view class="form-card">
         <text class="form-label">✏️ 作业说明</text>
         <textarea v-model="formData.description" class="textarea" placeholder="请输入作业相关说明或备注..." rows="4"></textarea>
       </view>
+
+      <!-- 上传图片独立一行 -->
       <view class="form-card">
         <text class="form-label">🖼️ 上传作业图片</text>
         <view class="upload-area" @click="chooseImage">
@@ -74,13 +81,36 @@ const handleSubmit = () => {
 }
 </script>
 <style scoped>
-.page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 100%);padding-bottom:128rpx}
-.form-container{padding:48rpx;display:flex;flex-direction:column;gap:40rpx}
+.page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 100%);padding-top:144rpx;padding-bottom:128rpx}
+.form-container{padding:48rpx;display:flex;flex-direction:column;gap:32rpx}
+
+/* 并排布局的行容器 */
+.form-row{display:flex;gap:24rpx}
+
+/* 完整宽度的表单卡片 */
 .form-card{background:#fff;border-radius:32rpx;box-shadow:0 4rpx 16rpx rgba(0,0,0,0.06);padding:40rpx}
+
+/* 半宽的表单卡片（用于并排布局） */
+.form-card-half{flex:1;min-width:0}
+
 .form-label{display:block;font-size:28rpx;font-weight:600;color:#374151;margin-bottom:24rpx}
 .picker-box{background:#f9fafb;border:2rpx solid #e5e7eb;border-radius:24rpx;padding:28rpx 32rpx;display:flex;justify-content:space-between;align-items:center;font-size:28rpx;color:#374151}
 .arrow{font-size:24rpx;color:#9ca3af}
-.textarea{width:100%;background:#f9fafb;border:2rpx solid #e5e7eb;border-radius:24rpx;padding:28rpx 32rpx;font-size:28rpx;color:#374151;line-height:1.6}
+
+/* 作业说明输入框 - 确保有足够高度 */
+.textarea{
+  width:100%;
+  min-height:200rpx;
+  background:#f9fafb;
+  border:2rpx solid #e5e7eb;
+  border-radius:24rpx;
+  padding:28rpx 32rpx;
+  font-size:28rpx;
+  color:#374151;
+  line-height:1.6;
+  box-sizing:border-box;
+}
+
 .upload-area{background:linear-gradient(to right,#dbeafe,#bfdbfe);border:4rpx dashed #0ea5e9;border-radius:24rpx;padding:64rpx;transition:all 0.3s}
 .upload-btn{display:flex;flex-direction:column;align-items:center;gap:24rpx}
 .upload-icon{width:128rpx;height:128rpx;background:#0ea5e9;border-radius:50%;display:flex;align-items:center;justify-content:center}

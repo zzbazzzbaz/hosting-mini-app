@@ -3,14 +3,17 @@
   <view class="header">
     <!-- 返回按钮（可选） -->
     <view v-if="showBack" class="back" @click="handleBack">
-      <text>‹</text>
+      <text class="back-icon">‹</text>
     </view>
+
+    <!-- 无返回按钮时的占位 -->
+    <view v-else class="back-placeholder"></view>
 
     <!-- 标题文字 -->
     <text class="title">{{ title }}</text>
 
-    <!-- 占位元素，用于居中标题 -->
-    <view v-if="showBack" class="placeholder"></view>
+    <!-- 右侧占位元素，用于居中标题 -->
+    <view class="placeholder"></view>
   </view>
 </template>
 
@@ -40,8 +43,13 @@ const handleBack = () => {
 </script>
 
 <style scoped>
-/* 头部容器 */
+/* 头部容器 - 固定在顶部 */
 .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
   background: linear-gradient(to right, #0ea5e9, #3b82f6);
   padding: 48rpx;
   display: flex;
@@ -56,9 +64,24 @@ const handleBack = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 64rpx;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.back:active {
+  opacity: 0.7;
+}
+
+.back-icon {
+  font-size: 80rpx;
   color: #fff;
   font-weight: bold;
+  line-height: 1;
+}
+
+/* 无返回按钮时的占位 */
+.back-placeholder {
+  width: 64rpx;
 }
 
 /* 标题文字 */
@@ -70,7 +93,7 @@ const handleBack = () => {
   text-align: center;
 }
 
-/* 占位元素 */
+/* 右侧占位元素 */
 .placeholder {
   width: 64rpx;
 }

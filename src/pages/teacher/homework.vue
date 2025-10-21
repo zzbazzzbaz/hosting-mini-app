@@ -26,7 +26,7 @@ const goCheckin=()=>uni.navigateTo({url:'/pages/teacher/checkin'})
 const goPublish=()=>uni.navigateTo({url:'/pages/teacher/publish'})
 </script>
 <style scoped>
-.page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);padding-bottom:128rpx}
+.page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);padding-top:144rpx;padding-bottom:128rpx}
 
 
 .list{padding:32rpx 48rpx;display:flex;flex-direction:column;gap:24rpx}

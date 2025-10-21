@@ -31,7 +31,7 @@ const goHomework=()=>uni.navigateTo({url:'/pages/teacher/homework'})
 const goPublish=()=>uni.navigateTo({url:'/pages/teacher/publish'})
 </script>
 <style scoped>
-.page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);padding-bottom:128rpx}
+.page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);padding-top:144rpx;padding-bottom:128rpx}
 
 
 .filter{padding:32rpx 48rpx;background:#fff;box-shadow:0 2rpx 8rpx rgba(0,0,0,0.05)}

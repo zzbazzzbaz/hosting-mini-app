@@ -42,7 +42,7 @@ const checkinList = ref([
 
 </script>
 <style scoped>
-.page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 100%);padding-bottom:128rpx}
+.page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 100%);padding-top:144rpx;padding-bottom:128rpx}
 
 
 .stats-card{background:#fff;border-radius:32rpx;box-shadow:0 8rpx 24rpx rgba(0,0,0,0.1);padding:48rpx;margin:32rpx 48rpx;border-top:8rpx solid #0ea5e9;display:grid;grid-template-columns:repeat(3,1fr)}

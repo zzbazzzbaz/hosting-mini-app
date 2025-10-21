@@ -24,7 +24,7 @@ const list=ref([
 const goBack=()=>uni.navigateBack()
 </script>
 <style scoped>
-.page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff,#e0f2fe)}
+.page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);padding-top:144rpx}
 
 
 .placeholder{width:64rpx}
