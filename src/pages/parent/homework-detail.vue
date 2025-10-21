@@ -1,12 +1,7 @@
 <template>
   <view class="page">
-    <view class="header">
-      <view class="back-btn" @click="goBack">
-        <text class="back-icon">‹</text>
-      </view>
-      <text class="header-title">作业详情</text>
-      <view class="placeholder"></view>
-    </view>
+    <!-- 使用PageHeader组件 -->
+    <PageHeader title="作业详情" :showBack="true" />
 
     <view class="content">
       <!-- 基本信息卡片 -->
@@ -98,24 +93,8 @@
       </view>
     </view>
 
-    <view class="tabbar">
-      <view class="tabbar-item" @click="goToPage('home')">
-        <text class="tabbar-icon">🏠</text>
-        <text class="tabbar-label">首页</text>
-      </view>
-      <view class="tabbar-item tabbar-item-active">
-        <text class="tabbar-icon-active">📝</text>
-        <text class="tabbar-label tabbar-label-active">作业信息</text>
-      </view>
-      <view class="tabbar-item" @click="goToPage('checkin')">
-        <text class="tabbar-icon">✅</text>
-        <text class="tabbar-label">签到信息</text>
-      </view>
-      <view class="tabbar-item" @click="goToPage('publish')">
-        <text class="tabbar-icon">➕</text>
-        <text class="tabbar-label">发布作业</text>
-      </view>
-    </view>
+    <!-- 使用ParentTabBar组件 -->
+    <ParentTabBar activeTab="homework" />
   </view>
 </template>
 
@@ -124,18 +103,7 @@ const goBack = () => {
   uni.navigateBack()
 }
 
-const goToPage = (page) => {
-  const routes = {
-    home: '/pages/parent/home',
-    checkin: '/pages/parent/checkin',
-    publish: '/pages/parent/publish-homework'
-  }
-  if (routes[page]) {
-    uni.navigateTo({
-      url: routes[page]
-    })
-  }
-}
+
 </script>
 
 <style scoped>
@@ -463,16 +431,9 @@ const goToPage = (page) => {
   color: #0ea5e9;
 }
 
-.tabbar-icon, .tabbar-icon-active {
-  font-size: 48rpx;
-}
 
-.tabbar-label {
-  font-size: 24rpx;
-}
 
-.tabbar-label-active {
-  font-weight: 500;
-  color: #0ea5e9;
-}
+
+
+
 </style>

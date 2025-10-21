@@ -1,6 +1,7 @@
 <template>
   <view class="page">
-    <view class="header"><view class="back" @click="goBack"><text>‹</text></view><text class="title">发布作业给 {{studentName}}</text><view class="placeholder"></view></view>
+    <!-- 使用PageHeader组件 -->
+    <PageHeader :title="`发布作业给 ${studentName}`" :showBack="true" />
     <view class="form">
       <view class="card"><text class="label">📅 日期</text><picker mode="date" :value="form.date" @change="onDateChange"><view class="picker"><text>{{form.date}}</text></view></picker></view>
       <view class="card"><text class="label">📚 科目</text><picker :range="subjects" @change="onSubjectChange"><view class="picker"><text>{{form.subject||'请选择科目'}}</text></view></picker></view>
@@ -13,6 +14,8 @@
 <script setup>
 import {ref} from 'vue'
 import {onLoad} from '@dcloudio/uni-app'
+import PageHeader from '@/components/PageHeader.vue'
+
 const studentName=ref('')
 const form=ref({date:'2025-10-21',subject:'',content:''})
 const subjects=['语文','数学','英语','物理','化学']
@@ -21,14 +24,9 @@ const onDateChange=(e)=>form.value.date=e.detail.value
 const onSubjectChange=(e)=>form.value.subject=subjects[e.detail.value]
 const chooseImage=()=>uni.chooseImage({count:9,success:(res)=>console.log(res)})
 const submit=()=>{if(!form.value.subject)return uni.showToast({title:'请选择科目',icon:'none'});if(!form.value.content)return uni.showToast({title:'请输入作业内容',icon:'none'});uni.showToast({title:'发布成功',icon:'success'});setTimeout(()=>uni.navigateBack(),1500)}
-const goBack=()=>uni.navigateBack()
 </script>
 <style scoped>
 .page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff,#e0f2fe)}
-.header{background:linear-gradient(to right,#0ea5e9,#3b82f6);padding:48rpx;display:flex;align-items:center;justify-content:space-between}
-.back{width:64rpx;height:64rpx;display:flex;align-items:center;justify-content:center;font-size:64rpx;color:#fff;font-weight:bold}
-.title{flex:1;font-size:40rpx;font-weight:bold;color:#fff;text-align:center}
-.placeholder{width:64rpx}
 .form{padding:48rpx}
 .card{background:#fff;border-radius:32rpx;box-shadow:0 4rpx 16rpx rgba(0,0,0,0.06);padding:40rpx;margin-bottom:32rpx}
 .label{display:block;font-size:28rpx;font-weight:600;color:#374151;margin-bottom:24rpx}

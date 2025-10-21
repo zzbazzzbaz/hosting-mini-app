@@ -1,9 +1,7 @@
 <template>
   <view class="page">
-    <!-- 顶部标题栏 -->
-    <view class="header">
-      <text class="header-title">作业信息</text>
-    </view>
+    <!-- 使用PageHeader组件 -->
+    <PageHeader title="作业信息" />
 
     <!-- 筛选器区域 -->
     <view class="filter-section">
@@ -67,30 +65,15 @@
       </view>
     </view>
 
-    <!-- 底部导航栏 -->
-    <view class="tabbar">
-      <view class="tabbar-item" @click="goToPage('home')">
-        <text class="tabbar-icon">🏠</text>
-        <text class="tabbar-label">首页</text>
-      </view>
-      <view class="tabbar-item tabbar-item-active">
-        <text class="tabbar-icon-active">📝</text>
-        <text class="tabbar-label tabbar-label-active">作业信息</text>
-      </view>
-      <view class="tabbar-item" @click="goToPage('checkin')">
-        <text class="tabbar-icon">✅</text>
-        <text class="tabbar-label">签到信息</text>
-      </view>
-      <view class="tabbar-item" @click="goToPage('publish')">
-        <text class="tabbar-icon">➕</text>
-        <text class="tabbar-label">发布作业</text>
-      </view>
-    </view>
+    <!-- 使用ParentTabBar组件 -->
+    <ParentTabBar activeTab="homework" />
   </view>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import PageHeader from '@/components/PageHeader.vue'
+import ParentTabBar from '@/components/ParentTabBar.vue'
 
 // 科目列表
 const subjects = ['请选择科目', '语文', '数学', '英语', '物理', '化学']
@@ -121,19 +104,6 @@ const gotoDetail = (item) => {
     url: '/pages/parent/homework-detail'
   })
 }
-
-const goToPage = (page) => {
-  const routes = {
-    home: '/pages/parent/home',
-    checkin: '/pages/parent/checkin',
-    publish: '/pages/parent/publish-homework'
-  }
-  if (routes[page]) {
-    uni.navigateTo({
-      url: routes[page]
-    })
-  }
-}
 </script>
 
 <style scoped>
@@ -141,20 +111,6 @@ const goToPage = (page) => {
   min-height: 100vh;
   background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
   padding-bottom: 128rpx;
-}
-
-.header {
-  background: linear-gradient(to right, #0ea5e9, #3b82f6);
-  padding: 48rpx;
-  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
-}
-
-.header-title {
-  font-size: 48rpx;
-  font-weight: bold;
-  color: #ffffff;
-  text-align: center;
-  display: block;
 }
 
 .filter-section {
@@ -351,45 +307,5 @@ const goToPage = (page) => {
   font-weight: 500;
   background-color: transparent;
   border: none;
-}
-
-.tabbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #ffffff;
-  border-top: 1rpx solid #e5e7eb;
-  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.05);
-  display: flex;
-  padding: 16rpx 0;
-}
-
-.tabbar-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8rpx;
-  padding: 16rpx 0;
-  color: #9ca3af;
-}
-
-.tabbar-item-active {
-  color: #0ea5e9;
-}
-
-.tabbar-icon,
-.tabbar-icon-active {
-  font-size: 48rpx;
-}
-
-.tabbar-label {
-  font-size: 24rpx;
-}
-
-.tabbar-label-active {
-  font-weight: 500;
-  color: #0ea5e9;
 }
 </style>

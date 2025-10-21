@@ -1,6 +1,7 @@
 <template>
   <view class="page">
-    <view class="header"><view class="back" @click="goBack"><text>‹</text></view><text class="title">作业详情</text><view class="placeholder"></view></view>
+    <!-- 使用PageHeader组件 -->
+    <PageHeader title="作业详情" :showBack="true" /><text class="title">作业详情</text><view class="placeholder"></view>
     <view class="content">
       <view class="student-card"><view class="avatar"><text>喜</text></view><view class="info"><text class="name">喜洋洋</text><text class="grade">一年级</text></view></view>
       <view class="list">
@@ -14,6 +15,8 @@
 </template>
 <script setup>
 import {ref} from 'vue'
+import PageHeader from '@/components/PageHeader.vue'
+import TeacherTabBar from '@/components/TeacherTabBar.vue'
 const list=ref([
   {id:1,subject:'数学',date:'2025-10-21',status:'completed'},
   {id:2,subject:'语文',date:'2025-10-21',status:'pending'}
@@ -22,9 +25,8 @@ const goBack=()=>uni.navigateBack()
 </script>
 <style scoped>
 .page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff,#e0f2fe)}
-.header{background:linear-gradient(to right,#0ea5e9,#3b82f6);padding:48rpx;display:flex;align-items:center;justify-content:space-between}
-.back{width:64rpx;height:64rpx;display:flex;align-items:center;justify-content:center;font-size:64rpx;color:#fff;font-weight:bold}
-.title{flex:1;font-size:48rpx;font-weight:bold;color:#fff;text-align:center}
+
+
 .placeholder{width:64rpx}
 .content{padding:48rpx}
 .student-card{background:#fff;border-radius:32rpx;box-shadow:0 4rpx 16rpx rgba(0,0,0,0.06);padding:40rpx;margin-bottom:32rpx;display:flex;align-items:center;gap:32rpx}
@@ -39,6 +41,4 @@ const goBack=()=>uni.navigateBack()
 .subject{font-size:36rpx;font-weight:bold;color:#1f2937}
 .date{font-size:28rpx;color:#6b7280}
 .status{display:inline-block;padding:12rpx 24rpx;border-radius:999rpx;font-size:28rpx}
-.status-done{background:#d1fae5;color:#10b981}
-.status-pending{background:#fee2e2;color:#ef4444}
 </style>

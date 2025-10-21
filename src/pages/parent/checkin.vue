@@ -1,6 +1,7 @@
 <template>
   <view class="page">
-    <view class="header"><text class="header-title">签到信息</text></view>
+    <!-- 使用PageHeader组件 -->
+    <PageHeader title="签到信息"  />
     <view class="stats-card">
       <view class="stat-item"><text class="stat-value stat-blue">15</text><text class="stat-label">本月签到</text></view>
       <view class="stat-item stat-bordered"><text class="stat-value stat-green">15</text><text class="stat-label">已签到</text></view>
@@ -26,29 +27,24 @@
         <button v-else class="contact-btn">联系老师</button>
       </view>
     </view>
-    <view class="tabbar">
-      <view class="tabbar-item" @click="goToPage('home')"><text class="tabbar-icon">🏠</text><text class="tabbar-label">首页</text></view>
-      <view class="tabbar-item" @click="goToPage('homework')"><text class="tabbar-icon">📝</text><text class="tabbar-label">作业信息</text></view>
-      <view class="tabbar-item tabbar-item-active"><text class="tabbar-icon-active">✅</text><text class="tabbar-label tabbar-label-active">签到信息</text></view>
-      <view class="tabbar-item" @click="goToPage('publish')"><text class="tabbar-icon">➕</text><text class="tabbar-label">发布作业</text></view>
-    </view>
+    <!-- 使用ParentTabBar组件 -->
+    <ParentTabBar activeTab="checkin" />
   </view>
 </template>
 <script setup>
 import { ref } from 'vue'
+import PageHeader from '@/components/PageHeader.vue'
+import ParentTabBar from '@/components/ParentTabBar.vue'
 const checkinList = ref([
   {id: 1, date: '2025-10-15', time: '签到时间:08:30', status: 'checked', statusText: '已签到'},
   {id: 2, date: '2025-10-14', time: '未签到', status: 'absent', statusText: '缺勤'}
 ])
-const goToPage = (page) => {
-  const routes = {home: '/pages/parent/home', homework: '/pages/parent/homework-list', publish: '/pages/parent/publish-homework'}
-  if (routes[page]) uni.navigateTo({url: routes[page]})
-}
+
 </script>
 <style scoped>
 .page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 100%);padding-bottom:128rpx}
-.header{background:linear-gradient(to right,#0ea5e9,#3b82f6);padding:48rpx}
-.header-title{font-size:48rpx;font-weight:bold;color:#fff;text-align:center;display:block}
+
+
 .stats-card{background:#fff;border-radius:32rpx;box-shadow:0 8rpx 24rpx rgba(0,0,0,0.1);padding:48rpx;margin:32rpx 48rpx;border-top:8rpx solid #0ea5e9;display:grid;grid-template-columns:repeat(3,1fr)}
 .stat-item{text-align:center}
 .stat-bordered{border-left:2rpx solid #e5e7eb;border-right:2rpx solid #e5e7eb}
@@ -77,10 +73,10 @@ const goToPage = (page) => {
 .photo-box{width:160rpx;height:160rpx;border-radius:24rpx;overflow:hidden;border:4rpx solid #10b981}
 .photo-placeholder{width:100%;height:100%;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:64rpx}
 .contact-btn{padding:24rpx 32rpx;background:#0ea5e9;color:#fff;font-size:28rpx;font-weight:500;border-radius:16rpx;border:none}
-.tabbar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1rpx solid #e5e7eb;box-shadow:0 -4rpx 16rpx rgba(0,0,0,0.05);display:flex;padding:16rpx 0}
-.tabbar-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:8rpx;padding:16rpx 0;color:#9ca3af}
-.tabbar-item-active{color:#0ea5e9}
-.tabbar-icon,.tabbar-icon-active{font-size:48rpx}
-.tabbar-label{font-size:24rpx}
-.tabbar-label-active{font-weight:500;color:#0ea5e9}
+
+
+
+
+
+
 </style>

@@ -29,16 +29,14 @@
         <view class="stat-card stat-orange"><text class="label-text">今日未完成</text><view class="icon-box icon-orange"><text>⏰</text></view><text class="value">{{stats.todayPending}}</text><text class="label">今天待完成</text></view>
       </view>
     </view>
-    <view class="tabbar">
-      <view class="tab-item tab-active"><text class="icon-active">🏠</text><text class="label-active">首页</text></view>
-      <view class="tab-item" @click="goToCheckin"><text class="icon">✅</text><text class="label">签到信息</text></view>
-      <view class="tab-item" @click="goToHomework"><text class="icon">📝</text><text class="label">作业信息</text></view>
-      <view class="tab-item" @click="goToPublish"><text class="icon">➕</text><text class="label">发布作业</text></view>
-    </view>
+    <!-- 使用TeacherTabBar组件 -->
+    <TeacherTabBar activeTab="home" />
   </view>
 </template>
 <script setup>
 import {ref} from 'vue'
+import PageHeader from '@/components/PageHeader.vue'
+import TeacherTabBar from '@/components/TeacherTabBar.vue'
 const teacherName=ref('张三')
 const stats=ref({totalStudents:20,todayChecked:18,todayUnchecked:2,completedHomework:186,pendingHomework:32,todayCompleted:15,todayPending:6})
 const goToCheckin=()=>uni.navigateTo({url:'/pages/teacher/checkin'})
@@ -47,7 +45,7 @@ const goToPublish=()=>uni.navigateTo({url:'/pages/teacher/publish'})
 </script>
 <style scoped>
 .page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);padding-bottom:128rpx}
-.header{background:linear-gradient(to right,#0ea5e9,#3b82f6);border-bottom-left-radius:48rpx;border-bottom-right-radius:48rpx;box-shadow:0 8rpx 32rpx rgba(0,0,0,0.15);padding:64rpx 48rpx;display:flex;justify-content:space-between;margin-bottom:48rpx}
+
 .teacher-info{display:flex;align-items:center;gap:32rpx}
 .avatar-wrapper{position:relative}
 .avatar{width:128rpx;height:128rpx;border-radius:50%;background:#fff;box-shadow:0 8rpx 24rpx rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center}
@@ -59,8 +57,8 @@ const goToPublish=()=>uni.navigateTo({url:'/pages/teacher/publish'})
 .edit-btn{padding:16rpx;background:rgba(255,255,255,0.2);border-radius:16rpx;font-size:48rpx}
 .content{padding:0 48rpx}
 .section-title{display:flex;align-items:center;gap:16rpx;margin-bottom:32rpx}
-.section-title .icon{font-size:40rpx}
-.section-title .title{font-size:36rpx;font-weight:bold;color:#1f2937}
+.section-title 
+.section-title 
 .stats-row-3,.stats-row-2{display:grid;gap:24rpx;margin-bottom:24rpx}
 .stats-row-3{grid-template-columns:repeat(3,1fr)}
 .stats-row-2{grid-template-columns:repeat(2,1fr)}
@@ -70,22 +68,22 @@ const goToPublish=()=>uni.navigateTo({url:'/pages/teacher/publish'})
 .stat-green{border-left:8rpx solid #10b981}
 .stat-red{border-left:8rpx solid #ef4444}
 .stat-orange{border-left:8rpx solid #f97316}
-.icon-box{width:64rpx;height:64rpx;border-radius:16rpx;display:flex;align-items:center;justify-content:center;font-size:40rpx;margin-bottom:16rpx}
-.icon-blue{background:#dbeafe}
-.icon-green{background:#d1fae5}
-.icon-red{background:#fee2e2}
-.icon-orange{background:#ffedd5}
-.label-text{font-size:28rpx;font-weight:500;color:#4b5563;margin-bottom:16rpx;display:block}
+
+
+
+
+
+
 .value{display:block;font-size:60rpx;font-weight:bold;margin-bottom:8rpx}
 .stat-blue .value{color:#3b82f6}
 .stat-green .value{color:#10b981}
 .stat-red .value{color:#ef4444}
 .stat-orange .value{color:#f97316}
-.label{display:block;font-size:24rpx;color:#9ca3af}
-.tabbar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1rpx solid #e5e7eb;box-shadow:0 -4rpx 16rpx rgba(0,0,0,0.05);display:flex;padding:16rpx 0}
-.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:8rpx;padding:16rpx 0;color:#9ca3af}
-.tab-active{color:#0ea5e9}
-.icon,.icon-active{font-size:48rpx}
-.label{font-size:24rpx}
-.label-active{font-size:24rpx;font-weight:500;color:#0ea5e9}
+
+
+
+
+
+
+
 </style>

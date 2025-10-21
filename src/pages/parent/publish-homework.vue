@@ -1,6 +1,7 @@
 <template>
   <view class="page">
-    <view class="header"><text class="header-title">发布作业</text></view>
+    <!-- 使用PageHeader组件 -->
+    <PageHeader title="发布作业" />
     <view class="form-container">
       <view class="form-card">
         <text class="form-label">📅 日期组件(默认当天)</text>
@@ -43,16 +44,16 @@
         </view>
       </view>
     </view>
-    <view class="tabbar">
-      <view class="tabbar-item" @click="goToPage('home')"><text class="tabbar-icon">🏠</text><text class="tabbar-label">首页</text></view>
-      <view class="tabbar-item" @click="goToPage('homework')"><text class="tabbar-icon">📝</text><text class="tabbar-label">作业信息</text></view>
-      <view class="tabbar-item" @click="goToPage('checkin')"><text class="tabbar-icon">✅</text><text class="tabbar-label">签到信息</text></view>
-      <view class="tabbar-item tabbar-item-active"><text class="tabbar-icon-active">➕</text><text class="tabbar-label tabbar-label-active">发布作业</text></view>
-    </view>
+
+    <!-- 使用ParentTabBar组件 -->
+    <ParentTabBar activeTab="publish" />
   </view>
 </template>
 <script setup>
 import { ref } from 'vue'
+import PageHeader from '@/components/PageHeader.vue'
+import ParentTabBar from '@/components/ParentTabBar.vue'
+
 const formData = ref({date: '2025-10-20', subject: '', description: ''})
 const subjects = ['语文', '数学', '英语', '物理', '化学', '生物', '历史', '地理']
 const imageList = ref([])
@@ -71,15 +72,9 @@ const handleSubmit = () => {
   uni.showToast({title: '发布成功', icon: 'success'})
   setTimeout(() => uni.navigateBack(), 1500)
 }
-const goToPage = (page) => {
-  const routes = {home: '/pages/parent/home', homework: '/pages/parent/homework-list', checkin: '/pages/parent/checkin'}
-  if (routes[page]) uni.navigateTo({url: routes[page]})
-}
 </script>
 <style scoped>
 .page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 100%);padding-bottom:128rpx}
-.header{background:linear-gradient(to right,#0ea5e9,#3b82f6);padding:48rpx}
-.header-title{font-size:48rpx;font-weight:bold;color:#fff;text-align:center;display:block}
 .form-container{padding:48rpx;display:flex;flex-direction:column;gap:40rpx}
 .form-card{background:#fff;border-radius:32rpx;box-shadow:0 4rpx 16rpx rgba(0,0,0,0.06);padding:40rpx}
 .form-label{display:block;font-size:28rpx;font-weight:600;color:#374151;margin-bottom:24rpx}
@@ -103,10 +98,4 @@ const goToPage = (page) => {
 .tip-content{flex:1}
 .tip-title{display:block;font-size:28rpx;font-weight:600;color:#1e40af;margin-bottom:8rpx}
 .tip-text{display:block;font-size:24rpx;color:#1e40af;line-height:1.6;white-space:pre-line}
-.tabbar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1rpx solid #e5e7eb;box-shadow:0 -4rpx 16rpx rgba(0,0,0,0.05);display:flex;padding:16rpx 0}
-.tabbar-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:8rpx;padding:16rpx 0;color:#9ca3af}
-.tabbar-item-active{color:#0ea5e9}
-.tabbar-icon,.tabbar-icon-active{font-size:48rpx}
-.tabbar-label{font-size:24rpx}
-.tabbar-label-active{font-weight:500;color:#0ea5e9}
 </style>

@@ -106,29 +106,15 @@
     </view>
 
     <!-- 底部导航栏 -->
-    <view class="tabbar">
-      <view class="tabbar-item tabbar-item-active" @click="goToPage('home')">
-        <text class="tabbar-icon-active">🏠</text>
-        <text class="tabbar-label tabbar-label-active">首页</text>
-      </view>
-      <view class="tabbar-item" @click="goToPage('homework')">
-        <text class="tabbar-icon">📝</text>
-        <text class="tabbar-label">作业信息</text>
-      </view>
-      <view class="tabbar-item" @click="goToPage('checkin')">
-        <text class="tabbar-icon">✅</text>
-        <text class="tabbar-label">签到信息</text>
-      </view>
-      <view class="tabbar-item" @click="goToPage('publish')">
-        <text class="tabbar-icon">➕</text>
-        <text class="tabbar-label">发布作业</text>
-      </view>
-    </view>
+    <!-- 使用ParentTabBar组件 -->
+    <ParentTabBar activeTab="home" />
   </view>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import PageHeader from '@/components/PageHeader.vue'
+import ParentTabBar from '@/components/ParentTabBar.vue'
 
 // 学生信息
 const studentInfo = ref({
@@ -149,20 +135,7 @@ const stats = ref({
  * 导航到指定页面
  * @param {string} page - 页面标识
  */
-const goToPage = (page) => {
-  const routes = {
-    home: '/pages/parent/home',
-    homework: '/pages/parent/homework-list',
-    checkin: '/pages/parent/checkin',
-    publish: '/pages/parent/publish-homework'
-  }
 
-  if (routes[page] && page !== 'home') {
-    uni.navigateTo({
-      url: routes[page]
-    })
-  }
-}
 </script>
 
 <style scoped>
@@ -474,20 +447,11 @@ const goToPage = (page) => {
   color: #0ea5e9;
 }
 
-.tabbar-icon {
-  font-size: 48rpx;
-}
 
-.tabbar-icon-active {
-  font-size: 48rpx;
-}
 
-.tabbar-label {
-  font-size: 24rpx;
-}
 
-.tabbar-label-active {
-  font-weight: 500;
-  color: #0ea5e9;
-}
+
+
+
+
 </style>
