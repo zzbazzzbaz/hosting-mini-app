@@ -139,7 +139,7 @@ const gotoLogin = () => {
 .page {
   min-height: 100vh;
   background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  padding-bottom: 128rpx; /* 底部导航栏高度 */
+  padding-bottom: 200rpx; /* 底部导航栏高度 + 额外空间，确保内容不被遮挡 */
 }
 
 /* 顶部欢迎区 */
