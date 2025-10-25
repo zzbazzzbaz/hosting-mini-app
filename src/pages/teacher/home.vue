@@ -44,35 +44,229 @@ const goToHomework=()=>uni.navigateTo({url:'/pages/teacher/homework'})
 const goToPublish=()=>uni.navigateTo({url:'/pages/teacher/publish'})
 </script>
 <style scoped>
-.page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);padding-bottom:128rpx}
+/* 页面容器 */
+.page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  padding-bottom: 128rpx;
+}
 
-.teacher-info{display:flex;align-items:center;gap:32rpx}
-.avatar-wrapper{position:relative}
-.avatar{width:128rpx;height:128rpx;border-radius:50%;background:#fff;box-shadow:0 8rpx 24rpx rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center}
-.avatar-icon{font-size:80rpx}
-.online-badge{position:absolute;bottom:-4rpx;right:-4rpx;width:40rpx;height:40rpx;background:#10b981;border-radius:50%;border:4rpx solid #fff}
-.info{color:#fff}
-.name{display:block;font-size:48rpx;font-weight:bold;margin-bottom:8rpx}
-.role{display:block;font-size:28rpx;color:#bae6fd}
-.edit-btn{padding:16rpx;background:rgba(255,255,255,0.2);border-radius:16rpx;font-size:48rpx}
-.content{padding:0 48rpx}
-.section-title{display:flex;align-items:center;gap:16rpx;margin-bottom:32rpx}
-.section-title 
-.section-title 
-.stats-row-3,.stats-row-2{display:grid;gap:24rpx;margin-bottom:24rpx}
-.stats-row-3{grid-template-columns:repeat(3,1fr)}
-.stats-row-2{grid-template-columns:repeat(2,1fr)}
-.stat-card{background:#fff;border-radius:32rpx;box-shadow:0 4rpx 16rpx rgba(0,0,0,0.06);padding:32rpx;transition:all 0.3s}
-.stat-card:active{transform:scale(0.98)}
-.stat-blue{border-left:8rpx solid #3b82f6}
-.stat-green{border-left:8rpx solid #10b981}
-.stat-red{border-left:8rpx solid #ef4444}
-.stat-orange{border-left:8rpx solid #f97316}
+/* 顶部Header区域 */
+.header {
+  background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+  padding: 48rpx;
+  margin-bottom: 48rpx;
+  border-radius: 0 0 48rpx 48rpx;
+  box-shadow: 0 8rpx 24rpx rgba(14, 165, 233, 0.3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-.value{display:block;font-size:60rpx;font-weight:bold;margin-bottom:8rpx}
-.stat-blue .value{color:#3b82f6}
-.stat-green .value{color:#10b981}
-.stat-red .value{color:#ef4444}
-.stat-orange .value{color:#f97316}
+/* 教师信息区域 */
+.teacher-info {
+  display: flex;
+  align-items: center;
+  gap: 32rpx;
+}
 
+.avatar-wrapper {
+  position: relative;
+}
+
+.avatar {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-icon {
+  font-size: 80rpx;
+}
+
+.online-badge {
+  position: absolute;
+  bottom: -4rpx;
+  right: -4rpx;
+  width: 40rpx;
+  height: 40rpx;
+  background: #10b981;
+  border-radius: 50%;
+  border: 4rpx solid #fff;
+}
+
+.info {
+  color: #fff;
+}
+
+.name {
+  display: block;
+  font-size: 48rpx;
+  font-weight: bold;
+  margin-bottom: 8rpx;
+}
+
+.role {
+  display: block;
+  font-size: 28rpx;
+  color: #bae6fd;
+}
+
+.edit-btn {
+  padding: 16rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16rpx;
+  font-size: 48rpx;
+}
+
+/* 内容区域 */
+.content {
+  padding: 0 48rpx;
+}
+
+/* 区块标题 */
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 32rpx;
+}
+
+.section-title .icon {
+  font-size: 48rpx;
+}
+
+.section-title .title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+/* 统计卡片行布局 */
+.stats-row-3,
+.stats-row-2 {
+  display: grid;
+  gap: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.stats-row-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.stats-row-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* 统计卡片 */
+.stat-card {
+  background: #fff;
+  border-radius: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  padding: 32rpx;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.stat-card:active {
+  transform: scale(0.98);
+}
+
+/* 卡片左侧边框颜色 */
+.stat-blue {
+  border-left: 8rpx solid #3b82f6;
+}
+
+.stat-green {
+  border-left: 8rpx solid #10b981;
+}
+
+.stat-red {
+  border-left: 8rpx solid #ef4444;
+}
+
+.stat-orange {
+  border-left: 8rpx solid #f97316;
+}
+
+/* 卡片顶部标签文字（用于大卡片） */
+.label-text {
+  position: absolute;
+  top: 24rpx;
+  left: 32rpx;
+  font-size: 28rpx;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* 图标盒子 */
+.icon-box {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  margin-bottom: 16rpx;
+}
+
+.icon-blue {
+  background: #dbeafe;
+  color: #3b82f6;
+}
+
+.icon-green {
+  background: #d1fae5;
+  color: #10b981;
+}
+
+.icon-red {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.icon-orange {
+  background: #ffedd5;
+  color: #f97316;
+}
+
+/* 数值 */
+.value {
+  display: block;
+  font-size: 60rpx;
+  font-weight: bold;
+  margin-bottom: 8rpx;
+}
+
+.stat-blue .value {
+  color: #3b82f6;
+}
+
+.stat-green .value {
+  color: #10b981;
+}
+
+.stat-red .value {
+  color: #ef4444;
+}
+
+.stat-orange .value {
+  color: #f97316;
+}
+
+/* 标签 */
+.label {
+  font-size: 24rpx;
+  color: #9ca3af;
+  text-align: center;
+}
 </style>
