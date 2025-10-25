@@ -149,15 +149,15 @@ const handleLogin = () => {
 </script>
 
 <style scoped>
-/* 主容器 - 渐变背景 */
+/* 主容器 - 浅紫色渐变背景 */
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 32rpx;
+  padding: 48rpx;
 }
 
 /* Logo区域 */
@@ -172,7 +172,7 @@ const handleLogin = () => {
   border-radius: 50%;
   background-color: #ffffff;
   box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.1);
-  border: 8rpx solid #e0f2fe;
+  border: 8rpx solid #f3e8ff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -202,11 +202,11 @@ const handleLogin = () => {
 /* 登录卡片 */
 .login-card {
   width: 100%;
-  max-width: 640rpx;
+  max-width: 520rpx;
   background-color: #ffffff;
   border-radius: 32rpx;
   box-shadow: 0 40rpx 80rpx rgba(0, 0, 0, 0.1);
-  padding: 64rpx;
+  padding: 56rpx;
 }
 
 /* 角色切换按钮组 */
