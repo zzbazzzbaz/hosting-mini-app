@@ -227,6 +227,18 @@ const handleLogin = () => {
   font-size: 36rpx;
 }
 
+/* 未选中状态 - 浅蓝色 */
+.role-btn-inactive {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+/* 选中状态 - 深蓝色 */
+.role-btn-active {
+  background-color: #0ea5e9;
+  color: #ffffff;
+}
+
 /* 表单容器 */
 .form-container {
   display: flex;
