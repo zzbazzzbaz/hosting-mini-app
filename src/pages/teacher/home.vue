@@ -3,7 +3,9 @@
     <view class="header">
       <view class="teacher-info">
         <view class="avatar-wrapper">
-          <view class="avatar"><text class="avatar-icon">👨‍🏫</text></view>
+          <view class="avatar">
+            <uni-icons type="staff" size="48" color="#0ea5e9"></uni-icons>
+          </view>
           <view class="online-badge"></view>
         </view>
         <view class="info">
@@ -11,22 +13,73 @@
           <text class="role">👨‍🏫 教师</text>
         </view>
       </view>
-      <view class="edit-btn"><text>✏️</text></view>
+      <view class="edit-btn">
+        <uni-icons type="compose" size="24" color="#ffffff"></uni-icons>
+      </view>
     </view>
     <view class="content">
-      <view class="section-title"><text class="icon">📊</text><text class="title">数据统计</text></view>
+      <view class="section-title">
+        <uni-icons type="bars" size="24" color="#1f2937"></uni-icons>
+        <text class="title">数据统计</text>
+      </view>
       <view class="stats-row-3">
-        <view class="stat-card stat-blue" @click="goToCheckin"><view class="icon-box icon-blue"><text>👥</text></view><text class="value">{{stats.totalStudents}}</text><text class="label">学生总数</text></view>
-        <view class="stat-card stat-green" @click="goToCheckin"><view class="icon-box icon-green"><text>✓</text></view><text class="value">{{stats.todayChecked}}</text><text class="label">今日签到</text></view>
-        <view class="stat-card stat-red" @click="goToCheckin"><view class="icon-box icon-red"><text>✗</text></view><text class="value">{{stats.todayUnchecked}}</text><text class="label">今日未签到</text></view>
+        <view class="stat-card stat-blue" @click="goToCheckin">
+          <view class="icon-box icon-blue">
+            <uni-icons type="person" size="24" color="#3b82f6"></uni-icons>
+          </view>
+          <text class="value">{{stats.totalStudents}}</text>
+          <text class="label">学生总数</text>
+        </view>
+        <view class="stat-card stat-green" @click="goToCheckin">
+          <view class="icon-box icon-green">
+            <uni-icons type="checkmarkempty" size="24" color="#10b981"></uni-icons>
+          </view>
+          <text class="value">{{stats.todayChecked}}</text>
+          <text class="label">今日签到</text>
+        </view>
+        <view class="stat-card stat-red" @click="goToCheckin">
+          <view class="icon-box icon-red">
+            <uni-icons type="closeempty" size="24" color="#ef4444"></uni-icons>
+          </view>
+          <text class="value">{{stats.todayUnchecked}}</text>
+          <text class="label">今日未签到</text>
+        </view>
       </view>
       <view class="stats-row-2">
-        <view class="stat-card stat-green" @click="goToHomework"><text class="label-text">已完成作业</text><view class="icon-box icon-green"><text>✓</text></view><text class="value">{{stats.completedHomework}}</text><text class="label">累计完成数</text></view>
-        <view class="stat-card stat-red" @click="goToHomework"><text class="label-text">未完成作业</text><view class="icon-box icon-red"><text>⚠️</text></view><text class="value">{{stats.pendingHomework}}</text><text class="label">待完成数量</text></view>
+        <view class="stat-card stat-green" @click="goToHomework">
+          <text class="label-text">已完成作业</text>
+          <view class="icon-box icon-green">
+            <uni-icons type="checkmarkempty" size="24" color="#10b981"></uni-icons>
+          </view>
+          <text class="value">{{stats.completedHomework}}</text>
+          <text class="label">累计完成数</text>
+        </view>
+        <view class="stat-card stat-red" @click="goToHomework">
+          <text class="label-text">未完成作业</text>
+          <view class="icon-box icon-red">
+            <uni-icons type="info" size="24" color="#ef4444"></uni-icons>
+          </view>
+          <text class="value">{{stats.pendingHomework}}</text>
+          <text class="label">待完成数量</text>
+        </view>
       </view>
       <view class="stats-row-2">
-        <view class="stat-card stat-green"><text class="label-text">今日已完成</text><view class="icon-box icon-green"><text>✓</text></view><text class="value">{{stats.todayCompleted}}</text><text class="label">今天完成</text></view>
-        <view class="stat-card stat-orange"><text class="label-text">今日未完成</text><view class="icon-box icon-orange"><text>⏰</text></view><text class="value">{{stats.todayPending}}</text><text class="label">今天待完成</text></view>
+        <view class="stat-card stat-green">
+          <text class="label-text">今日已完成</text>
+          <view class="icon-box icon-green">
+            <uni-icons type="checkmarkempty" size="24" color="#10b981"></uni-icons>
+          </view>
+          <text class="value">{{stats.todayCompleted}}</text>
+          <text class="label">今天完成</text>
+        </view>
+        <view class="stat-card stat-orange">
+          <text class="label-text">今日未完成</text>
+          <view class="icon-box icon-orange">
+            <uni-icons type="loop" size="24" color="#f97316"></uni-icons>
+          </view>
+          <text class="value">{{stats.todayPending}}</text>
+          <text class="label">今天待完成</text>
+        </view>
       </view>
     </view>
     <!-- 使用TeacherTabBar组件 -->
@@ -85,10 +138,6 @@ const goToPublish=()=>uni.navigateTo({url:'/pages/teacher/publish'})
   justify-content: center;
 }
 
-.avatar-icon {
-  font-size: 80rpx;
-}
-
 .online-badge {
   position: absolute;
   bottom: -4rpx;
@@ -121,7 +170,9 @@ const goToPublish=()=>uni.navigateTo({url:'/pages/teacher/publish'})
   padding: 16rpx;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 16rpx;
-  font-size: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* 内容区域 */
@@ -215,7 +266,6 @@ const goToPublish=()=>uni.navigateTo({url:'/pages/teacher/publish'})
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 48rpx;
   margin-bottom: 16rpx;
 }
 

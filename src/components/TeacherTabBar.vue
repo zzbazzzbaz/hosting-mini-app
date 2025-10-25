@@ -6,7 +6,11 @@
       :class="['tab', activeTab === 'home' ? 'tab-active' : '']"
       @click="goToPage('home')"
     >
-      <text :class="activeTab === 'home' ? 'icon-active' : 'icon'">🏠</text>
+      <uni-icons
+        type="home-filled"
+        :size="26"
+        :color="activeTab === 'home' ? '#0ea5e9' : '#9ca3af'"
+      ></uni-icons>
       <text :class="activeTab === 'home' ? 'label-active' : 'label'">首页</text>
     </view>
 
@@ -15,7 +19,11 @@
       :class="['tab', activeTab === 'checkin' ? 'tab-active' : '']"
       @click="goToPage('checkin')"
     >
-      <text :class="activeTab === 'checkin' ? 'icon-active' : 'icon'">✅</text>
+      <uni-icons
+        type="checkmarkempty"
+        :size="26"
+        :color="activeTab === 'checkin' ? '#0ea5e9' : '#9ca3af'"
+      ></uni-icons>
       <text :class="activeTab === 'checkin' ? 'label-active' : 'label'">签到信息</text>
     </view>
 
@@ -24,7 +32,11 @@
       :class="['tab', activeTab === 'homework' ? 'tab-active' : '']"
       @click="goToPage('homework')"
     >
-      <text :class="activeTab === 'homework' ? 'icon-active' : 'icon'">📝</text>
+      <uni-icons
+        type="compose"
+        :size="26"
+        :color="activeTab === 'homework' ? '#0ea5e9' : '#9ca3af'"
+      ></uni-icons>
       <text :class="activeTab === 'homework' ? 'label-active' : 'label'">作业信息</text>
     </view>
 
@@ -33,7 +45,11 @@
       :class="['tab', activeTab === 'publish' ? 'tab-active' : '']"
       @click="goToPage('publish')"
     >
-      <text :class="activeTab === 'publish' ? 'icon-active' : 'icon'">➕</text>
+      <uni-icons
+        type="plusempty"
+        :size="26"
+        :color="activeTab === 'publish' ? '#0ea5e9' : '#9ca3af'"
+      ></uni-icons>
       <text :class="activeTab === 'publish' ? 'label-active' : 'label'">发布作业</text>
     </view>
   </view>
@@ -100,12 +116,6 @@ const goToPage = (page) => {
 
 .tab-active {
   color: #0ea5e9;
-}
-
-/* 图标 */
-.icon,
-.icon-active {
-  font-size: 48rpx;
 }
 
 /* 标签文字 */

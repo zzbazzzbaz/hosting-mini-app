@@ -4,8 +4,8 @@
     <!-- Logo区域 -->
     <view class="logo-section">
       <view class="logo-circle">
-        <!-- 书本图标 -->
-        <view class="logo-icon">📚</view>
+        <!-- Logo图片 -->
+        <image src="/static/logo.png" class="logo-image" mode="aspectFit"></image>
       </view>
       <text class="app-title">托管小程序</text>
       <text class="app-subtitle">家长与教师的沟通桥梁</text>
@@ -19,14 +19,14 @@
           :class="['role-btn', selectedRole === 'parent' ? 'role-btn-active' : 'role-btn-inactive']"
           @click="selectRole('parent')"
         >
-          <text class="role-icon">👨‍👩‍👧</text>
+          <uni-icons type="person" :size="22" :color="selectedRole === 'parent' ? '#ffffff' : '#0369a1'"></uni-icons>
           <text>家长</text>
         </view>
         <view
           :class="['role-btn', selectedRole === 'teacher' ? 'role-btn-active' : 'role-btn-inactive']"
           @click="selectRole('teacher')"
         >
-          <text class="role-icon">👨‍🏫</text>
+          <uni-icons type="staff" :size="22" :color="selectedRole === 'teacher' ? '#ffffff' : '#0369a1'"></uni-icons>
           <text>教师</text>
         </view>
       </view>
@@ -37,7 +37,9 @@
         <view class="form-field">
           <text class="form-label">手机号</text>
           <view class="input-wrapper">
-            <text class="input-icon">📱</text>
+            <view class="input-icon">
+              <uni-icons type="phone" size="20" color="#6b7280"></uni-icons>
+            </view>
             <input
               v-model="phone"
               type="number"
@@ -52,7 +54,9 @@
         <view class="form-field">
           <text class="form-label">密码</text>
           <view class="input-wrapper">
-            <text class="input-icon">🔒</text>
+            <view class="input-icon">
+              <uni-icons type="locked" size="20" color="#6b7280"></uni-icons>
+            </view>
             <input
               v-model="password"
               type="password"
@@ -175,9 +179,11 @@ const handleLogin = () => {
   margin: 0 auto 32rpx;
 }
 
-.logo-icon {
-  font-size: 96rpx;
+.logo-image {
+  width: 120rpx;
+  height: 120rpx;
 }
+
 
 .app-title {
   display: block;
@@ -223,9 +229,6 @@ const handleLogin = () => {
   gap: 16rpx;
 }
 
-.role-icon {
-  font-size: 36rpx;
-}
 
 /* 未选中状态 - 浅蓝色 */
 .role-btn-inactive {
@@ -278,7 +281,9 @@ const handleLogin = () => {
 }
 
 .input-icon {
-  font-size: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding-left: 32rpx;
 }
 

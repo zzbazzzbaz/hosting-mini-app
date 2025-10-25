@@ -5,7 +5,7 @@
       <view class="header-content">
         <!-- Logo图标 -->
         <view class="logo-circle">
-          <text class="logo-icon">📚</text>
+          <image src="/static/logo.png" class="logo-image" mode="aspectFit"></image>
         </view>
 
         <!-- 欢迎文字 -->
@@ -19,7 +19,7 @@
       <!-- 登录提示卡片 -->
       <view class="login-prompt-card">
         <view class="lock-icon-wrapper">
-          <text class="lock-icon">🔒</text>
+          <uni-icons type="locked" size="50" color="#3b82f6"></uni-icons>
         </view>
         <text class="prompt-title">请先登录</text>
         <text class="prompt-desc">登录后即可查看孩子的学习情况</text>
@@ -31,7 +31,7 @@
       <!-- 功能介绍 -->
       <view class="features-section">
         <view class="section-header">
-          <text class="section-icon">⚡</text>
+          <uni-icons type="star" size="24" color="#1f2937"></uni-icons>
           <text class="section-title">主要功能</text>
         </view>
 
@@ -39,7 +39,7 @@
           <!-- 功能卡片1 - 学习数据 -->
           <view class="feature-card">
             <view class="feature-icon-wrapper feature-icon-blue">
-              <text class="feature-icon">📊</text>
+              <uni-icons type="bars" size="28" color="#ffffff"></uni-icons>
             </view>
             <text class="feature-title">学习数据</text>
             <text class="feature-desc">实时查看孩子的学习进度和统计数据</text>
@@ -48,7 +48,7 @@
           <!-- 功能卡片2 - 作业管理 -->
           <view class="feature-card">
             <view class="feature-icon-wrapper feature-icon-green">
-              <text class="feature-icon">📝</text>
+              <uni-icons type="compose" size="28" color="#ffffff"></uni-icons>
             </view>
             <text class="feature-title">作业管理</text>
             <text class="feature-desc">查看作业详情,了解完成情况</text>
@@ -57,7 +57,7 @@
           <!-- 功能卡片3 - 签到记录 -->
           <view class="feature-card">
             <view class="feature-icon-wrapper feature-icon-purple">
-              <text class="feature-icon">✅</text>
+              <uni-icons type="checkmarkempty" size="28" color="#ffffff"></uni-icons>
             </view>
             <text class="feature-title">签到记录</text>
             <text class="feature-desc">查看孩子每日签到情况和照片</text>
@@ -66,7 +66,7 @@
           <!-- 功能卡片4 - 发布作业 -->
           <view class="feature-card">
             <view class="feature-icon-wrapper feature-icon-orange">
-              <text class="feature-icon">➕</text>
+              <uni-icons type="plusempty" size="28" color="#ffffff"></uni-icons>
             </view>
             <text class="feature-title">发布作业</text>
             <text class="feature-desc">为孩子上传和提交作业内容</text>
@@ -78,21 +78,21 @@
       <view class="advantage-card">
         <view class="advantage-header">
           <view class="advantage-icon-wrapper">
-            <text class="advantage-icon">💡</text>
+            <uni-icons type="star" size="30" color="#ffffff"></uni-icons>
           </view>
           <view class="advantage-content">
             <text class="advantage-title">为什么选择我们?</text>
             <view class="advantage-list">
               <view class="advantage-item">
-                <text class="checkmark">✓</text>
+                <uni-icons type="checkmarkempty" size="18" color="#10b981"></uni-icons>
                 <text class="advantage-text">实时了解孩子学习动态</text>
               </view>
               <view class="advantage-item">
-                <text class="checkmark">✓</text>
+                <uni-icons type="checkmarkempty" size="18" color="#10b981"></uni-icons>
                 <text class="advantage-text">与教师便捷沟通交流</text>
               </view>
               <view class="advantage-item">
-                <text class="checkmark">✓</text>
+                <uni-icons type="checkmarkempty" size="18" color="#10b981"></uni-icons>
                 <text class="advantage-text">数据安全有保障</text>
               </view>
             </view>
@@ -104,19 +104,19 @@
     <!-- 底部导航栏 -->
     <view class="tabbar">
       <view class="tabbar-item tabbar-item-active">
-        <text class="tabbar-icon">🏠</text>
+        <uni-icons type="home-filled" :size="26" color="#0ea5e9"></uni-icons>
         <text class="tabbar-label tabbar-label-active">首页</text>
       </view>
       <view class="tabbar-item tabbar-item-disabled">
-        <text class="tabbar-icon-disabled">📝</text>
+        <uni-icons type="compose" :size="26" color="#d1d5db"></uni-icons>
         <text class="tabbar-label-disabled">作业信息</text>
       </view>
       <view class="tabbar-item tabbar-item-disabled">
-        <text class="tabbar-icon-disabled">✅</text>
+        <uni-icons type="checkmarkempty" :size="26" color="#d1d5db"></uni-icons>
         <text class="tabbar-label-disabled">签到信息</text>
       </view>
       <view class="tabbar-item tabbar-item-disabled">
-        <text class="tabbar-icon-disabled">➕</text>
+        <uni-icons type="plusempty" :size="26" color="#d1d5db"></uni-icons>
         <text class="tabbar-label-disabled">发布作业</text>
       </view>
     </view>
@@ -168,9 +168,11 @@ const gotoLogin = () => {
   margin: 0 auto 32rpx;
 }
 
-.logo-icon {
-  font-size: 96rpx;
+.logo-image {
+  width: 120rpx;
+  height: 120rpx;
 }
+
 
 .header-title {
   display: block;
@@ -210,10 +212,6 @@ const gotoLogin = () => {
   align-items: center;
   justify-content: center;
   margin: 0 auto 32rpx;
-}
-
-.lock-icon {
-  font-size: 80rpx;
 }
 
 .prompt-title {
@@ -261,9 +259,6 @@ const gotoLogin = () => {
   margin-bottom: 32rpx;
 }
 
-.section-icon {
-  font-size: 40rpx;
-}
 
 .section-title {
   font-size: 36rpx;
@@ -312,9 +307,6 @@ const gotoLogin = () => {
   background: linear-gradient(135deg, #f97316, #dc2626);
 }
 
-.feature-icon {
-  font-size: 48rpx;
-}
 
 .feature-title {
   display: block;
@@ -355,9 +347,6 @@ const gotoLogin = () => {
   justify-content: center;
 }
 
-.advantage-icon {
-  font-size: 48rpx;
-}
 
 .advantage-content {
   flex: 1;
@@ -383,15 +372,6 @@ const gotoLogin = () => {
   gap: 16rpx;
   font-size: 28rpx;
   color: #4b5563;
-}
-
-.checkmark {
-  width: 32rpx;
-  height: 32rpx;
-  flex-shrink: 0;
-  color: #10b981;
-  font-weight: bold;
-  font-size: 32rpx;
 }
 
 .advantage-text {
@@ -429,14 +409,6 @@ const gotoLogin = () => {
   cursor: not-allowed;
 }
 
-.tabbar-icon {
-  font-size: 48rpx;
-}
-
-.tabbar-icon-disabled {
-  font-size: 48rpx;
-  opacity: 0.5;
-}
 
 .tabbar-label {
   font-size: 24rpx;
