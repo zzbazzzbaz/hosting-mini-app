@@ -116,14 +116,14 @@ const handleLogin = () => {
     return
   }
 
-  // 手机号格式验证
-  if (phone.value.length !== 11 || !/^1[3-9]\d{9}$/.test(phone.value)) {
-    uni.showToast({
-      title: '请输入正确的手机号格式',
-      icon: 'none'
-    })
-    return
-  }
+  // 手机号格式验证（已注释，方便测试）
+  // if (phone.value.length !== 11 || !/^1[3-9]\d{9}$/.test(phone.value)) {
+  //   uni.showToast({
+  //     title: '请输入正确的手机号格式',
+  //     icon: 'none'
+  //   })
+  //   return
+  // }
 
   if (!password.value) {
     uni.showToast({

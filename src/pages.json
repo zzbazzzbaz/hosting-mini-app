@@ -64,6 +64,13 @@
 			}
 		},
 		{
+			"path": "pages/teacher/checkin-confirm",
+			"style": {
+				"navigationBarTitleText": "签到确认",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/teacher/homework",
 			"style": {
 				"navigationBarTitleText": "作业信息",
