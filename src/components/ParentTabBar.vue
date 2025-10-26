@@ -24,7 +24,7 @@
         :size="26"
         :color="activeTab === 'homework' ? '#0ea5e9' : '#9ca3af'"
       ></uni-icons>
-      <text :class="activeTab === 'homework' ? 'tabbar-label-active' : 'tabbar-label'">作业信息</text>
+      <text :class="activeTab === 'homework' ? 'tabbar-label-active' : 'tabbar-label'">作业</text>
     </view>
 
     <!-- 签到信息 -->
@@ -37,10 +37,10 @@
         :size="26"
         :color="activeTab === 'checkin' ? '#0ea5e9' : '#9ca3af'"
       ></uni-icons>
-      <text :class="activeTab === 'checkin' ? 'tabbar-label-active' : 'tabbar-label'">签到信息</text>
+      <text :class="activeTab === 'checkin' ? 'tabbar-label-active' : 'tabbar-label'">签到</text>
     </view>
 
-    <!-- 发布作业 -->
+    <!-- 我的 -->
     <view
       :class="['tabbar-item', activeTab === 'publish' ? 'tabbar-item-active' : '']"
       @click="goToPage('publish')"
@@ -50,7 +50,7 @@
         :size="26"
         :color="activeTab === 'publish' ? '#0ea5e9' : '#9ca3af'"
       ></uni-icons>
-      <text :class="activeTab === 'publish' ? 'tabbar-label-active' : 'tabbar-label'">发布作业</text>
+      <text :class="activeTab === 'publish' ? 'tabbar-label-active' : 'tabbar-label'">我的</text>
     </view>
   </view>
 </template>
@@ -74,10 +74,10 @@ const props = defineProps({
 const goToPage = (page) => {
   // 路由映射
   const routes = {
-    home: '/pages/parent/home',
-    homework: '/pages/parent/homework-list',
-    checkin: '/pages/parent/checkin',
-    publish: '/pages/parent/publish-homework'
+    home: '/pages/parent/home/home',
+    homework: '/pages/parent/homework/homework-list',
+    checkin: '/pages/parent/checkin/checkin',
+    publish: '/pages/parent/personal/profile'
   }
 
   // 如果点击的不是当前页面，则跳转

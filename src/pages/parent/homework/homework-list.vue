@@ -101,7 +101,7 @@ const onStatusChange = (e) => {
 
 const gotoDetail = (item) => {
   uni.navigateTo({
-    url: '/pages/parent/homework-detail'
+    url: '/pages/parent/homework/homework-detail'
   })
 }
 </script>

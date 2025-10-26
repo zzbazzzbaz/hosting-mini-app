@@ -137,7 +137,7 @@ const handleLogin = () => {
   if (selectedRole.value === 'parent') {
     // 家长端登录成功后跳转到家长首页
     uni.reLaunch({
-      url: '/pages/parent/home'
+      url: '/pages/parent/home/home'
     })
   } else {
     // 教师端登录成功后跳转到教师首页

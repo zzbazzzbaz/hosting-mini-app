@@ -15,37 +15,37 @@
 			}
 		},
 		{
-			"path": "pages/parent/home",
+			"path": "pages/parent/home/home",
 			"style": {
 				"navigationBarTitleText": "首页",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/parent/homework-list",
+			"path": "pages/parent/homework/homework-list",
 			"style": {
 				"navigationBarTitleText": "作业信息",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/parent/homework-detail",
+			"path": "pages/parent/homework/homework-detail",
 			"style": {
 				"navigationBarTitleText": "作业详情",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/parent/checkin",
+			"path": "pages/parent/checkin/checkin",
 			"style": {
 				"navigationBarTitleText": "签到信息",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/parent/publish-homework",
+			"path": "pages/parent/personal/profile",
 			"style": {
-				"navigationBarTitleText": "发布作业",
+				"navigationBarTitleText": "我的",
 				"navigationStyle": "custom"
 			}
 		},
