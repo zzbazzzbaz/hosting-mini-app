@@ -14,7 +14,7 @@
       <text :class="activeTab === 'home' ? 'label-active' : 'label'">首页</text>
     </view>
 
-    <!-- 签到信息 -->
+    <!-- 签到 -->
     <view
       :class="['tab', activeTab === 'checkin' ? 'tab-active' : '']"
       @click="goToPage('checkin')"
@@ -24,10 +24,10 @@
         :size="26"
         :color="activeTab === 'checkin' ? '#0ea5e9' : '#9ca3af'"
       ></uni-icons>
-      <text :class="activeTab === 'checkin' ? 'label-active' : 'label'">签到信息</text>
+      <text :class="activeTab === 'checkin' ? 'label-active' : 'label'">签到</text>
     </view>
 
-    <!-- 作业信息 -->
+    <!-- 作业 -->
     <view
       :class="['tab', activeTab === 'homework' ? 'tab-active' : '']"
       @click="goToPage('homework')"
@@ -37,20 +37,20 @@
         :size="26"
         :color="activeTab === 'homework' ? '#0ea5e9' : '#9ca3af'"
       ></uni-icons>
-      <text :class="activeTab === 'homework' ? 'label-active' : 'label'">作业信息</text>
+      <text :class="activeTab === 'homework' ? 'label-active' : 'label'">作业</text>
     </view>
 
-    <!-- 发布作业 -->
+    <!-- 我的 -->
     <view
       :class="['tab', activeTab === 'publish' ? 'tab-active' : '']"
       @click="goToPage('publish')"
     >
       <uni-icons
-        type="plusempty"
+        type="person-filled"
         :size="26"
         :color="activeTab === 'publish' ? '#0ea5e9' : '#9ca3af'"
       ></uni-icons>
-      <text :class="activeTab === 'publish' ? 'label-active' : 'label'">发布作业</text>
+      <text :class="activeTab === 'publish' ? 'label-active' : 'label'">我的</text>
     </view>
   </view>
 </template>
@@ -58,7 +58,7 @@
 <script setup>
 /**
  * 教师端底部导航栏组件
- * @props activeTab - 当前激活的标签页: 'home' | 'checkin' | 'homework' | 'publish'
+ * @props activeTab - 当前激活的标签页: 'home' | 'checkin' | 'homework' | 'publish'(我的)
  */
 const props = defineProps({
   activeTab: {

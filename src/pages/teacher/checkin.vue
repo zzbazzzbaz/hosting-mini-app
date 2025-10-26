@@ -49,11 +49,21 @@
       </view>
     </view>
 
+    <!-- 全选按钮区域 -->
+    <view class="select-all-section">
+      <view class="select-all-box" @tap="toggleSelectAll">
+        <view :class="['checkbox-inner', isAllSelected ? 'checked' : '']">
+          <text v-if="isAllSelected" class="check-icon">✓</text>
+        </view>
+        <text class="select-all-text">全选</text>
+      </view>
+    </view>
+
     <!-- 学生列表：紧凑布局，所有信息在一行 -->
     <view class="list">
-      <view v-for="item in filteredStudentList" :key="item.id" class="student-item" @click="toggleCheck(item)">
+      <view v-for="item in filteredStudentList" :key="item.id" class="student-item">
         <!-- 复选框 -->
-        <view class="checkbox">
+        <view class="checkbox" @tap.stop="toggleCheck(item)">
           <view :class="['checkbox-inner', item.checked ? 'checked' : '']">
             <text v-if="item.checked" class="check-icon">✓</text>
           </view>
@@ -229,9 +239,22 @@ const filteredStudentList = computed(() => {
   return filtered
 })
 
+// 计算是否全选（基于筛选后的列表）
+const isAllSelected = computed(() => {
+  return filteredStudentList.value.length > 0 && filteredStudentList.value.every(item => item.checked)
+})
+
 // 切换学生的签到状态
 const toggleCheck = (item) => {
   item.checked = !item.checked
+}
+
+// 全选/取消全选
+const toggleSelectAll = () => {
+  const newCheckedState = !isAllSelected.value
+  filteredStudentList.value.forEach(item => {
+    item.checked = newCheckedState
+  })
 }
 
 // 批量签到按钮点击事件
@@ -310,6 +333,26 @@ const handleBatchCheckin = () => {
   flex-shrink: 0;
 }
 
+/* 全选区域 */
+.select-all-section {
+  padding: 24rpx 48rpx;
+  background: #fff;
+  margin-top: 2rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.select-all-box {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.select-all-text {
+  font-size: 28rpx;
+  color: #374151;
+  font-weight: 500;
+}
+
 /* 学生列表 */
 .list {
   padding: 24rpx 48rpx 140rpx;
@@ -332,23 +375,32 @@ const handleBatchCheckin = () => {
 /* 复选框 */
 .checkbox {
   flex-shrink: 0;
+  padding: 10rpx;
+  cursor: pointer;
 }
 
 .checkbox-inner {
-  width: 40rpx;
-  height: 40rpx;
+  width: 44rpx;
+  height: 44rpx;
   border: 3rpx solid #d1d5db;
   border-radius: 8rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  background: #fff;
+}
+
+.checkbox-inner.checked {
+  background: #0ea5e9;
+  border-color: #0ea5e9;
 }
 
 .check-icon {
   color: #fff;
-  font-size: 28rpx;
+  font-size: 30rpx;
   font-weight: bold;
+  line-height: 1;
 }
 
 /* 学生信息区域 */
