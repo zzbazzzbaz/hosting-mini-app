@@ -71,7 +71,7 @@
 			}
 		},
 		{
-			"path": "pages/teacher/homework",
+			"path": "HomeworkList",
 			"style": {
 				"navigationBarTitleText": "作业信息",
 				"navigationStyle": "custom"
@@ -99,7 +99,7 @@
 			}
 		},
 		{
-			"path": "pages/teacher/publish-detail",
+			"path": "HomeworkPublish",
 			"style": {
 				"navigationBarTitleText": "发布作业详情",
 				"navigationStyle": "custom"
