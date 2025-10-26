@@ -365,7 +365,7 @@ const handleBatchCheckin = () => {
 
 /* 学生列表，添加顶部间距避免被固定区域遮挡 */
 .list {
-  padding: 280rpx 48rpx 140rpx;
+  padding: 320rpx 48rpx 140rpx;
   display: flex;
   flex-direction: column;
   gap: 20rpx;

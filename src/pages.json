@@ -50,58 +50,58 @@
 			}
 		},
 		{
-			"path": "pages/teacher/home",
+			"path": "pages/teacher/home/home",
 			"style": {
 				"navigationBarTitleText": "教师工作台",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/teacher/checkin",
+			"path": "pages/teacher/checkin/checkin",
 			"style": {
 				"navigationBarTitleText": "签到信息",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/teacher/checkin-confirm",
+			"path": "pages/teacher/checkin/checkin-confirm",
 			"style": {
 				"navigationBarTitleText": "签到确认",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "HomeworkList",
+			"path": "pages/teacher/homework/homework-list",
 			"style": {
 				"navigationBarTitleText": "作业信息",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/teacher/homework-detail",
+			"path": "pages/teacher/homework/homework",
 			"style": {
 				"navigationBarTitleText": "作业详情",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/teacher/profile",
+			"path": "pages/teacher/personal/profile",
 			"style": {
 				"navigationBarTitleText": "我的",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/teacher/personal-info",
+			"path": "pages/teacher/personal/personal-info",
 			"style": {
 				"navigationBarTitleText": "个人信息",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "HomeworkPublish",
+			"path": "pages/teacher/homework/homework-publish",
 			"style": {
-				"navigationBarTitleText": "发布作业详情",
+				"navigationBarTitleText": "发布作业",
 				"navigationStyle": "custom"
 			}
 		}
@@ -115,7 +115,10 @@
 	"easycom": {
 		"autoscan": true,
 		"custom": {
-			"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
+			"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
+			"^PageHeader$": "@/components/PageHeader.vue",
+			"^ParentTabBar$": "@/components/ParentTabBar.vue",
+			"^TeacherTabBar$": "@/components/TeacherTabBar.vue"
 		}
 	}
 }

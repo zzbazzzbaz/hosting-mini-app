@@ -218,8 +218,8 @@ const notices = ref([
 ])
 
 // 导航方法
-const goToCheckin = () => uni.navigateTo({url: '/pages/teacher/checkin'})
-const goToHomework = () => uni.navigateTo({url: '/pages/teacher/homework'})
+const goToCheckin = () => uni.navigateTo({url: '/pages/teacher/checkin/checkin'})
+const goToHomework = () => uni.navigateTo({url: '/pages/teacher/homework/homework-list'})
 
 // 查看公告详情
 const viewNotice = (notice) => {

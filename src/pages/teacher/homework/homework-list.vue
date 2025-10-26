@@ -108,10 +108,10 @@ const onClassChange = (e) => {
 }
 
 // 跳转到作业详情页面
-const goDetail=(item)=>uni.navigateTo({url:`/pages/teacher/homework-detail?id=${item.id}`})
-const goHome=()=>uni.navigateTo({url:'/pages/teacher/home'})
-const goCheckin=()=>uni.navigateTo({url:'/pages/teacher/checkin'})
-const goPublish=()=>uni.navigateTo({url:'/pages/teacher/publish'})
+const goDetail=(item)=>uni.navigateTo({url:`/pages/teacher/homework/homework?id=${item.id}`})
+const goHome=()=>uni.navigateTo({url:'/pages/teacher/home/home'})
+const goCheckin=()=>uni.navigateTo({url:'/pages/teacher/checkin/checkin'})
+const goPublish=()=>uni.navigateTo({url:'/pages/teacher/homework/homework-publish'})
 </script>
 <style scoped>
 /* 页面容器 */

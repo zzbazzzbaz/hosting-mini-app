@@ -142,7 +142,7 @@ const handleLogin = () => {
   } else {
     // 教师端登录成功后跳转到教师首页
     uni.reLaunch({
-      url: '/pages/teacher/home'
+      url: '/pages/teacher/home/home'
     })
   }
 }
