@@ -1,61 +1,73 @@
 <template>
   <view class="page">
     <!-- 使用PageHeader组件 -->
-    <PageHeader title="作业信息"  />
+    <PageHeader title="作业信息"/>
 
     <!-- 筛选区域：教师、学校、年级、班级四个筛选项 -->
     <view class="filter-section">
-      <picker class="filter-picker" :range="teacherOptions" @change="onTeacherChange">
-        <view class="picker-box">
-          <text class="label">{{currentTeacher}}</text>
-          <text class="arrow">▼</text>
-        </view>
-      </picker>
-      <picker class="filter-picker" :range="schoolOptions" @change="onSchoolChange">
-        <view class="picker-box">
-          <text class="label">{{currentSchool}}</text>
-          <text class="arrow">▼</text>
-        </view>
-      </picker>
-      <picker class="filter-picker" :range="gradeOptions" @change="onGradeChange">
-        <view class="picker-box">
-          <text class="label">{{currentGrade}}</text>
-          <text class="arrow">▼</text>
-        </view>
-      </picker>
-      <picker class="filter-picker" :range="classOptions" @change="onClassChange">
-        <view class="picker-box">
-          <text class="label">{{currentClass}}</text>
-          <text class="arrow">▼</text>
-        </view>
-      </picker>
+      <!-- 第一行：四个筛选项 -->
+      <view class="filter-row">
+        <picker class="filter-picker" :range="teacherOptions" @change="onTeacherChange">
+          <view class="picker-box">
+            <text class="label">{{ currentTeacher }}</text>
+            <text class="arrow">▼</text>
+          </view>
+        </picker>
+        <picker class="filter-picker" :range="schoolOptions" @change="onSchoolChange">
+          <view class="picker-box">
+            <text class="label">{{ currentSchool }}</text>
+            <text class="arrow">▼</text>
+          </view>
+        </picker>
+        <picker class="filter-picker" :range="gradeOptions" @change="onGradeChange">
+          <view class="picker-box">
+            <text class="label">{{ currentGrade }}</text>
+            <text class="arrow">▼</text>
+          </view>
+        </picker>
+        <picker class="filter-picker" :range="classOptions" @change="onClassChange">
+          <view class="picker-box">
+            <text class="label">{{ currentClass }}</text>
+            <text class="arrow">▼</text>
+          </view>
+        </picker>
+      </view>
+      <!-- 第二行：姓名搜索框 -->
+      <view class="search-row">
+        <input
+            class="search-input"
+            v-model="searchName"
+            placeholder="搜索学生姓名"
+            placeholder-style="color: #9ca3af"
+        />
+      </view>
     </view>
 
     <!-- 作业列表 -->
     <view class="list">
-      <view v-for="item in homeworkList" :key="item.id" class="item" @click="goDetail(item)">
+      <view v-for="item in filteredHomeworkList" :key="item.id" class="item" @click="goDetail(item)">
         <!-- 左侧学生信息 -->
         <view class="student-info">
-          <text class="name">{{item.name}}</text>
+          <text class="name">{{ item.name }}</text>
           <view class="detail-row">
-            <text class="detail">{{item.school}}</text>
-            <text class="detail grade">{{item.grade}}</text>
-            <text class="detail">{{item.class}}</text>
+            <text class="detail">{{ item.school }}</text>
+            <text class="detail grade">{{ item.grade }}</text>
+            <text class="detail">{{ item.class }}</text>
           </view>
         </view>
         <!-- 右侧作业统计 -->
         <view class="homework-stats">
-          <text class="num completed">已完成: {{item.completed}}</text>
-          <text class="num pending">未完成: {{item.pending}}</text>
+          <text class="num completed">已完成: {{ item.completed }}</text>
+          <text class="num pending">未完成: {{ item.pending }}</text>
         </view>
       </view>
     </view>
     <!-- 使用TeacherTabBar组件 -->
-    <TeacherTabBar activeTab="homework" />
+    <TeacherTabBar activeTab="homework"/>
   </view>
 </template>
 <script setup>
-import {ref} from 'vue'
+import {ref, computed} from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import TeacherTabBar from '@/components/TeacherTabBar.vue'
 
@@ -64,6 +76,7 @@ const currentTeacher = ref('张三')
 const currentSchool = ref('实验小学')
 const currentGrade = ref('一年级')
 const currentClass = ref('1班')
+const searchName = ref('')  // 名称搜索关键词
 
 // 筛选选项数据
 const teacherOptions = ['全部', '张三', '李四', '王五']
@@ -72,11 +85,29 @@ const gradeOptions = ['全部', '一年级', '二年级', '三年级', '四年�
 const classOptions = ['全部', '1班', '2班', '3班', '4班']
 
 // 作业列表数据
-const homeworkList=ref([
-  {id:1,name:'喜洋洋',school:'实验小学',grade:'一年级',class:'1班',completed:10,pending:2},
-  {id:2,name:'美羊羊',school:'实验小学',grade:'一年级',class:'2班',completed:8,pending:4},
-  {id:3,name:'懒羊羊',school:'第二小学',grade:'二年级',class:'3班',completed:12,pending:0},
-  {id:4,name:'沸羊羊',school:'第三小学',grade:'三年级',class:'1班',completed:6,pending:5}
+const homeworkList = ref([
+  {
+    id: 1,
+    name: '喜洋洋',
+    teacher: '张三',
+    school: '实验小学',
+    grade: '一年级',
+    class: '1班',
+    completed: 10,
+    pending: 2
+  },
+  {id: 2, name: '美羊羊', teacher: '张三', school: '实验小学', grade: '一年级', class: '2班', completed: 8, pending: 4},
+  {
+    id: 3,
+    name: '懒羊羊',
+    teacher: '李四',
+    school: '第二小学',
+    grade: '二年级',
+    class: '3班',
+    completed: 12,
+    pending: 0
+  },
+  {id: 4, name: '沸羊羊', teacher: '王五', school: '第三小学', grade: '三年级', class: '1班', completed: 6, pending: 5}
 ])
 
 // 教师筛选器变化事件
@@ -107,17 +138,51 @@ const onClassChange = (e) => {
   console.log('选择班级:', currentClass.value)
 }
 
+// 根据筛选条件过滤作业列表
+const filteredHomeworkList = computed(() => {
+  let filtered = homeworkList.value
+
+  // 按教师筛选
+  if (currentTeacher.value !== '全部') {
+    filtered = filtered.filter(item => item.teacher === currentTeacher.value)
+  }
+
+  // 按学校筛选
+  if (currentSchool.value !== '全部') {
+    filtered = filtered.filter(item => item.school === currentSchool.value)
+  }
+
+  // 按年级筛选
+  if (currentGrade.value !== '全部') {
+    filtered = filtered.filter(item => item.grade === currentGrade.value)
+  }
+
+  // 按班级筛选
+  if (currentClass.value !== '全部') {
+    filtered = filtered.filter(item => item.class === currentClass.value)
+  }
+
+  // 按名称搜索
+  if (searchName.value.trim()) {
+    filtered = filtered.filter(item => item.name.includes(searchName.value.trim()))
+  }
+
+  return filtered
+})
+
 // 跳转到作业详情页面
-const goDetail=(item)=>uni.navigateTo({url:`/pages/teacher/homework/homework?id=${item.id}`})
-const goHome=()=>uni.navigateTo({url:'/pages/teacher/home/home'})
-const goCheckin=()=>uni.navigateTo({url:'/pages/teacher/checkin/checkin'})
-const goPublish=()=>uni.navigateTo({url:'/pages/teacher/homework/homework-publish'})
+const goDetail = (item) => uni.navigateTo({url: `/pages/teacher/homework/homework?id=${item.id}`})
 </script>
 <style scoped>
 /* 页面容器 */
-.page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);padding-top:144rpx;padding-bottom:128rpx}
+.page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  padding-top: 144rpx;
+  padding-bottom: 128rpx
+}
 
-/* 筛选区域：四个筛选项在同一行，固定在顶部 */
+/* 筛选区域：支持多行布局，固定在顶部 */
 .filter-section {
   position: fixed;
   top: 144rpx;
@@ -125,10 +190,17 @@ const goPublish=()=>uni.navigateTo({url:'/pages/teacher/homework/homework-publis
   right: 0;
   z-index: 100;
   display: flex;
-  gap: 16rpx;
+  flex-direction: column;
+  gap: 20rpx;
   padding: 24rpx 32rpx;
   background: #fff;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 筛选行 */
+.filter-row {
+  display: flex;
+  gap: 16rpx;
 }
 
 .filter-picker {
@@ -161,18 +233,41 @@ const goPublish=()=>uni.navigateTo({url:'/pages/teacher/homework/homework-publis
   flex-shrink: 0;
 }
 
+/* 搜索行 */
+.search-row {
+  display: flex;
+  width: 100%;
+}
+
+/* 搜索输入框 */
+.search-input {
+  flex: 1;
+  height: 64rpx;
+  background: #f9fafb;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  font-size: 26rpx;
+  color: #374151;
+}
+
 /* 作业列表，添加顶部间距避免被固定的筛选区域遮挡 */
-.list{padding:120rpx 48rpx 32rpx;display:flex;flex-direction:column;gap:24rpx}
+.list {
+  padding: 240rpx 48rpx 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx
+}
 
 /* 列表项 */
-.item{
-  background:#fff;
-  border-radius:24rpx;
-  box-shadow:0 2rpx 12rpx rgba(0,0,0,0.04);
-  padding:32rpx;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.item {
+  background: #fff;
+  border-radius: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  padding: 32rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 /* 左侧学生信息区域 */
