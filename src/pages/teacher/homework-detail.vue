@@ -1,49 +1,72 @@
 <template>
   <view class="page">
     <!-- 使用PageHeader组件 -->
-    <PageHeader title="作业详情列表" :showBack="true" />
+    <PageHeader title="作业详情列表" :showBack="true"/>
 
     <!-- 学生信息卡片 -->
     <view class="student-card">
       <view class="student-basic">
-        <text class="name">{{studentInfo.name}}</text>
+        <text class="name">{{ studentInfo.name }}</text>
         <view class="detail-row">
-          <text class="detail">{{studentInfo.school}}</text>
-          <text class="detail grade">{{studentInfo.grade}}</text>
-          <text class="detail">{{studentInfo.class}}</text>
+          <text class="detail">{{ studentInfo.school }}</text>
+          <text class="detail grade">{{ studentInfo.grade }}</text>
+          <text class="detail">{{ studentInfo.class }}</text>
         </view>
       </view>
       <view class="student-stats">
-        <text class="stat completed">已完成: {{studentInfo.completed}}</text>
-        <text class="stat pending">未完成: {{studentInfo.pending}}</text>
+        <text class="stat completed">已完成: {{ studentInfo.completed }}</text>
+        <text class="stat pending">未完成: {{ studentInfo.pending }}</text>
       </view>
+    </view>
+
+    <!-- 发布作业按钮 -->
+    <view class="publish-button-container">
+      <button class="publish-button" @click="onPublishHomework">发布作业</button>
     </view>
 
     <!-- 筛选区域 -->
     <view class="filter-section">
-      <picker class="filter-picker" :range="subjectOptions" @change="onSubjectChange">
-        <view class="picker-box">
-          <text class="label">{{currentSubject}}</text>
-          <text class="arrow">▼</text>
-        </view>
-      </picker>
-      <picker class="filter-picker" :range="statusOptions" @change="onStatusChange">
-        <view class="picker-box">
-          <text class="label">{{currentStatus}}</text>
-          <text class="arrow">▼</text>
-        </view>
-      </picker>
+      <!-- 第一行：科目和状态 -->
+      <view class="filter-row">
+        <picker class="filter-picker" :range="subjectOptions" @change="onSubjectChange">
+          <view class="picker-box">
+            <text class="label">{{ currentSubject }}</text>
+            <text class="arrow">▼</text>
+          </view>
+        </picker>
+        <picker class="filter-picker" :range="statusOptions" @change="onStatusChange">
+          <view class="picker-box">
+            <text class="label">{{ currentStatus }}</text>
+            <text class="arrow">▼</text>
+          </view>
+        </picker>
+      </view>
+      <!-- 第二行：日期 -->
+      <view class="filter-row">
+        <picker class="filter-picker" mode="date" :value="currentDate" @change="onDateChange">
+          <view class="picker-box">
+            <text class="label">{{ currentDate }}</text>
+            <text class="arrow">▼</text>
+          </view>
+        </picker>
+      </view>
     </view>
 
     <!-- 作业列表 -->
     <view class="homework-list">
       <view v-for="item in filteredHomeworkList" :key="item.id" class="homework-item">
-        <view class="homework-top">
-          <text class="subject">{{item.subject}}</text>
-          <text class="date">{{item.date}}</text>
+        <!-- 第一行：科目 | 作业标题 | 状态 -->
+        <view class="homework-main">
+          <text class="subject">{{ item.subject }}</text>
+          <text class="title">{{ item.title }}</text>
+          <view :class="['status-badge', item.status === 'completed' ? 'status-completed' : 'status-pending']">
+            <text>{{ item.status === 'completed' ? '已完成' : '未完成' }}</text>
+          </view>
         </view>
-        <view :class="['status-badge', item.status === 'completed' ? 'status-completed' : 'status-pending']">
-          <text>{{item.status === 'completed' ? '✓ 已完成' : '✗ 未完成'}}</text>
+        <!-- 第二行：发布时间 | 需要完成时间 -->
+        <view class="homework-time">
+          <text class="time-text">发布: {{ item.publishTime }}</text>
+          <text class="time-text">截止: {{ item.deadline }}</text>
         </view>
       </view>
     </view>
@@ -51,8 +74,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+import {ref, computed} from 'vue'
+import {onLoad} from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 
 // 学生信息
@@ -69,18 +92,75 @@ const studentInfo = ref({
 const currentSubject = ref('请选择科目')
 const currentStatus = ref('请选择状态')
 
+// 获取当前年月和日期
+const now = new Date()
+const currentYear = now.getFullYear()
+const currentMonthNum = now.getMonth() + 1
+const currentDay = now.getDate()
+
+// 时间筛选 - 默认为当天日期
+const currentDate = ref(`${currentYear}-${String(currentMonthNum).padStart(2, '0')}-${String(currentDay).padStart(2, '0')}`)
+
 // 筛选选项
 const subjectOptions = ['请选择科目', '语文', '数学', '英语', '科学', '美术', '音乐', '体育']
 const statusOptions = ['请选择状态', '已完成', '未完成']
 
 // 作业列表数据
 const homeworkList = ref([
-  {id: 1, subject: '数学', date: '2025-10-21', status: 'completed'},
-  {id: 2, subject: '语文', date: '2025-10-21', status: 'pending'},
-  {id: 3, subject: '英语', date: '2025-10-20', status: 'completed'},
-  {id: 4, subject: '数学', date: '2025-10-20', status: 'pending'},
-  {id: 5, subject: '科学', date: '2025-10-19', status: 'completed'},
-  {id: 6, subject: '语文', date: '2025-10-19', status: 'pending'}
+  {
+    id: 1,
+    subject: '数学',
+    title: '完成课后练习题1-10',
+    date: '2025-10-26',
+    publishTime: '10-25 14:30',
+    deadline: '10-26 18:00',
+    status: 'pending'
+  },
+  {
+    id: 2,
+    subject: '语文',
+    title: '背诵古诗 字符很多怎么办',
+    date: '2025-10-26',
+    publishTime: '10-25 15:00',
+    deadline: '10-26 20:00',
+    status: 'completed'
+  },
+  {
+    id: 3,
+    subject: '英语',
+    title: '抄写单词表Unit 3 wwwwwwwwwwwwwwwwwww',
+    date: '2025-10-26',
+    publishTime: '10-26 08:00',
+    deadline: '10-26 17:00',
+    status: 'pending'
+  },
+  {
+    id: 4,
+    subject: '数学',
+    title: '预习下一章节内容',
+    date: '2025-10-25',
+    publishTime: '10-24 14:00',
+    deadline: '10-25 19:00',
+    status: 'completed'
+  },
+  {
+    id: 5,
+    subject: '科学',
+    title: '观察植物生长并记录',
+    date: '2025-10-25',
+    publishTime: '10-24 10:00',
+    deadline: '10-25 18:00',
+    status: 'completed'
+  },
+  {
+    id: 6,
+    subject: '语文',
+    title: '阅读课外书并写读后感',
+    date: '2025-10-24',
+    publishTime: '10-23 15:30',
+    deadline: '10-24 21:00',
+    status: 'pending'
+  }
 ])
 
 // 科目筛选器变化事件
@@ -95,6 +175,12 @@ const onStatusChange = (e) => {
   const index = e.detail.value
   currentStatus.value = statusOptions[index]
   console.log('选择状态:', currentStatus.value)
+}
+
+// 日期筛选器变化事件
+const onDateChange = (e) => {
+  currentDate.value = e.detail.value
+  console.log('选择日期:', currentDate.value)
 }
 
 // 根据筛选条件过滤作业列表
@@ -112,8 +198,23 @@ const filteredHomeworkList = computed(() => {
     filtered = filtered.filter(item => item.status === statusValue)
   }
 
+  // 按日期筛选
+  if (currentDate.value) {
+    filtered = filtered.filter(item => item.date === currentDate.value)
+  }
+
   return filtered
 })
+
+// 发布作业按钮点击事件
+const onPublishHomework = () => {
+  console.log('点击发布作业按钮')
+  // TODO: 跳转到发布作业页面或弹出发布作业对话框
+  uni.showToast({
+    title: '跳转到发布作业页面',
+    icon: 'none'
+  })
+}
 
 // 页面加载时获取学生ID（从URL参数）
 onLoad((options) => {
@@ -200,13 +301,44 @@ onLoad((options) => {
   color: #ef4444;
 }
 
+/* 发布作业按钮容器 */
+.publish-button-container {
+  margin: 0 48rpx 24rpx;
+  padding: 0;
+}
+
+/* 发布作业按钮 */
+.publish-button {
+  width: 100%;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  border: none;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  box-shadow: 0 4rpx 12rpx rgba(16, 185, 129, 0.3);
+  transition: all 0.3s;
+}
+
+.publish-button::after {
+  border: none;
+}
+
 /* 筛选区域 */
 .filter-section {
   display: flex;
-  gap: 24rpx;
+  flex-direction: column;
+  gap: 20rpx;
   padding: 24rpx 48rpx;
   background: #fff;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 筛选行 */
+.filter-row {
+  display: flex;
+  gap: 24rpx;
 }
 
 .filter-picker {
@@ -252,36 +384,62 @@ onLoad((options) => {
   border-radius: 20rpx;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.04);
   padding: 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
 }
 
-/* 作业顶部信息 */
-.homework-top {
+/* 作业主要信息行 */
+.homework-main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16rpx;
+  gap: 16rpx;
 }
 
-/* 科目 */
+/* 科目（左对齐）*/
 .subject {
-  font-size: 32rpx;
+  font-size: 28rpx;
   font-weight: bold;
   color: #1f2937;
+  flex-shrink: 0;
+  min-width: 80rpx;
 }
 
-/* 日期 */
-.date {
-  font-size: 26rpx;
+/* 作业标题（居中，占据剩余空间）*/
+.title {
+  flex: 1;
+  font-size: 30rpx;
+  color: #374151;
+  text-align: center;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 时间信息行 */
+.homework-time {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 8rpx;
+}
+
+/* 时间文字（小字）*/
+.time-text {
+  font-size: 24rpx;
   color: #9ca3af;
 }
 
-/* 状态标签 */
+/* 状态标签（右对齐）*/
 .status-badge {
   display: inline-block;
-  padding: 12rpx 24rpx;
-  border-radius: 32rpx;
-  font-size: 26rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 24rpx;
+  font-size: 24rpx;
   font-weight: 500;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 /* 已完成状态 */
