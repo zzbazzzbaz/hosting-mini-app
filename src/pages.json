@@ -92,6 +92,13 @@
 			}
 		},
 		{
+			"path": "pages/teacher/personal-info",
+			"style": {
+				"navigationBarTitleText": "个人信息",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/teacher/publish-detail",
 			"style": {
 				"navigationBarTitleText": "发布作业详情",

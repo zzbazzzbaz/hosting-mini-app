@@ -32,7 +32,7 @@
         <view class="stat-divider"></view>
         <view class="stat-item">
           <text class="stat-value">{{stats.completedHomework}}</text>
-          <text class="stat-label">作业批改</text>
+          <text class="stat-label">学生作业</text>
         </view>
       </view>
     </view>
@@ -116,19 +116,8 @@ const stats = ref({
  * 处理个人信息点击
  */
 const handlePersonalInfo = () => {
-  uni.showToast({
-    title: '个人信息功能开发中',
-    icon: 'none'
-  })
-}
-
-/**
- * 处理消息中心点击
- */
-const handleMessages = () => {
-  uni.showToast({
-    title: '消息中心功能开发中',
-    icon: 'none'
+  uni.navigateTo({
+    url: '/pages/teacher/personal-info'
   })
 }
 
@@ -138,16 +127,6 @@ const handleMessages = () => {
 const handleSettings = () => {
   uni.showToast({
     title: '系统设置功能开发中',
-    icon: 'none'
-  })
-}
-
-/**
- * 处理帮助中心点击
- */
-const handleHelp = () => {
-  uni.showToast({
-    title: '帮助中心功能开发中',
     icon: 'none'
   })
 }
@@ -351,20 +330,8 @@ const handleLogout = () => {
   background: #dbeafe;
 }
 
-.icon-purple {
-  background: #ede9fe;
-}
-
-.icon-green {
-  background: #d1fae5;
-}
-
 .icon-gray {
   background: #f3f4f6;
-}
-
-.icon-orange {
-  background: #fed7aa;
 }
 
 .icon-cyan {
@@ -375,27 +342,6 @@ const handleLogout = () => {
   font-size: 32rpx;
   color: #1f2937;
   font-weight: 500;
-}
-
-.menu-right {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-}
-
-/* 未读消息徽章 */
-.badge {
-  min-width: 36rpx;
-  height: 36rpx;
-  background: #ef4444;
-  border-radius: 18rpx;
-  padding: 0 8rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20rpx;
-  color: #fff;
-  font-weight: bold;
 }
 
 /* 退出登录区域 */
