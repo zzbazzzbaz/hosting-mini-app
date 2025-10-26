@@ -1,16 +1,20 @@
 <template>
   <view class="page">
+    <!-- 头部导航 -->
     <view class="header">
-      <view class="teacher-info">
-        <view class="avatar-wrapper">
-          <view class="avatar">
-            <uni-icons type="staff" size="48" color="#0ea5e9"></uni-icons>
+      <view class="header-content">
+        <view class="logo-area">
+          <view class="logo-icon">
+            <uni-icons type="home-filled" size="32" color="#fff"></uni-icons>
           </view>
-          <view class="online-badge"></view>
+          <view class="app-info">
+            <text class="app-name">托管小程序</text>
+            <text class="app-slogan">教师工作台</text>
+          </view>
         </view>
-        <view class="info">
-          <text class="name">{{teacherName}}</text>
-          <text class="role">👨‍🏫 教师</text>
+        <view class="header-time">
+          <text class="time-text">{{currentTime}}</text>
+          <text class="date-text">{{currentDate}}</text>
         </view>
       </view>
     </view>
@@ -134,11 +138,32 @@
   </view>
 </template>
 <script setup>
-import {ref, computed} from 'vue'
+import {ref, computed, onMounted, onUnmounted} from 'vue'
 import TeacherTabBar from '@/components/TeacherTabBar.vue'
 
-// 教师信息
-const teacherName = ref('张三')
+/**
+ * 当前时间和日期
+ */
+const currentTime = ref('')
+const currentDate = ref('')
+let timer = null
+
+/**
+ * 更新时间显示
+ */
+const updateTime = () => {
+  const now = new Date()
+  const hours = String(now.getHours()).padStart(2, '0')
+  const minutes = String(now.getMinutes()).padStart(2, '0')
+  currentTime.value = `${hours}:${minutes}`
+
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  const weekDays = ['日', '一', '二', '三', '四', '五', '六']
+  const weekDay = weekDays[now.getDay()]
+  currentDate.value = `${year}/${month}/${day} 周${weekDay}`
+}
 
 // 统计数据
 const stats = ref({
@@ -205,6 +230,25 @@ const viewNotice = (notice) => {
     confirmText: '确认'
   })
 }
+
+/**
+ * 组件挂载时启动定时器
+ */
+onMounted(() => {
+  updateTime()
+  // 每分钟更新一次时间
+  timer = setInterval(updateTime, 60000)
+})
+
+/**
+ * 组件卸载时清除定时器
+ */
+onUnmounted(() => {
+  if (timer) {
+    clearInterval(timer)
+    timer = null
+  }
+})
 </script>
 <style scoped>
 /* 页面容器 */
@@ -218,61 +262,68 @@ const viewNotice = (notice) => {
 .header {
   background: linear-gradient(135deg, #0ea5e9, #3b82f6);
   padding: 48rpx;
-  margin-bottom: 48rpx;
-  border-radius: 0 0 48rpx 48rpx;
+  margin-bottom: 32rpx;
+  border-radius: 0 0 32rpx 32rpx;
   box-shadow: 0 8rpx 24rpx rgba(14, 165, 233, 0.3);
+}
+
+.header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-/* 教师信息区域 */
-.teacher-info {
+.logo-area {
   display: flex;
   align-items: center;
-  gap: 32rpx;
+  gap: 24rpx;
 }
 
-.avatar-wrapper {
-  position: relative;
-}
-
-.avatar {
-  width: 128rpx;
-  height: 128rpx;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+.logo-icon {
+  width: 96rpx;
+  height: 96rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 24rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  backdrop-filter: blur(10rpx);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
 }
 
-.online-badge {
-  position: absolute;
-  bottom: -4rpx;
-  right: -4rpx;
-  width: 40rpx;
-  height: 40rpx;
-  background: #10b981;
-  border-radius: 50%;
-  border: 4rpx solid #fff;
+.app-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
 }
 
-.info {
+.app-name {
+  font-size: 40rpx;
+  font-weight: bold;
   color: #fff;
 }
 
-.name {
-  display: block;
-  font-size: 48rpx;
-  font-weight: bold;
-  margin-bottom: 8rpx;
+.app-slogan {
+  font-size: 24rpx;
+  color: #bae6fd;
 }
 
-.role {
-  display: block;
-  font-size: 28rpx;
+.header-time {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8rpx;
+}
+
+.time-text {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #fff;
+  letter-spacing: 2rpx;
+}
+
+.date-text {
+  font-size: 24rpx;
   color: #bae6fd;
 }
 
