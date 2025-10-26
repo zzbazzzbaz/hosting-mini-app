@@ -284,8 +284,8 @@ const gotoDetail = (item) => {
 
 /* 作业列表容器 */
 .list-container {
-  padding: 32rpx 48rpx;
-  padding-top: 320rpx; /* PageHeader + 筛选区域高度 + 额外间距 */
+  /* PageHeader + 筛选区域高度 + 额外间距 */
+  padding: 380rpx 48rpx 32rpx;
   display: flex;
   flex-direction: column;
   gap: 24rpx;
