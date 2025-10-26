@@ -117,8 +117,13 @@ const goPublish=()=>uni.navigateTo({url:'/pages/teacher/publish'})
 /* 页面容器 */
 .page{min-height:100vh;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);padding-top:144rpx;padding-bottom:128rpx}
 
-/* 筛选区域：四个筛选项在同一行 */
+/* 筛选区域：四个筛选项在同一行，固定在顶部 */
 .filter-section {
+  position: fixed;
+  top: 144rpx;
+  left: 0;
+  right: 0;
+  z-index: 100;
   display: flex;
   gap: 16rpx;
   padding: 24rpx 32rpx;
@@ -156,8 +161,8 @@ const goPublish=()=>uni.navigateTo({url:'/pages/teacher/publish'})
   flex-shrink: 0;
 }
 
-/* 作业列表 */
-.list{padding:32rpx 48rpx;display:flex;flex-direction:column;gap:24rpx}
+/* 作业列表，添加顶部间距避免被固定的筛选区域遮挡 */
+.list{padding:120rpx 48rpx 32rpx;display:flex;flex-direction:column;gap:24rpx}
 
 /* 列表项 */
 .item{

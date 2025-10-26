@@ -287,8 +287,13 @@ const handleBatchCheckin = () => {
   padding-bottom: 240rpx;
 }
 
-/* 筛选区域：支持多行布局 */
+/* 筛选区域：支持多行布局，固定在顶部 */
 .filter-section {
+  position: fixed;
+  top: 144rpx;
+  left: 0;
+  right: 0;
+  z-index: 100;
   display: flex;
   flex-direction: column;
   gap: 20rpx;
@@ -333,8 +338,13 @@ const handleBatchCheckin = () => {
   flex-shrink: 0;
 }
 
-/* 全选区域 */
+/* 全选区域，固定在筛选区域下方 */
 .select-all-section {
+  position: fixed;
+  top: 344rpx;
+  left: 0;
+  right: 0;
+  z-index: 100;
   padding: 24rpx 48rpx;
   background: #fff;
   margin-top: 2rpx;
@@ -353,9 +363,9 @@ const handleBatchCheckin = () => {
   font-weight: 500;
 }
 
-/* 学生列表 */
+/* 学生列表，添加顶部间距避免被固定区域遮挡 */
 .list {
-  padding: 24rpx 48rpx 140rpx;
+  padding: 280rpx 48rpx 140rpx;
   display: flex;
   flex-direction: column;
   gap: 20rpx;
