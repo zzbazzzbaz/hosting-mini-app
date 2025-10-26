@@ -85,9 +85,9 @@
 			}
 		},
 		{
-			"path": "pages/teacher/publish",
+			"path": "pages/teacher/profile",
 			"style": {
-				"navigationBarTitleText": "发布作业",
+				"navigationBarTitleText": "我的",
 				"navigationStyle": "custom"
 			}
 		},

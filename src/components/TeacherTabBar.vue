@@ -77,7 +77,7 @@ const goToPage = (page) => {
     home: '/pages/teacher/home',
     checkin: '/pages/teacher/checkin',
     homework: '/pages/teacher/homework',
-    publish: '/pages/teacher/publish'
+    publish: '/pages/teacher/profile'
   }
 
   // 如果点击的不是当前页面，则跳转
