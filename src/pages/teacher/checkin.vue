@@ -226,11 +226,6 @@ const handleBatchCheckin = () => {
   transition: all 0.2s;
 }
 
-.checkbox-inner.checked {
-  background: #0ea5e9;
-  border-color: #0ea5e9;
-}
-
 .check-icon {
   color: #fff;
   font-size: 28rpx;
