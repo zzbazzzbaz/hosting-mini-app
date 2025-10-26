@@ -54,7 +54,7 @@
 
     <!-- 作业列表 -->
     <view class="homework-list">
-      <view v-for="item in filteredHomeworkList" :key="item.id" class="homework-item">
+      <view v-if="filteredHomeworkList.length > 0" v-for="item in filteredHomeworkList" :key="item.id" class="homework-item">
         <!-- 第一行：科目 | 作业标题 | 状态 -->
         <view class="homework-main">
           <text class="subject">{{ item.subject }}</text>
@@ -68,6 +68,12 @@
           <text class="time-text">发布: {{ item.publishTime }}</text>
           <text class="time-text">截止: {{ item.deadline }}</text>
         </view>
+      </view>
+
+      <!-- 没有作业时显示空状态 -->
+      <view v-else class="empty-state">
+        <text class="empty-icon">📝</text>
+        <text class="empty-text">今日暂无作业</text>
       </view>
     </view>
   </view>
@@ -209,10 +215,9 @@ const filteredHomeworkList = computed(() => {
 // 发布作业按钮点击事件
 const onPublishHomework = () => {
   console.log('点击发布作业按钮')
-  // TODO: 跳转到发布作业页面或弹出发布作业对话框
-  uni.showToast({
-    title: '跳转到发布作业页面',
-    icon: 'none'
+  // 跳转到发布作业页面
+  uni.navigateTo({
+    url: '/pages/teacher/publish-detail'
   })
 }
 
@@ -452,5 +457,28 @@ onLoad((options) => {
 .status-pending {
   background: #fee2e2;
   color: #dc2626;
+}
+
+/* 空状态容器 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 48rpx;
+  gap: 24rpx;
+}
+
+/* 空状态图标 */
+.empty-icon {
+  font-size: 120rpx;
+  opacity: 0.3;
+}
+
+/* 空状态文字 */
+.empty-text {
+  font-size: 28rpx;
+  color: #9ca3af;
+  font-weight: 500;
 }
 </style>
