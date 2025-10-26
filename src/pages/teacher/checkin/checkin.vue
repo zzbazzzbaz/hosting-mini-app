@@ -57,6 +57,15 @@
         </view>
         <text class="select-all-text">全选</text>
       </view>
+      <!-- 名称搜索框 -->
+      <view class="search-box">
+        <input
+          class="search-input"
+          v-model="searchName"
+          placeholder="搜索学生姓名"
+          placeholder-style="color: #9ca3af"
+        />
+      </view>
     </view>
 
     <!-- 学生列表：紧凑布局，所有信息在一行 -->
@@ -109,6 +118,7 @@ const currentGrade = ref('全部')
 const currentClass = ref('全部')
 const currentDate = ref(todayDate)  // 默认为今天
 const currentStatus = ref('未签到')  // 默认显示未签到的学生，便于签到操作
+const searchName = ref('')  // 名称搜索关键词
 
 // 筛选选项数据
 const teacherOptions = ['全部', '张三', '李四', '王五']
@@ -236,6 +246,11 @@ const filteredStudentList = computed(() => {
     filtered = filtered.filter(item => item.checkInStatus === currentStatus.value)
   }
 
+  // 按名称搜索
+  if (searchName.value.trim()) {
+    filtered = filtered.filter(item => item.name.includes(searchName.value.trim()))
+  }
+
   return filtered
 })
 
@@ -349,12 +364,16 @@ const handleBatchCheckin = () => {
   background: #fff;
   margin-top: 2rpx;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
 }
 
 .select-all-box {
   display: flex;
   align-items: center;
   gap: 16rpx;
+  flex-shrink: 0;
 }
 
 .select-all-text {
@@ -363,9 +382,27 @@ const handleBatchCheckin = () => {
   font-weight: 500;
 }
 
+/* 搜索框容器 */
+.search-box {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 搜索输入框 */
+.search-input {
+  width: 100%;
+  height: 64rpx;
+  background: #f9fafb;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  font-size: 26rpx;
+  color: #374151;
+}
+
 /* 学生列表，添加顶部间距避免被固定区域遮挡 */
 .list {
-  padding: 320rpx 48rpx 140rpx;
+  padding: 360rpx 48rpx 140rpx;
   display: flex;
   flex-direction: column;
   gap: 20rpx;
@@ -376,10 +413,10 @@ const handleBatchCheckin = () => {
   background: #fff;
   border-radius: 24rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-  padding: 28rpx 32rpx;
+  padding: 8rpx 24rpx;
   display: flex;
   align-items: center;
-  gap: 24rpx;
+  gap: 4rpx;
 }
 
 /* 复选框 */
