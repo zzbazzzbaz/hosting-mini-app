@@ -24,15 +24,18 @@
           <text class="empty-subtitle">调整筛选条件试试</text>
         </view>
         <view v-for="record in filteredCheckins" :key="record.id" class="checkin-card">
-          <view class="card-main">
-            <text class="student-name">{{ record.name }}</text>
-            <view class="meta-row">
-              <text class="meta-text">{{ record.date }}</text>
-              <text class="dot">·</text>
-              <text class="meta-text">{{ record.time }}</text>
-            </view>
+          <view class="cell cell-name">
+            <text class="cell-text">{{ record.name }}</text>
           </view>
-          <image class="photo-preview" :src="record.photo" mode="aspectFill"></image>
+          <view class="cell cell-date">
+            <text class="cell-text single-line">{{ formatDate(record.date) }}</text>
+          </view>
+          <view class="cell cell-time">
+            <text class="cell-text">{{ record.time }}</text>
+          </view>
+          <view class="cell cell-photo">
+            <image class="photo-preview" :src="record.photo" mode="aspectFill"></image>
+          </view>
         </view>
       </view>
     </view>
@@ -88,6 +91,8 @@ const filteredCheckins = computed(() => {
     return matchName && matchDate
   })
 })
+
+const formatDate = (value) => value.replace(/-/g, '/')
 
 const onNameChange = (event) => {
   selectedNameIndex.value = Number(event.detail.value)
@@ -157,17 +162,16 @@ const onDateChange = (event) => {
   display: flex;
   flex-direction: column;
   gap: 8rpx;
-  padding: 120rpx 32rpx 32rpx;
+  padding: 110rpx 32rpx 32rpx;
 }
 
 .checkin-card {
   background: #fff;
   border-radius: 20rpx;
   box-shadow: 0 4rpx 16rpx rgba(15, 23, 42, 0.06);
-  padding: 18rpx 24rpx;
+  padding: 16rpx 20rpx;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   transition: transform 0.2s;
 }
 
@@ -175,38 +179,44 @@ const onDateChange = (event) => {
   transform: scale(0.99);
 }
 
-.card-main {
+.cell {
   display: flex;
-  flex-direction: column;
-  gap: 6rpx;
+  justify-content: center;
+  align-items: center;
+  padding: 0 12rpx;
+  text-align: center;
 }
 
-.student-name {
-  font-size: 30rpx;
+.cell:not(:first-child) {
+  border-left: 2rpx solid #e2e8f0;
+}
+
+.cell-name,
+.cell-date,
+.cell-time {
+  flex: 1 1 0;
+}
+
+.cell-photo {
+  flex: 0 0 108rpx;
+}
+
+.cell-text {
+  font-size: 28rpx;
   font-weight: 600;
   color: #0f172a;
 }
 
-.meta-row {
-  display: flex;
-  align-items: center;
-  gap: 6rpx;
-}
-
-.meta-text {
-  font-size: 22rpx;
-  color: #475569;
-}
-
-.dot {
-  font-size: 22rpx;
-  color: #cbd5e1;
+.single-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .photo-preview {
-  width: 96rpx;
-  height: 96rpx;
-  border-radius: 14rpx;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 12rpx;
   border: 2rpx solid #22c55e;
   overflow: hidden;
 }
