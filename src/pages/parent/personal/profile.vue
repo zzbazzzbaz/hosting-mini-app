@@ -8,7 +8,6 @@
           <view class="avatar">
             <text class="avatar-text">{{ parentInfo.name.slice(0, 1) }}</text>
           </view>
-          <view class="relation-badge">{{ parentInfo.relation }}</view>
           <view class="online-badge"></view>
         </view>
 
@@ -48,12 +47,12 @@
           <uni-icons type="forward" size="18" color="#d1d5db"></uni-icons>
         </view>
 
-        <view class="menu-item" @tap="handleStudyReport">
+        <view class="menu-item" @tap="handleProfile">
           <view class="menu-left">
             <view class="menu-icon-box icon-green">
               <uni-icons type="analytics" size="22" color="#10b981"></uni-icons>
             </view>
-            <text class="menu-title">学习报告</text>
+            <text class="menu-title">个人资料</text>
           </view>
           <uni-icons type="forward" size="18" color="#d1d5db"></uni-icons>
         </view>
@@ -117,48 +116,27 @@ import {ref} from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import ParentTabBar from '@/components/ParentTabBar.vue'
 
-const parentInfo = ref({
-  name: '李女士',
-  relation: '妈妈'
-})
-
-const stats = ref({
-  totalChildren: 1,
-  pendingHomework: 2,
-  upcomingEvents: 3
-})
+const parentInfo = ref({ name: '李女士' })
+const stats = ref({ totalChildren: 1, pendingHomework: 2, upcomingEvents: 3 })
 
 const handleChildInfo = () => {
-  uni.navigateTo({
-    url: '/pages/parent/homework/homework-list'
-  })
+  uni.navigateTo({ url: '/pages/parent/homework/homework-list' })
 }
 
-const handleStudyReport = () => {
-  uni.showToast({
-    title: '学习报告功能开发中',
-    icon: 'none'
-  })
+const handleProfile = () => {
+  uni.showToast({ title: '个人资料功能开发中', icon: 'none' })
 }
 
 const handleAttendance = () => {
-  uni.navigateTo({
-    url: '/pages/parent/checkin/checkin'
-  })
+  uni.navigateTo({ url: '/pages/parent/checkin/checkin' })
 }
 
 const handleTuition = () => {
-  uni.showToast({
-    title: '课时功能开发中',
-    icon: 'none'
-  })
+  uni.showToast({ title: '课时功能开发中', icon: 'none' })
 }
 
 const handleSettings = () => {
-  uni.showToast({
-    title: '系统设置功能开发中',
-    icon: 'none'
-  })
+  uni.showToast({ title: '系统设置功能开发中', icon: 'none' })
 }
 
 const handleSupport = () => {
@@ -178,13 +156,8 @@ const handleLogout = () => {
       if (res.confirm) {
         uni.removeStorageSync('parentInfo')
         uni.removeStorageSync('token')
-        uni.reLaunch({
-          url: '/pages/common/login'
-        })
-        uni.showToast({
-          title: '已退出',
-          icon: 'success'
-        })
+        uni.reLaunch({ url: '/pages/common/login' })
+        uni.showToast({ title: '已退出', icon: 'success' })
       }
     }
   })
@@ -233,20 +206,6 @@ const handleLogout = () => {
   font-size: 56rpx;
   font-weight: bold;
   color: #0ea5e9;
-}
-
-.relation-badge {
-  position: absolute;
-  bottom: -12rpx;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #facc15;
-  color: #854d0e;
-  font-size: 22rpx;
-  font-weight: 600;
-  padding: 8rpx 20rpx;
-  border-radius: 999rpx;
-  box-shadow: 0 8rpx 16rpx rgba(250, 204, 21, 0.35);
 }
 
 .online-badge {

@@ -2,30 +2,20 @@
   <view class="page">
     <PageHeader title="签到信息" />
     <view class="content">
-      <view class="filter-card">
-        <view class="filter-header">
-          <text class="filter-title">筛选</text>
-          <text class="filter-reset" @tap="resetFilters">重置</text>
-        </view>
-        <view class="filter-grid">
-          <view class="filter-field">
-            <text class="field-label">姓名</text>
-            <picker class="field-picker" :range="nameOptions" :value="selectedNameIndex" @change="onNameChange">
-              <view class="picker-display">
-                <text class="picker-text">{{ nameOptions[selectedNameIndex] || '全部' }}</text>
-                <text class="picker-arrow">▼</text>
-              </view>
-            </picker>
-          </view>
-          <view class="filter-field">
-            <text class="field-label">日期</text>
-            <picker class="field-picker" mode="date" :value="pickerDateValue" @change="onDateChange">
-              <view class="picker-display">
-                <text class="picker-text">{{ selectedDateLabel }}</text>
-                <text class="picker-arrow">▼</text>
-              </view>
-            </picker>
-          </view>
+      <view class="filter-section">
+        <view class="filter-row">
+          <picker class="filter-picker" :range="nameOptions" :value="selectedNameIndex" @change="onNameChange">
+            <view class="picker-box">
+              <text class="label">{{ selectedNameLabel }}</text>
+              <text class="arrow">▼</text>
+            </view>
+          </picker>
+          <picker class="filter-picker" mode="date" :value="pickerDateValue" @change="onDateChange">
+            <view class="picker-box">
+              <text class="label">{{ selectedDateLabel }}</text>
+              <text class="arrow">▼</text>
+            </view>
+          </picker>
         </view>
       </view>
       <view class="list-container">
@@ -34,18 +24,15 @@
           <text class="empty-subtitle">调整筛选条件试试</text>
         </view>
         <view v-for="record in filteredCheckins" :key="record.id" class="checkin-card">
-          <view class="card-info">
-            <text class="info-name">{{ record.name }}</text>
-            <view class="info-row">
-              <text class="info-label">日期</text>
-              <text class="info-value">{{ record.date }}</text>
-            </view>
-            <view class="info-row">
-              <text class="info-label">时间</text>
-              <text class="info-value">{{ record.time }}</text>
+          <view class="card-main">
+            <text class="student-name">{{ record.name }}</text>
+            <view class="meta-row">
+              <text class="meta-text">{{ record.date }}</text>
+              <text class="dot">·</text>
+              <text class="meta-text">{{ record.time }}</text>
             </view>
           </view>
-          <image class="card-photo" :src="record.photo" mode="aspectFill"></image>
+          <image class="photo-preview" :src="record.photo" mode="aspectFill"></image>
         </view>
       </view>
     </view>
@@ -75,6 +62,11 @@ const uniqueNames = computed(() => {
 
 const nameOptions = computed(() => ['全部', ...uniqueNames.value])
 
+const selectedNameLabel = computed(() => {
+  const current = nameOptions.value[selectedNameIndex.value]
+  return selectedNameIndex.value === 0 || !current ? '请选择孩子' : current
+})
+
 const fallbackDate = computed(() => {
   if (checkinRecords.value.length > 0) {
     return checkinRecords.value[0].date
@@ -86,7 +78,7 @@ const fallbackDate = computed(() => {
 })
 
 const pickerDateValue = computed(() => selectedDate.value || fallbackDate.value)
-const selectedDateLabel = computed(() => selectedDate.value || '全部日期')
+const selectedDateLabel = computed(() => selectedDate.value || '请选择日期')
 
 const filteredCheckins = computed(() => {
   const targetName = nameOptions.value[selectedNameIndex.value] || '全部'
@@ -105,10 +97,6 @@ const onDateChange = (event) => {
   selectedDate.value = event.detail.value
 }
 
-const resetFilters = () => {
-  selectedNameIndex.value = 0
-  selectedDate.value = ''
-}
 </script>
 
 <style scoped>
@@ -125,69 +113,40 @@ const resetFilters = () => {
   flex-direction: column;
 }
 
-.filter-card {
+.filter-section {
   background: #fff;
-  border-radius: 32rpx;
-  box-shadow: 0 8rpx 24rpx rgba(15, 118, 255, 0.1);
-  padding: 40rpx;
-  margin-top: 32rpx;
+  border-radius: 28rpx;
+  box-shadow: 0 6rpx 18rpx rgba(15, 23, 42, 0.08);
+  padding: 24rpx 32rpx;
+  margin-top: 24rpx;
 }
 
-.filter-header {
+.filter-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 32rpx;
-}
-
-.filter-title {
-  font-size: 36rpx;
-  font-weight: bold;
-  color: #0f172a;
-}
-
-.filter-reset {
-  font-size: 28rpx;
-  color: #0ea5e9;
-}
-
-.filter-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 32rpx;
-}
-
-.filter-field {
-  display: flex;
-  flex-direction: column;
   gap: 16rpx;
 }
 
-.field-label {
-  font-size: 28rpx;
-  color: #475569;
+.filter-picker {
+  flex: 1;
 }
 
-.field-picker {
-  width: 100%;
-}
-
-.picker-display {
+.picker-box {
   background: #f8fafc;
   border: 2rpx solid #e2e8f0;
-  border-radius: 24rpx;
-  padding: 28rpx 32rpx;
+  border-radius: 20rpx;
+  padding: 20rpx 28rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.picker-text {
-  font-size: 30rpx;
+.label {
+  font-size: 28rpx;
   color: #1f2937;
 }
 
-.picker-arrow {
+.arrow {
   font-size: 24rpx;
   color: #94a3b8;
 }
@@ -195,55 +154,58 @@ const resetFilters = () => {
 .list-container {
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
-  margin-top: 32rpx;
+  gap: 16rpx;
+  margin-top: 28rpx;
 }
 
 .checkin-card {
   background: #fff;
-  border-radius: 32rpx;
-  box-shadow: 0 6rpx 20rpx rgba(15, 23, 42, 0.08);
-  padding: 40rpx;
+  border-radius: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(15, 23, 42, 0.06);
+  padding: 28rpx 32rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  transition: transform 0.2s;
 }
 
-.card-info {
+.checkin-card:active {
+  transform: scale(0.99);
+}
+
+.card-main {
   display: flex;
   flex-direction: column;
-  gap: 20rpx;
+  gap: 12rpx;
 }
 
-.info-name {
-  font-size: 40rpx;
+.student-name {
+  font-size: 34rpx;
   font-weight: 600;
   color: #0f172a;
 }
 
-.info-row {
+.meta-row {
   display: flex;
   align-items: center;
-  gap: 32rpx;
+  gap: 12rpx;
 }
 
-.info-label {
-  font-size: 28rpx;
-  color: #64748b;
-  min-width: 80rpx;
+.meta-text {
+  font-size: 26rpx;
+  color: #475569;
 }
 
-.info-value {
-  font-size: 32rpx;
-  color: #1e293b;
-  font-weight: 500;
+.dot {
+  font-size: 26rpx;
+  color: #cbd5f5;
 }
 
-.card-photo {
-  width: 168rpx;
-  height: 168rpx;
-  border-radius: 24rpx;
-  border: 4rpx solid #22c55e;
+.photo-preview {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 18rpx;
+  border: 3rpx solid #22c55e;
   overflow: hidden;
 }
 
