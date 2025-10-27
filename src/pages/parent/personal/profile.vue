@@ -52,23 +52,13 @@
             <view class="menu-icon-box icon-green">
               <uni-icons type="analytics" size="22" color="#10b981"></uni-icons>
             </view>
-            <text class="menu-title">个人资料</text>
+            <text class="menu-title">个人信息</text>
           </view>
           <uni-icons type="forward" size="18" color="#d1d5db"></uni-icons>
         </view>
       </view>
 
       <view class="menu-group">
-        <view class="menu-item" @tap="handleAttendance">
-          <view class="menu-left">
-            <view class="menu-icon-box icon-orange">
-              <uni-icons type="calendar" size="22" color="#f97316"></uni-icons>
-            </view>
-            <text class="menu-title">签到记录</text>
-          </view>
-          <uni-icons type="forward" size="18" color="#d1d5db"></uni-icons>
-        </view>
-
         <view class="menu-item" @tap="handleTuition">
           <view class="menu-left">
             <view class="menu-icon-box icon-indigo">
@@ -91,12 +81,12 @@
           <uni-icons type="forward" size="18" color="#d1d5db"></uni-icons>
         </view>
 
-        <view class="menu-item" @tap="handleSupport">
+        <view class="menu-item" @tap="handleAbout">
           <view class="menu-left">
             <view class="menu-icon-box icon-cyan">
-              <uni-icons type="help" size="22" color="#06b6d4"></uni-icons>
+              <uni-icons type="info" size="22" color="#06b6d4"></uni-icons>
             </view>
-            <text class="menu-title">联系客服</text>
+            <text class="menu-title">关于我们</text>
           </view>
           <uni-icons type="forward" size="18" color="#d1d5db"></uni-icons>
         </view>
@@ -123,30 +113,16 @@ const handleChildInfo = () => {
   uni.navigateTo({ url: '/pages/parent/homework/homework-list' })
 }
 
-const handleProfile = () => {
-  uni.showToast({ title: '个人资料功能开发中', icon: 'none' })
-}
-
-const handleAttendance = () => {
-  uni.navigateTo({ url: '/pages/parent/checkin/checkin' })
-}
-
-const handleTuition = () => {
-  uni.showToast({ title: '课时功能开发中', icon: 'none' })
-}
-
-const handleSettings = () => {
-  uni.showToast({ title: '系统设置功能开发中', icon: 'none' })
-}
-
-const handleSupport = () => {
+const handleProfile = () => uni.showToast({ title: '个人资料功能开发中', icon: 'none' })
+const handleTuition = () => uni.showToast({ title: '课时功能开发中', icon: 'none' })
+const handleSettings = () => uni.showToast({ title: '系统设置功能开发中', icon: 'none' })
+const handleAbout = () =>
   uni.showModal({
-    title: '客服中心',
-    content: '如需帮助，请拨打 400-800-1000，或添加客服微信号：edu-support',
+    title: '关于我们',
+    content: '托管小程序 v1.0.0\n家长端移动应用\n版权所有 © 2025',
     showCancel: false,
-    confirmText: '知道了'
+    confirmText: '确定'
   })
-}
 
 const handleLogout = () => {
   uni.showModal({

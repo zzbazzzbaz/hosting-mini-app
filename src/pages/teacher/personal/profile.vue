@@ -52,7 +52,7 @@
         </view>
       </view>
 
-      <!-- 系统功能组 -->
+      <!-- 系统与帮助 -->
       <view class="menu-group">
         <view class="menu-item" @tap="handleSettings">
           <view class="menu-left">
@@ -63,10 +63,6 @@
           </view>
           <uni-icons type="forward" size="18" color="#d1d5db"></uni-icons>
         </view>
-      </view>
-
-      <!-- 其他功能组 -->
-      <view class="menu-group">
         <view class="menu-item" @tap="handleAbout">
           <view class="menu-left">
             <view class="menu-icon-box icon-cyan">

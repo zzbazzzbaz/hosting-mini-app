@@ -108,17 +108,19 @@ const onDateChange = (event) => {
 }
 
 .content {
-  padding: 0 48rpx 48rpx;
-  display: flex;
-  flex-direction: column;
+  padding-bottom: 48rpx;
 }
 
 .filter-section {
+  position: fixed;
+  top: 144rpx;
+  left: 0;
+  right: 0;
+  z-index: 100;
   background: #fff;
-  border-radius: 28rpx;
+  border-radius: 0 0 28rpx 28rpx;
   box-shadow: 0 6rpx 18rpx rgba(15, 23, 42, 0.08);
-  padding: 24rpx 32rpx;
-  margin-top: 24rpx;
+  padding: 16rpx 32rpx 8rpx;
 }
 
 .filter-row {
@@ -135,34 +137,34 @@ const onDateChange = (event) => {
   background: #f8fafc;
   border: 2rpx solid #e2e8f0;
   border-radius: 20rpx;
-  padding: 20rpx 28rpx;
+  padding: 16rpx 24rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .label {
-  font-size: 28rpx;
+  font-size: 26rpx;
   color: #1f2937;
 }
 
 .arrow {
-  font-size: 24rpx;
+  font-size: 22rpx;
   color: #94a3b8;
 }
 
 .list-container {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
-  margin-top: 28rpx;
+  gap: 8rpx;
+  padding: 120rpx 32rpx 32rpx;
 }
 
 .checkin-card {
   background: #fff;
-  border-radius: 24rpx;
+  border-radius: 20rpx;
   box-shadow: 0 4rpx 16rpx rgba(15, 23, 42, 0.06);
-  padding: 28rpx 32rpx;
+  padding: 18rpx 24rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -176,11 +178,11 @@ const onDateChange = (event) => {
 .card-main {
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
+  gap: 6rpx;
 }
 
 .student-name {
-  font-size: 34rpx;
+  font-size: 30rpx;
   font-weight: 600;
   color: #0f172a;
 }
@@ -188,24 +190,24 @@ const onDateChange = (event) => {
 .meta-row {
   display: flex;
   align-items: center;
-  gap: 12rpx;
+  gap: 6rpx;
 }
 
 .meta-text {
-  font-size: 26rpx;
+  font-size: 22rpx;
   color: #475569;
 }
 
 .dot {
-  font-size: 26rpx;
-  color: #cbd5f5;
+  font-size: 22rpx;
+  color: #cbd5e1;
 }
 
 .photo-preview {
-  width: 120rpx;
-  height: 120rpx;
-  border-radius: 18rpx;
-  border: 3rpx solid #22c55e;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 14rpx;
+  border: 2rpx solid #22c55e;
   overflow: hidden;
 }
 
