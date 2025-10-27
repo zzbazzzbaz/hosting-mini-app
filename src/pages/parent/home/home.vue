@@ -1,423 +1,323 @@
 <template>
   <view class="page">
-    <!-- 顶部学生信息区 -->
-    <view class="header-section">
-      <view class="student-info">
-        <view class="student-left">
-          <!-- 学生头像 -->
-          <view class="avatar-wrapper">
-            <view class="avatar-circle">
-              <text class="avatar-icon">👦</text>
-            </view>
-            <!-- 在线状态指示器 -->
-            <view class="online-badge"></view>
+    <view class="header">
+      <view class="header-content">
+        <view class="logo-area">
+          <view class="logo-icon">
+            <uni-icons type="home" size="28" color="#fff"/>
           </view>
-
-          <!-- 学生信息 -->
-          <view class="student-details">
-            <text class="student-name">{{ studentInfo.name }}</text>
-            <view class="teacher-info">
-              <text class="teacher-icon">👨‍🏫</text>
-              <text class="teacher-text">辅导老师：</text>
-              <text class="teacher-name">{{ studentInfo.teacher }}</text>
-            </view>
+          <view class="app-info">
+            <text class="app-name">托管小程序</text>
           </view>
-        </view>
-
-        <!-- 编辑按钮 -->
-        <view class="edit-btn">
-          <text class="edit-icon">✏️</text>
         </view>
       </view>
     </view>
 
-    <!-- 主内容区 -->
-    <view class="main-content">
-      <!-- 学习数据总览 -->
-      <view class="stats-section">
-        <view class="section-header">
-          <text class="section-icon">📊</text>
-          <text class="section-title">学习数据总览</text>
+    <view class="content">
+      <view class="section-title">
+        <uni-icons type="bars" size="24" color="#1f2937"/>
+        <text class="title">学习数据总览</text>
+      </view>
+      <view class="stats-row">
+        <view class="stat-card stat-blue">
+          <view class="stat-header">
+            <text class="label">累计课时</text>
+            <view class="icon-box icon-blue">
+              <uni-icons type="calendar" size="20" color="#2563eb"/>
+            </view>
+          </view>
+          <text class="value">{{ stats.totalHours }}</text>
+          <text class="desc">完成 {{ stats.completedHours }} · 待学 {{ stats.pendingHours }}</text>
         </view>
 
-        <view class="stats-grid">
-          <!-- 已修课时卡片 -->
-          <view class="stat-card stat-card-green">
-            <view class="stat-header">
-              <text class="stat-label">已修课时</text>
-              <view class="stat-icon-wrapper stat-icon-green">
-                <text class="stat-icon">✓</text>
-              </view>
+        <view class="stat-card stat-green">
+          <view class="stat-header">
+            <text class="label">作业完成率</text>
+            <view class="icon-box icon-green">
+              <uni-icons type="checkbox" size="20" color="#059669"/>
             </view>
-            <text class="stat-value stat-value-green">{{ stats.completedHours }}</text>
-            <text class="stat-desc">累计学习课时</text>
           </view>
-
-          <!-- 未修课时卡片 -->
-          <view class="stat-card stat-card-red">
-            <view class="stat-header">
-              <text class="stat-label">未修课时</text>
-              <view class="stat-icon-wrapper stat-icon-red">
-                <text class="stat-icon">⏰</text>
-              </view>
-            </view>
-            <text class="stat-value stat-value-red">{{ stats.pendingHours }}</text>
-            <text class="stat-desc">待完成课时</text>
-          </view>
-
-          <!-- 已完成作业卡片 -->
-          <view class="stat-card stat-card-green">
-            <view class="stat-header">
-              <text class="stat-label">已完成作业</text>
-              <view class="stat-icon-wrapper stat-icon-green">
-                <text class="stat-icon">✓</text>
-              </view>
-            </view>
-            <text class="stat-value stat-value-green">{{ stats.completedHomework }}</text>
-            <text class="stat-desc">完成率 {{ stats.completionRate }}%</text>
-          </view>
-
-          <!-- 未完成作业卡片 -->
-          <view class="stat-card stat-card-orange">
-            <view class="stat-header">
-              <text class="stat-label">未完成作业</text>
-              <view class="stat-icon-wrapper stat-icon-orange">
-                <text class="stat-icon">⚠️</text>
-              </view>
-            </view>
-            <text class="stat-value stat-value-orange">{{ stats.pendingHomework }}</text>
-            <text class="stat-desc">需尽快完成</text>
-          </view>
+          <text class="value">{{ homeworkRate }}%</text>
+          <text class="desc">已完成 {{ stats.completedHomework }} · 未完成 {{ stats.pendingHomework }}</text>
         </view>
       </view>
 
-      <!-- 公告栏 -->
+      <view class="section-title section-notice">
+        <uni-icons type="sound" size="24" color="#1f2937"/>
+        <text class="title">公告通知</text>
+      </view>
       <view class="notice-card">
-        <view class="notice-header">
-          <view class="notice-icon-wrapper">
-            <text class="notice-icon">📢</text>
+        <view class="notice-item" v-for="notice in notices" :key="notice.id" @click="viewNotice(notice)">
+          <view class="notice-left">
+            <view class="notice-icon" :class="notice.type">
+              <uni-icons :type="notice.icon" size="20" :color="notice.color"/>
+            </view>
+            <view class="notice-content">
+              <text class="notice-title">{{ notice.title }}</text>
+              <text class="notice-time">{{ notice.time }}</text>
+            </view>
           </view>
-          <view class="notice-content">
-            <text class="notice-title">最新通知</text>
-            <text class="notice-text">本周五下午将进行期中家长会,请家长们准时参加。</text>
-          </view>
+          <uni-icons type="forward" size="16" color="#d1d5db"/>
+        </view>
+        <view class="notice-empty" v-if="notices.length === 0">
+          <uni-icons type="info" size="48" color="#d1d5db"/>
+          <text class="empty-text">暂无公告通知</text>
         </view>
       </view>
     </view>
 
-    <!-- 底部导航栏 -->
-    <!-- 使用ParentTabBar组件 -->
-    <ParentTabBar activeTab="home" />
+    <ParentTabBar activeTab="home"/>
   </view>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import PageHeader from '@/components/PageHeader.vue'
+import {computed, ref} from 'vue'
 import ParentTabBar from '@/components/ParentTabBar.vue'
 
-// 学生信息
-const studentInfo = ref({
-  name: '喜洋洋',
-  teacher: '张三'
-})
-
-// 学习数据统计
 const stats = ref({
   completedHours: 13,
-  pendingHours: 27,
-  completedHomework: 65,
-  pendingHomework: 3,
-  completionRate: 95.6
+  pendingHours: 5,
+  totalHours: 18,
+  completedHomework: 28,
+  pendingHomework: 2,
+  voicePractice: 6,
+  readingCount: 12,
+  latestScore: 92,
+  teacherComments: 5
 })
 
-/**
- * 导航到指定页面
- * @param {string} page - 页面标识
- */
+const homeworkRate = computed(() => {
+  const total = stats.value.completedHomework + stats.value.pendingHomework
+  if (total === 0) return 0
+  return Math.round((stats.value.completedHomework / total) * 100)
+})
 
+const notices = ref([
+  {
+    id: 1,
+    type: 'important',
+    icon: 'info',
+    color: '#ef4444',
+    title: '周五家长会提醒',
+    time: '2小时前'
+  },
+  {
+    id: 2,
+    type: 'normal',
+    icon: 'chatbubble',
+    color: '#3b82f6',
+    title: '课程调整通知',
+    time: '昨天'
+  }
+])
+
+const viewNotice = (notice) => {
+  uni.showModal({
+    title: notice.title,
+    content: '这里显示公告详细内容...',
+    showCancel: false,
+    confirmText: '确认'
+  })
+}
 </script>
 
 <style scoped>
-/* 页面容器 */
 .page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  padding-bottom: 128rpx; /* 底部导航栏高度 */
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  padding-bottom: 128rpx;
 }
 
-/* 顶部学生信息区 */
-.header-section {
-  background: linear-gradient(to right, #0ea5e9, #3b82f6);
-  border-bottom-left-radius: 48rpx;
-  border-bottom-right-radius: 48rpx;
-  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.15);
-  padding: 64rpx 48rpx;
-  margin-bottom: 48rpx;
+.header {
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  padding: 48rpx;
+  margin-bottom: 32rpx;
+  border-radius: 0 0 32rpx 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(29, 78, 216, 0.3);
 }
 
-.student-info {
+.header-content {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-}
-
-.student-left {
-  display: flex;
   align-items: center;
   gap: 32rpx;
 }
 
-/* 头像区域 */
-.avatar-wrapper {
-  position: relative;
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
 }
 
-.avatar-circle {
-  width: 128rpx;
-  height: 128rpx;
-  border-radius: 50%;
-  background-color: #ffffff;
-  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+.logo-icon {
+  width: 96rpx;
+  height: 96rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 24rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  backdrop-filter: blur(10rpx);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
 }
 
-.avatar-icon {
-  font-size: 80rpx;
-}
-
-/* 在线状态指示器 */
-.online-badge {
-  position: absolute;
-  bottom: -4rpx;
-  right: -4rpx;
-  width: 40rpx;
-  height: 40rpx;
-  background-color: #10b981;
-  border-radius: 50%;
-  border: 4rpx solid #ffffff;
-}
-
-/* 学生详情 */
-.student-details {
-  color: #ffffff;
-}
-
-.student-name {
-  display: block;
-  font-size: 48rpx;
-  font-weight: bold;
-  margin-bottom: 8rpx;
-}
-
-.teacher-info {
+.app-info {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 8rpx;
-  color: #bae6fd;
-  font-size: 28rpx;
 }
 
-.teacher-icon {
-  font-size: 32rpx;
+.app-name {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #fff;
 }
 
-.teacher-text {
-  color: #bae6fd;
+
+.content {
+  padding: 0 48rpx 48rpx;
 }
 
-.teacher-name {
-  font-weight: 600;
-  color: #ffffff;
-}
-
-/* 编辑按钮 */
-.edit-btn {
-  padding: 16rpx;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 16rpx;
-  transition: background-color 0.2s;
-}
-
-.edit-btn:active {
-  background-color: rgba(255, 255, 255, 0.3);
-}
-
-.edit-icon {
-  font-size: 48rpx;
-}
-
-/* 主内容区 */
-.main-content {
-  padding: 0 48rpx;
-}
-
-/* 学习数据总览部分 */
-.stats-section {
-  margin-bottom: 48rpx;
-}
-
-.section-header {
+.section-title {
   display: flex;
   align-items: center;
   gap: 16rpx;
   margin-bottom: 32rpx;
 }
 
-.section-icon {
-  font-size: 40rpx;
-}
-
-.section-title {
+.section-title .title {
   font-size: 36rpx;
   font-weight: bold;
   color: #1f2937;
 }
 
-/* 数据卡片网格 */
-.stats-grid {
+.section-notice {
+  margin-top: 32rpx;
+}
+
+.stats-row {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 32rpx;
+  grid-template-columns: repeat(auto-fit, minmax(280rpx, 1fr));
+  gap: 24rpx;
+  margin-bottom: 24rpx;
 }
 
 .stat-card {
-  background-color: #ffffff;
+  background: #fff;
   border-radius: 32rpx;
+  padding: 32rpx;
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
-  padding: 40rpx;
-  transition: box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
 }
 
-.stat-card:active {
-  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+
+.stat-blue {
+  border-left: 8rpx solid #2563eb;
 }
 
-/* 不同颜色边框的卡片 */
-.stat-card-green {
-  border-left: 8rpx solid #10b981;
-}
-
-.stat-card-red {
-  border-left: 8rpx solid #ef4444;
-}
-
-.stat-card-orange {
-  border-left: 8rpx solid #f97316;
+.stat-green {
+  border-left: 8rpx solid #059669;
 }
 
 .stat-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin-bottom: 16rpx;
+  align-items: center;
 }
 
-.stat-label {
+.label {
   font-size: 28rpx;
-  font-weight: 500;
   color: #4b5563;
+  font-weight: 500;
 }
 
-/* 统计图标容器 */
-.stat-icon-wrapper {
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 16rpx;
+.icon-box {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 18rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.stat-icon-green {
-  background-color: #d1fae5;
+.icon-blue {
+  background: #dbeafe;
 }
 
-.stat-icon-red {
-  background-color: #fee2e2;
+.icon-green {
+  background: #dcfce7;
 }
 
-.stat-icon-orange {
-  background-color: #ffedd5;
-}
-
-.stat-icon {
-  font-size: 40rpx;
-}
-
-/* 统计数值 */
-.stat-value {
-  display: block;
-  font-size: 60rpx;
+.value {
+  font-size: 56rpx;
   font-weight: bold;
-  margin-bottom: 8rpx;
+  color: #111827;
 }
 
-.stat-value-green {
-  color: #10b981;
+.desc {
+  font-size: 26rpx;
+  color: #6b7280;
 }
 
-.stat-value-red {
-  color: #ef4444;
-}
-
-.stat-value-orange {
-  color: #f97316;
-}
-
-.stat-desc {
-  display: block;
-  font-size: 24rpx;
+.empty-text {
+  font-size: 28rpx;
   color: #9ca3af;
 }
 
-/* 公告卡片 */
 .notice-card {
-  background: linear-gradient(to right, #fffbeb, #fef3c7);
+  background: #fff;
   border-radius: 32rpx;
-  padding: 32rpx;
-  border-left: 8rpx solid #fbbf24;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  padding: 24rpx;
 }
 
-.notice-header {
+.notice-item {
   display: flex;
-  gap: 24rpx;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx;
+  border-radius: 24rpx;
+  transition: background 0.2s;
 }
 
-.notice-icon-wrapper {
-  flex-shrink: 0;
+.notice-item:active {
+  background: #f3f4f6;
+}
+
+.notice-left {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.notice-icon {
   width: 64rpx;
   height: 64rpx;
-  background-color: #fbbf24;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.notice-icon {
-  font-size: 40rpx;
-}
-
-.notice-content {
-  flex: 1;
-}
-
 .notice-title {
-  display: block;
-  font-size: 32rpx;
+  font-size: 30rpx;
   font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 8rpx;
+  color: #111827;
 }
 
-.notice-text {
-  display: block;
-  font-size: 28rpx;
-  color: #4b5563;
-  line-height: 1.5;
+.notice-time {
+  font-size: 24rpx;
+  color: #6b7280;
 }
 
+.notice-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  padding: 48rpx 0;
+}
 </style>
