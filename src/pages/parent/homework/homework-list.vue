@@ -45,28 +45,18 @@
         :class="['homework-item', item.status === 'pending' ? 'homework-item-pending' : '']"
         @tap="gotoDetail(item)"
       >
-        <view class="homework-header">
-          <view class="homework-left">
-            <!-- 科目图标 -->
-            <view :class="['homework-icon', `homework-icon-${item.color}`]">
-              <text class="icon-text">{{ item.iconText }}</text>
-            </view>
-            <view class="homework-info">
-              <text class="homework-subject">{{ item.subject }}</text>
-              <text class="homework-date">发布：{{ item.publishDate }}</text>
-              <text v-if="item.completeDate" class="homework-date">完成：{{ item.completeDate }}</text>
-            </view>
-          </view>
-          <view :class="['status-badge', `status-${item.status}`]">
-            <view class="status-dot"></view>
+        <!-- 第一行：科目 | 作业标题 | 状态 -->
+        <view class="homework-main">
+          <text class="subject">{{ item.subject }}</text>
+          <text class="title">{{ item.title }}</text>
+          <view :class="['status-badge', item.status === 'completed' ? 'status-completed' : 'status-pending']">
             <text class="status-text">{{ item.status === 'completed' ? '已完成' : '未完成' }}</text>
           </view>
         </view>
-        <view class="homework-footer">
-          <text :class="['footer-text', item.status === 'pending' ? 'footer-text-warning' : 'footer-text-normal']">
-            {{ item.status === 'pending' ? '请尽快完成' : '点击查看详情' }}
-          </text>
-          <text class="arrow-icon">›</text>
+        <!-- 第二行：发布时间 | 截止时间 -->
+        <view class="homework-time">
+          <text class="time-text">发布: {{ item.publishDate }}</text>
+          <text class="time-text">截止: {{ item.deadline }}</text>
         </view>
       </view>
 
@@ -104,7 +94,9 @@ const currentCompleteDate = ref('')
 const homeworkList = ref([
   {
     subject: '数学',
+    title: '完成课本第3章习题',
     publishDate: '2025-10-15',
+    deadline: '2025-10-20',
     completeDate: '2025-10-16',
     status: 'completed',
     iconText: '数',
@@ -112,7 +104,9 @@ const homeworkList = ref([
   },
   {
     subject: '英语',
+    title: '背诵Unit 5单词并完成练习册',
     publishDate: '2025-10-15',
+    deadline: '2025-10-22',
     completeDate: null,
     status: 'pending',
     iconText: '英',
@@ -120,7 +114,9 @@ const homeworkList = ref([
   },
   {
     subject: '语文',
+    title: '阅读《朝花夕拾》并写读后感',
     publishDate: '2025-10-14',
+    deadline: '2025-10-21',
     completeDate: '2025-10-15',
     status: 'completed',
     iconText: '语',
@@ -128,7 +124,9 @@ const homeworkList = ref([
   },
   {
     subject: '物理',
+    title: '实验报告：光的折射',
     publishDate: '2025-10-13',
+    deadline: '2025-10-18',
     completeDate: '2025-10-14',
     status: 'completed',
     iconText: '物',
@@ -136,7 +134,9 @@ const homeworkList = ref([
   },
   {
     subject: '化学',
+    title: '整理元素周期表前20个元素',
     publishDate: '2025-10-12',
+    deadline: '2025-10-19',
     completeDate: null,
     status: 'pending',
     iconText: '化',
@@ -293,10 +293,13 @@ const gotoDetail = (item) => {
 
 /* 作业卡片 */
 .homework-item {
-  background-color: #ffffff;
-  border-radius: 24rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
-  overflow: hidden;
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.04);
+  padding: 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
   transition: all 0.3s;
 }
 
@@ -310,155 +313,82 @@ const gotoDetail = (item) => {
   border-left: 6rpx solid #ef4444;
 }
 
-/* 作业头部 */
-.homework-header {
+/* 作业主要信息行 */
+.homework-main {
   display: flex;
-  align-items: flex-start;
   justify-content: space-between;
-  padding: 32rpx;
-  padding-bottom: 20rpx;
-}
-
-.homework-left {
-  display: flex;
-  align-items: flex-start;
-  gap: 24rpx;
-  flex: 1;
-}
-
-/* 科目图标（文字图标） */
-.homework-icon {
-  width: 88rpx;
-  height: 88rpx;
-  border-radius: 20rpx;
-  display: flex;
   align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  gap: 16rpx;
 }
 
-.icon-text {
-  font-size: 40rpx;
-  font-weight: bold;
-  color: #ffffff;
-}
-
-/* 不同科目的图标颜色 */
-.homework-icon-blue {
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-}
-
-.homework-icon-red {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-}
-
-.homework-icon-green {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-}
-
-.homework-icon-purple {
-  background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
-}
-
-.homework-icon-orange {
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-}
-
-/* 作业信息 */
-.homework-info {
-  display: flex;
-  flex-direction: column;
-  gap: 8rpx;
-  flex: 1;
-}
-
-.homework-subject {
-  font-size: 36rpx;
+/* 科目（左对齐）*/
+.subject {
+  font-size: 28rpx;
   font-weight: bold;
   color: #1f2937;
-  line-height: 1.2;
-}
-
-.homework-date {
-  font-size: 26rpx;
-  color: #6b7280;
-  line-height: 1.4;
-}
-
-/* 状态标签 */
-.status-badge {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-  padding: 10rpx 20rpx;
-  border-radius: 999rpx;
   flex-shrink: 0;
+  min-width: 80rpx;
 }
 
-/* 状态点 */
-.status-dot {
-  width: 12rpx;
-  height: 12rpx;
-  border-radius: 50%;
+/* 作业标题（居中，占据剩余空间）*/
+.title {
+  flex: 1;
+  font-size: 30rpx;
+  color: #374151;
+  text-align: center;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 时间信息行 */
+.homework-time {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 8rpx;
+}
+
+/* 时间文字（小字）*/
+.time-text {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+/* 状态标签（右对齐）*/
+.status-badge {
+  display: inline-block;
+  padding: 8rpx 20rpx;
+  border-radius: 24rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .status-text {
-  font-size: 26rpx;
-  font-weight: 600;
-  white-space: nowrap;
+  font-size: 24rpx;
+  font-weight: 500;
 }
 
 /* 已完成状态 */
 .status-completed {
-  background-color: #d1fae5;
-}
-
-.status-completed .status-dot {
-  background-color: #10b981;
+  background: #dcfce7;
+  color: #15803d;
 }
 
 .status-completed .status-text {
-  color: #10b981;
+  color: #15803d;
 }
 
 /* 未完成状态 */
 .status-pending {
-  background-color: #fee2e2;
-}
-
-.status-pending .status-dot {
-  background-color: #ef4444;
+  background: #fee2e2;
+  color: #dc2626;
 }
 
 .status-pending .status-text {
-  color: #ef4444;
-}
-
-/* 作业底部 */
-.homework-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 32rpx 32rpx;
-  font-size: 28rpx;
-}
-
-.footer-text {
-  font-size: 26rpx;
-}
-
-.footer-text-warning {
-  color: #ef4444;
-  font-weight: 500;
-}
-
-.footer-text-normal {
-  color: #9ca3af;
-}
-
-.arrow-icon {
-  font-size: 40rpx;
-  color: #d1d5db;
+  color: #dc2626;
 }
 
 /* 加载更多 */
