@@ -173,20 +173,17 @@ const homeworkList = ref([
 const onSubjectChange = (e) => {
   const index = e.detail.value
   currentSubject.value = subjectOptions[index]
-  console.log('选择科目:', currentSubject.value)
 }
 
 // 状态筛选器变化事件
 const onStatusChange = (e) => {
   const index = e.detail.value
   currentStatus.value = statusOptions[index]
-  console.log('选择状态:', currentStatus.value)
 }
 
 // 日期筛选器变化事件
 const onDateChange = (e) => {
   currentDate.value = e.detail.value
-  console.log('选择日期:', currentDate.value)
 }
 
 // 根据筛选条件过滤作业列表
@@ -214,17 +211,15 @@ const filteredHomeworkList = computed(() => {
 
 // 发布作业按钮点击事件
 const onPublishHomework = () => {
-  console.log('点击发布作业按钮')
   // 跳转到发布作业页面
   uni.navigateTo({
-    url: '/pages/teacher/publish-detail'
+    url: `/pages/teacher/homework/homework-publish?name=${encodeURIComponent(studentInfo.value.name || '')}`
   })
 }
 
 // 页面加载时获取学生ID（从URL参数）
 onLoad((options) => {
   if (options.id) {
-    console.log('学生ID:', options.id)
     // TODO: 根据ID从后端获取学生信息和作业列表
   }
 })
