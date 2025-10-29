@@ -36,6 +36,13 @@
 			}
 		},
 		{
+			"path": "pages/parent/homework/homework-publish",
+			"style": {
+				"navigationBarTitleText": "发布作业",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/parent/checkin/checkin",
 			"style": {
 				"navigationBarTitleText": "签到信息",

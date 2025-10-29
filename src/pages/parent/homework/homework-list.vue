@@ -39,6 +39,9 @@
 
     <!-- 作业列表 -->
     <view class="list-container">
+      <view class="publish-button-container">
+        <button class="publish-button" @tap="onPublishHomework">发布作业</button>
+      </view>
       <view
         v-for="(item, index) in filteredHomeworkList"
         :key="index"
@@ -204,6 +207,15 @@ const onCompleteDateChange = (e) => {
 }
 
 /**
+ * 跳转到发布作业页面
+ */
+const onPublishHomework = () => {
+  uni.navigateTo({
+    url: '/pages/parent/homework/homework-publish'
+  })
+}
+
+/**
  * 跳转到作业详情页
  */
 const gotoDetail = (item) => {
@@ -289,6 +301,22 @@ const gotoDetail = (item) => {
   display: flex;
   flex-direction: column;
   gap: 24rpx;
+}
+
+.publish-button-container {
+  margin-bottom: 12rpx;
+}
+
+.publish-button {
+  width: 100%;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  border: none;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  box-shadow: 0 4rpx 12rpx rgba(16, 185, 129, 0.25);
 }
 
 /* 作业卡片 */
