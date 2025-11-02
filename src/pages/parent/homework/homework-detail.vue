@@ -32,6 +32,18 @@
         <view class="section-content">
           <view class="requirement-box">
             <text class="requirement-text">完成课本第45-52页的练习题,包括:\n1. 基础计算题(第45-48页)\n2. 应用题(第49-51页)\n3. 拓展思考题(第52页)\n\n要求:字迹工整,过程完整,认真检查</text>
+            <view v-if="requirementImages.length" class="requirement-media">
+              <view class="image-grid requirement-grid">
+                <view
+                  class="image-item requirement-image-item"
+                  v-for="(img, index) in requirementImages"
+                  :key="`requirement-${index}`"
+                  @click="previewRequirementImage(index)"
+                >
+                  <image :src="img" class="homework-image" mode="aspectFill" />
+                </view>
+              </view>
+            </view>
           </view>
         </view>
       </view>
@@ -49,7 +61,7 @@
               class="image-item"
               v-for="(img, index) in displayImages"
               :key="index"
-              @click="previewImage(index)"
+              @click="previewHomeworkImage(index)"
             >
               <image :src="img" class="homework-image" mode="aspectFill" />
               <!-- 第7张图片显示剩余数量角标 -->
@@ -60,7 +72,7 @@
           </view>
 
           <!-- 查看全部按钮（仅当图片超过7张时显示） -->
-          <view v-if="hasMoreImages" class="view-all-btn" @click="previewImage(0)">
+          <view v-if="hasMoreImages" class="view-all-btn" @click="previewHomeworkImage(0)">
             <text class="btn-icon">🖼️</text>
             <text class="btn-text">查看全部{{ homeworkImages.length }}张图片</text>
           </view>
@@ -133,6 +145,13 @@ const homeworkImages = ref([
   '/static/test/5.jpg'
 ])
 
+// 作业要求示例图片（演示数据）
+const requirementImages = ref([
+  '/static/test/1.jpg',
+  '/static/test/4.jpg',
+  '/static/test/6.jpg'
+])
+
 /**
  * 显示的图片列表（最多7张）
  */
@@ -156,14 +175,19 @@ const remainingCount = computed(() => {
 
 /**
  * 预览图片
+ * @param {string[]} images - 图片地址数组
  * @param {number} current - 当前图片索引
  */
-const previewImage = async (current) => {
+const previewImages = async (images, current) => {
   try {
+    if (!images.length) {
+      return
+    }
+
     // 微信小程序的 uni.previewImage 对本地图片支持有限
     // 需要先通过 getImageInfo 获取图片的临时路径
-    const imagePromises = homeworkImages.value.map(src => {
-      return new Promise((resolve, reject) => {
+    const imagePromises = images.map(src => {
+      return new Promise((resolve) => {
         uni.getImageInfo({
           src: src,
           success: (res) => {
@@ -185,7 +209,7 @@ const previewImage = async (current) => {
 
     // 使用转换后的路径预览图片
     uni.previewImage({
-      current: imagePaths[current], // 当前图片的临时路径
+      current: imagePaths[current] || imagePaths[0], // 当前图片的临时路径
       urls: imagePaths, // 所有图片的临时路径
       success: () => {
         console.log('预览图片成功')
@@ -207,6 +231,22 @@ const previewImage = async (current) => {
       duration: 2000
     })
   }
+}
+
+/**
+ * 预览学生作答图片
+ * @param {number} index
+ */
+const previewHomeworkImage = (index) => {
+  previewImages(homeworkImages.value, index)
+}
+
+/**
+ * 预览作业要求图片
+ * @param {number} index
+ */
+const previewRequirementImage = (index) => {
+  previewImages(requirementImages.value, index)
 }
 </script>
 
@@ -352,6 +392,21 @@ const previewImage = async (current) => {
   color: #374151;
   line-height: 1.6;
   white-space: pre-line;
+}
+
+.requirement-media {
+  margin-top: 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.requirement-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.requirement-image-item {
+  border-color: #0ea5e9;
 }
 
 /* 图片网格 */

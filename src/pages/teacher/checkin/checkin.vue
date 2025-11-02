@@ -5,47 +5,59 @@
 
     <!-- 筛选区域：教师、学校、年级、班级、日期、签到状态 -->
     <view class="filter-section">
-      <!-- 第一行：教师、学校、年级、班级 -->
+      <!-- 第一行：教师、学校、年级 -->
       <view class="filter-row">
-        <picker class="filter-picker" :range="teacherOptions" @change="onTeacherChange">
-          <view class="picker-box">
-            <text class="label">{{currentTeacher}}</text>
-            <text class="arrow">▼</text>
-          </view>
-        </picker>
-        <picker class="filter-picker" :range="schoolOptions" @change="onSchoolChange">
-          <view class="picker-box">
-            <text class="label">{{currentSchool}}</text>
-            <text class="arrow">▼</text>
-          </view>
-        </picker>
-        <picker class="filter-picker" :range="gradeOptions" @change="onGradeChange">
-          <view class="picker-box">
-            <text class="label">{{currentGrade}}</text>
-            <text class="arrow">▼</text>
-          </view>
-        </picker>
-        <picker class="filter-picker" :range="classOptions" @change="onClassChange">
-          <view class="picker-box">
-            <text class="label">{{currentClass}}</text>
-            <text class="arrow">▼</text>
-          </view>
-        </picker>
+        <view class="filter-item">
+          <picker class="filter-picker" :range="teacherOptions" @change="onTeacherChange">
+            <view class="picker-box">
+              <text class="label">{{currentTeacher === '全部' ? '请选择教师' : currentTeacher}}</text>
+              <text class="arrow">▼</text>
+            </view>
+          </picker>
+        </view>
+        <view class="filter-item">
+          <picker class="filter-picker" :range="schoolOptions" @change="onSchoolChange">
+            <view class="picker-box">
+              <text class="label">{{currentSchool === '全部' ? '请选择学校' : currentSchool}}</text>
+              <text class="arrow">▼</text>
+            </view>
+          </picker>
+        </view>
+        <view class="filter-item">
+          <picker class="filter-picker" :range="gradeOptions" @change="onGradeChange">
+            <view class="picker-box">
+              <text class="label">{{currentGrade === '全部' ? '请选择年级' : currentGrade}}</text>
+              <text class="arrow">▼</text>
+            </view>
+          </picker>
+        </view>
       </view>
-      <!-- 第二行：日期、签到状态 -->
+      <!-- 第二行：日期、签到状态、班级 -->
       <view class="filter-row">
-        <picker class="filter-picker" mode="date" :value="currentDate" @change="onDateChange">
-          <view class="picker-box">
-            <text class="label">{{currentDate}}</text>
-            <text class="arrow">▼</text>
-          </view>
-        </picker>
-        <picker class="filter-picker" :range="statusOptions" @change="onStatusChange">
-          <view class="picker-box">
-            <text class="label">{{currentStatus}}</text>
-            <text class="arrow">▼</text>
-          </view>
-        </picker>
+        <view class="filter-item">
+          <picker class="filter-picker" mode="date" :value="currentDate" @change="onDateChange">
+            <view class="picker-box">
+              <text class="label">{{currentDate}}</text>
+              <text class="arrow">▼</text>
+            </view>
+          </picker>
+        </view>
+        <view class="filter-item">
+          <picker class="filter-picker" :range="statusOptions" @change="onStatusChange">
+            <view class="picker-box">
+              <text class="label">{{currentStatus}}</text>
+              <text class="arrow">▼</text>
+            </view>
+          </picker>
+        </view>
+        <view class="filter-item">
+          <picker class="filter-picker" :range="classOptions" @change="onClassChange">
+            <view class="picker-box">
+              <text class="label">{{currentClass === '全部' ? '请选择班级' : currentClass}}</text>
+              <text class="arrow">▼</text>
+            </view>
+          </picker>
+        </view>
       </view>
     </view>
 
@@ -112,7 +124,7 @@ const currentDay = String(now.getDate()).padStart(2, '0')
 const todayDate = `${currentYear}-${currentMonth}-${currentDay}`
 
 // 当前选择的筛选项
-const currentTeacher = ref('张三')  // 默认为当前登录教师
+const currentTeacher = ref('全部')
 const currentSchool = ref('全部')
 const currentGrade = ref('全部')
 const currentClass = ref('全部')
@@ -288,7 +300,7 @@ const handleBatchCheckin = () => {
 
   // 跳转到签到确认页面
   uni.navigateTo({
-    url: '/pages/teacher/checkin-confirm'
+    url: '/pages/teacher/checkin/checkin-confirm'
   })
 }
 </script>
@@ -321,6 +333,11 @@ const handleBatchCheckin = () => {
 .filter-row {
   display: flex;
   gap: 16rpx;
+}
+
+.filter-item {
+  flex: 1;
+  min-width: 0;
 }
 
 .filter-picker {
