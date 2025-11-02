@@ -76,7 +76,7 @@ const goToPage = (page) => {
   const routes = {
     home: '/pages/teacher/home/home',
     checkin: '/pages/teacher/checkin/checkin',
-    homework: '/pages/teacher/homework/homework-list',
+    homework: '/pages/teacher/homework/homework',
     publish: '/pages/teacher/personal/profile'
   }
 

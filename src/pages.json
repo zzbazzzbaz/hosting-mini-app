@@ -92,14 +92,21 @@
 			}
 		},
 		{
-			"path": "pages/teacher/homework/homework-list",
+			"path": "pages/teacher/homework/homework",
 			"style": {
-				"navigationBarTitleText": "作业信息",
+				"navigationBarTitleText": "作业详情列表",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/teacher/homework/homework",
+			"path": "pages/teacher/homework/for-student/homework-list",
+			"style": {
+				"navigationBarTitleText": "学生作业",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/teacher/homework/for-student/homework-detail",
 			"style": {
 				"navigationBarTitleText": "作业详情",
 				"navigationStyle": "custom"
@@ -120,7 +127,7 @@
 			}
 		},
 		{
-			"path": "pages/teacher/homework/homework-publish",
+			"path": "pages/teacher/homework/for-student/homework-publish",
 			"style": {
 				"navigationBarTitleText": "发布作业",
 				"navigationStyle": "custom"
