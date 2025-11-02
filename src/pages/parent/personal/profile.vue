@@ -80,7 +80,9 @@ const handleChildInfo = () => {
   uni.navigateTo({ url: '/pages/parent/homework/homework-list' })
 }
 
-const handleProfile = () => uni.showToast({ title: '个人资料功能开发中', icon: 'none' })
+const handleProfile = () => {
+  uni.navigateTo({ url: '/pages/parent/personal/personal-info' })
+}
 const handleLogout = () => {
   uni.showModal({
     title: '退出登录',

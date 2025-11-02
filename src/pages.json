@@ -57,6 +57,13 @@
 			}
 		},
 		{
+			"path": "pages/parent/personal/personal-info",
+			"style": {
+				"navigationBarTitleText": "个人信息",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/teacher/home/home",
 			"style": {
 				"navigationBarTitleText": "教师工作台",
