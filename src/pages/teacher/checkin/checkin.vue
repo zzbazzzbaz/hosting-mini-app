@@ -3,7 +3,7 @@
     <!-- 使用PageHeader组件 -->
     <PageHeader title="签到信息"  />
 
-    <!-- 筛选区域：教师、学校、年级、班级、日期、签到状态 -->
+    <!-- 筛选区域：教师、学校、年级、日期、签到状态、班级 -->
     <view class="filter-section">
       <!-- 第一行：教师、学校、年级 -->
       <view class="filter-row">
@@ -43,7 +43,12 @@
           </picker>
         </view>
         <view class="filter-item">
-          <picker class="filter-picker" :range="statusOptions" @change="onStatusChange">
+          <picker
+            class="filter-picker"
+            :range="statusOptions"
+            :value="statusOptions.indexOf(currentStatus)"
+            @change="onStatusChange"
+          >
             <view class="picker-box">
               <text class="label">{{currentStatus}}</text>
               <text class="arrow">▼</text>
@@ -128,8 +133,8 @@ const currentTeacher = ref('全部')
 const currentSchool = ref('全部')
 const currentGrade = ref('全部')
 const currentClass = ref('全部')
-const currentDate = ref(todayDate)  // 默认为今天
-const currentStatus = ref('未签到')  // 默认显示未签到的学生，便于签到操作
+const currentDate = ref(todayDate)  // 默认当天
+const currentStatus = ref('未签到')  // 默认筛未签到
 const searchName = ref('')  // 名称搜索关键词
 
 // 筛选选项数据
@@ -331,17 +336,17 @@ const handleBatchCheckin = () => {
 
 /* 筛选行 */
 .filter-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16rpx;
 }
 
 .filter-item {
-  flex: 1;
   min-width: 0;
 }
 
 .filter-picker {
-  flex: 1;
+  width: 100%;
   min-width: 0;
 }
 

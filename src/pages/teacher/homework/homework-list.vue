@@ -5,34 +5,37 @@
 
     <!-- 筛选区域：教师、学校、年级、班级四个筛选项 -->
     <view class="filter-section">
-      <!-- 第一行：四个筛选项 -->
+      <!-- 第一行：教师、学校 -->
       <view class="filter-row">
         <picker class="filter-picker" :range="teacherOptions" @change="onTeacherChange">
           <view class="picker-box">
-            <text class="label">{{ currentTeacher }}</text>
+            <text class="label">{{ currentTeacher === '全部' ? '请选择教师' : currentTeacher }}</text>
             <text class="arrow">▼</text>
           </view>
         </picker>
         <picker class="filter-picker" :range="schoolOptions" @change="onSchoolChange">
           <view class="picker-box">
-            <text class="label">{{ currentSchool }}</text>
+            <text class="label">{{ currentSchool === '全部' ? '请选择学校' : currentSchool }}</text>
             <text class="arrow">▼</text>
           </view>
         </picker>
+      </view>
+      <!-- 第二行：年级、班级 -->
+      <view class="filter-row">
         <picker class="filter-picker" :range="gradeOptions" @change="onGradeChange">
           <view class="picker-box">
-            <text class="label">{{ currentGrade }}</text>
+            <text class="label">{{ currentGrade === '全部' ? '请选择年级' : currentGrade }}</text>
             <text class="arrow">▼</text>
           </view>
         </picker>
         <picker class="filter-picker" :range="classOptions" @change="onClassChange">
           <view class="picker-box">
-            <text class="label">{{ currentClass }}</text>
+            <text class="label">{{ currentClass === '全部' ? '请选择班级' : currentClass }}</text>
             <text class="arrow">▼</text>
           </view>
         </picker>
       </view>
-      <!-- 第二行：姓名搜索框 -->
+      <!-- 第三行：姓名搜索框 -->
       <view class="search-row">
         <input
             class="search-input"
@@ -72,10 +75,10 @@ import PageHeader from '@/components/PageHeader.vue'
 import TeacherTabBar from '@/components/TeacherTabBar.vue'
 
 // 当前选择的筛选项
-const currentTeacher = ref('张三')
-const currentSchool = ref('实验小学')
-const currentGrade = ref('一年级')
-const currentClass = ref('1班')
+const currentTeacher = ref('全部')
+const currentSchool = ref('全部')
+const currentGrade = ref('全部')
+const currentClass = ref('全部')
 const searchName = ref('')  // 名称搜索关键词
 
 // 筛选选项数据
@@ -199,13 +202,14 @@ const goDetail = (item) => uni.navigateTo({url: `/pages/teacher/homework/homewor
 
 /* 筛选行 */
 .filter-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16rpx;
 }
 
 .filter-picker {
-  flex: 1;
   min-width: 0;
+  width: 100%;
 }
 
 .picker-box {
@@ -253,7 +257,7 @@ const goDetail = (item) => uni.navigateTo({url: `/pages/teacher/homework/homewor
 
 /* 作业列表，添加顶部间距避免被固定的筛选区域遮挡 */
 .list {
-  padding: 240rpx 48rpx 32rpx;
+  padding: 360rpx 48rpx 32rpx;
   display: flex;
   flex-direction: column;
   gap: 4rpx
