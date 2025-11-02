@@ -58,39 +58,6 @@
         </view>
       </view>
 
-      <view class="menu-group">
-        <view class="menu-item" @tap="handleTuition">
-          <view class="menu-left">
-            <view class="menu-icon-box icon-indigo">
-              <uni-icons type="wallet" size="22" color="#6366f1"></uni-icons>
-            </view>
-            <text class="menu-title">课时与缴费</text>
-          </view>
-          <uni-icons type="forward" size="18" color="#d1d5db"></uni-icons>
-        </view>
-      </view>
-
-      <view class="menu-group">
-        <view class="menu-item" @tap="handleSettings">
-          <view class="menu-left">
-            <view class="menu-icon-box icon-gray">
-              <uni-icons type="gear" size="22" color="#6b7280"></uni-icons>
-            </view>
-            <text class="menu-title">系统设置</text>
-          </view>
-          <uni-icons type="forward" size="18" color="#d1d5db"></uni-icons>
-        </view>
-
-        <view class="menu-item" @tap="handleAbout">
-          <view class="menu-left">
-            <view class="menu-icon-box icon-cyan">
-              <uni-icons type="info" size="22" color="#06b6d4"></uni-icons>
-            </view>
-            <text class="menu-title">关于我们</text>
-          </view>
-          <uni-icons type="forward" size="18" color="#d1d5db"></uni-icons>
-        </view>
-      </view>
     </view>
 
     <view class="logout-section">
@@ -114,16 +81,6 @@ const handleChildInfo = () => {
 }
 
 const handleProfile = () => uni.showToast({ title: '个人资料功能开发中', icon: 'none' })
-const handleTuition = () => uni.showToast({ title: '课时功能开发中', icon: 'none' })
-const handleSettings = () => uni.showToast({ title: '系统设置功能开发中', icon: 'none' })
-const handleAbout = () =>
-  uni.showModal({
-    title: '关于我们',
-    content: '托管小程序 v1.0.0\n家长端移动应用\n版权所有 © 2025',
-    showCancel: false,
-    confirmText: '确定'
-  })
-
 const handleLogout = () => {
   uni.showModal({
     title: '退出登录',
@@ -294,22 +251,6 @@ const handleLogout = () => {
 
 .icon-green {
   background: #d1fae5;
-}
-
-.icon-orange {
-  background: #ffedd5;
-}
-
-.icon-indigo {
-  background: #e0e7ff;
-}
-
-.icon-gray {
-  background: #f3f4f6;
-}
-
-.icon-cyan {
-  background: #cffafe;
 }
 
 .menu-title {
