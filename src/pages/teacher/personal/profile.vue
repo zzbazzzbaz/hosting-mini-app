@@ -35,11 +35,10 @@
           <text class="stat-label">学生作业</text>
         </view>
       </view>
+
     </view>
 
-    <!-- 功能菜单列表 -->
     <view class="menu-section">
-      <!-- 个人信息 -->
       <view class="menu-group">
         <view class="menu-item" @tap="handlePersonalInfo">
           <view class="menu-left">
@@ -51,31 +50,8 @@
           <uni-icons type="forward" size="18" color="#d1d5db"></uni-icons>
         </view>
       </view>
-
-      <!-- 系统与帮助 -->
-      <view class="menu-group">
-        <view class="menu-item" @tap="handleSettings">
-          <view class="menu-left">
-            <view class="menu-icon-box icon-gray">
-              <uni-icons type="gear" size="22" color="#6b7280"></uni-icons>
-            </view>
-            <text class="menu-title">系统设置</text>
-          </view>
-          <uni-icons type="forward" size="18" color="#d1d5db"></uni-icons>
-        </view>
-        <view class="menu-item" @tap="handleAbout">
-          <view class="menu-left">
-            <view class="menu-icon-box icon-cyan">
-              <uni-icons type="info" size="22" color="#06b6d4"></uni-icons>
-            </view>
-            <text class="menu-title">关于我们</text>
-          </view>
-          <uni-icons type="forward" size="18" color="#d1d5db"></uni-icons>
-        </view>
-      </view>
     </view>
 
-    <!-- 退出登录按钮 -->
     <view class="logout-section">
       <button class="logout-btn" @tap="handleLogout">退出登录</button>
     </view>
@@ -109,7 +85,7 @@ const stats = ref({
 })
 
 /**
- * 处理个人信息点击
+ * 查看个人信息
  */
 const handlePersonalInfo = () => {
   uni.navigateTo({
@@ -118,29 +94,7 @@ const handlePersonalInfo = () => {
 }
 
 /**
- * 处理系统设置点击
- */
-const handleSettings = () => {
-  uni.showToast({
-    title: '系统设置功能开发中',
-    icon: 'none'
-  })
-}
-
-/**
- * 处理关于我们点击
- */
-const handleAbout = () => {
-  uni.showModal({
-    title: '关于我们',
-    content: '托管小程序 v1.0.0\n教师端移动应用\n版权所有 © 2025',
-    showCancel: false,
-    confirmText: '确定'
-  })
-}
-
-/**
- * 处理退出登录
+ * 退出登录
  */
 const handleLogout = () => {
   uni.showModal({
@@ -148,15 +102,11 @@ const handleLogout = () => {
     content: '确定要退出登录吗?',
     success: (res) => {
       if (res.confirm) {
-        // 清除登录信息
         uni.removeStorageSync('userInfo')
         uni.removeStorageSync('token')
-
-        // 跳转到登录页
         uni.reLaunch({
           url: '/pages/common/login'
         })
-
         uni.showToast({
           title: '已退出登录',
           icon: 'success'
@@ -165,6 +115,7 @@ const handleLogout = () => {
     }
   })
 }
+
 </script>
 
 <style scoped>
@@ -275,28 +226,24 @@ const handleLogout = () => {
   margin: 0 24rpx;
 }
 
-/* 功能菜单区域 */
 .menu-section {
-  padding: 0 48rpx;
+  padding: 24rpx 48rpx 0;
 }
 
-/* 菜单组 */
 .menu-group {
   background: #fff;
   border-radius: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
   overflow: hidden;
 }
 
-/* 菜单项 */
 .menu-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 32rpx;
   border-bottom: 1rpx solid #f3f4f6;
-  transition: all 0.3s;
+  transition: background 0.2s;
 }
 
 .menu-item:last-child {
@@ -326,39 +273,30 @@ const handleLogout = () => {
   background: #dbeafe;
 }
 
-.icon-gray {
-  background: #f3f4f6;
-}
-
-.icon-cyan {
-  background: #cffafe;
-}
-
 .menu-title {
   font-size: 32rpx;
   color: #1f2937;
   font-weight: 500;
 }
 
-/* 退出登录区域 */
 .logout-section {
-  padding: 32rpx 48rpx;
+  padding: 24rpx 48rpx 120rpx;
 }
 
 .logout-btn {
   width: 100%;
   height: 96rpx;
+  border-radius: 24rpx;
   background: #fff;
   border: 2rpx solid #ef4444;
-  border-radius: 24rpx;
   color: #ef4444;
   font-size: 32rpx;
-  font-weight: 500;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2rpx 12rpx rgba(239, 68, 68, 0.1);
-  transition: all 0.3s;
+  box-shadow: 0 4rpx 16rpx rgba(239, 68, 68, 0.2);
+  transition: opacity 0.2s, transform 0.2s;
 }
 
 .logout-btn::after {
@@ -366,7 +304,7 @@ const handleLogout = () => {
 }
 
 .logout-btn:active {
-  background: #fef2f2;
+  opacity: 0.85;
   transform: scale(0.98);
 }
 </style>
