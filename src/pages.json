@@ -57,6 +57,13 @@
 			}
 		},
 		{
+			"path": "pages/parent/personal/child-info",
+			"style": {
+				"navigationBarTitleText": "孩子信息",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/parent/personal/personal-info",
 			"style": {
 				"navigationBarTitleText": "个人信息",

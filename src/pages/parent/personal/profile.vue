@@ -77,7 +77,7 @@ const parentInfo = ref({ name: '李女士' })
 const stats = ref({ totalChildren: 1, pendingHomework: 2, upcomingEvents: 3 })
 
 const handleChildInfo = () => {
-  uni.navigateTo({ url: '/pages/parent/homework/homework-list' })
+  uni.navigateTo({ url: '/pages/parent/personal/child-info' })
 }
 
 const handleProfile = () => {
