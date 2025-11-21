@@ -3,7 +3,7 @@ import { getToken } from '@/store/auth'
 /**
  * 请求基础配置
  */
-const BASE_URL = 'https://api.hosting.chatgqt.top'
+export const BASE_URL = 'https://api.hosting.chatgqt.top'
 const TIMEOUT = 15000
 
 /**

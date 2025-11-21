@@ -7,7 +7,13 @@ import request from '@/utils/request'
  */
 const adaptComboxResponse = (response) => {
   if (!response?.data) return []
-  return response.data
+  const list = Array.isArray(response.data) ? response.data : [response.data]
+  return list
+    .map((item, index) => ({
+      id: item.id ?? `dict-${index}`,
+      name: item.dicName  ?? '',
+    }))
+    .filter((item) => item.name)
 }
 
 // ========== API 接口 ==========

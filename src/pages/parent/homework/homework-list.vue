@@ -1,257 +1,269 @@
 <template>
   <view class="page">
-    <!-- 使用PageHeader组件 -->
     <PageHeader title="作业信息" />
 
-    <!-- 筛选器区域（固定） -->
     <view class="filter-section">
-      <!-- 第一行：科目、状态 -->
       <view class="filter-row">
-        <picker class="filter-picker" :range="subjects" @change="onSubjectChange">
+        <picker class="filter-picker" :range="childNames" @change="onChildChange">
           <view class="picker-box">
-            <text class="label">{{ currentSubject || '请选择科目' }}</text>
+            <text class="label">{{ currentChildName }}</text>
             <text class="arrow">▼</text>
           </view>
         </picker>
-        <picker class="filter-picker" :range="statuses" @change="onStatusChange">
+        <picker class="filter-picker" :range="subjectNames" @change="onSubjectChange">
           <view class="picker-box">
-            <text class="label">{{ currentStatus || '请选择状态' }}</text>
+            <text class="label">{{ currentSubjectName }}</text>
             <text class="arrow">▼</text>
           </view>
         </picker>
       </view>
-      <!-- 第二行：发布时间、完成时间 -->
       <view class="filter-row">
-        <picker
-          class="filter-picker"
-          mode="date"
-          :value="currentPublishDate"
-          @change="onPublishDateChange"
-        >
+        <picker class="filter-picker" :range="statusLabels" @change="onStatusChange">
           <view class="picker-box">
-            <text class="label">{{ currentPublishDate || '发布时间' }}</text>
+            <text class="label">{{ currentStatusLabel }}</text>
             <text class="arrow">▼</text>
           </view>
         </picker>
         <picker
           class="filter-picker"
           mode="date"
-          :value="currentCompleteDate"
-          @change="onCompleteDateChange"
+          :value="filters.homeworkDate"
+          @change="onDateChange"
         >
           <view class="picker-box">
-            <text class="label">{{ currentCompleteDate || '完成时间' }}</text>
+            <text class="label">{{ filters.homeworkDate || '作业日期' }}</text>
             <text class="arrow">▼</text>
           </view>
         </picker>
       </view>
     </view>
 
-    <!-- 作业列表 -->
     <view class="list-container">
       <view class="publish-button-container">
         <button class="publish-button" @tap="onPublishHomework">发布作业</button>
       </view>
+
+      <view v-if="!filteredList.length && !loading" class="empty-state">
+        <text class="empty-text">暂无作业数据</text>
+        <text class="empty-sub">调整筛选或下拉刷新试试</text>
+      </view>
+
       <view
-        v-for="(item, index) in filteredHomeworkList"
-        :key="index"
+        v-for="item in filteredList"
+        :key="item.id"
         :class="['homework-item', item.status === 'pending' ? 'homework-item-pending' : '']"
         @tap="gotoDetail(item)"
       >
-        <!-- 第一行：科目 | 作业标题 | 状态 -->
         <view class="homework-main">
-          <text class="subject">{{ item.subject }}</text>
-          <text class="title">{{ item.title }}</text>
-          <view
-            :class="[
-              'status-badge',
-              item.status === 'completed' ? 'status-completed' : 'status-pending',
-            ]"
-          >
-            <text class="status-text">{{ item.status === 'completed' ? '已完成' : '未完成' }}</text>
+          <view class="subject-chip">
+            <text class="subject-text">{{ item.subjectName || '未分科目' }}</text>
           </view>
         </view>
-        <!-- 第二行：发布时间 | 截止时间 -->
+
+        <view class="homework-title">
+          <view class="title-block">
+            <text class="title">{{ item.studentName || '未命名学生' }}</text>
+            <text class="subtitle">{{ item.gradeName || '年级未填写' }}</text>
+          </view>
+          <uni-icons type="arrowright" size="18" color="#d1d5db" />
+        </view>
+
         <view class="homework-time">
-          <text class="time-text">发布: {{ item.publishDate }}</text>
-          <text class="time-text">截止: {{ item.deadline }}</text>
+          <text class="time-text">布置: {{ item.homeworkDate || '-' }}</text>
+          <text class="time-text">{{ item.finishDate ? `完成: ${item.finishDate}` : '未完成' }}</text>
         </view>
       </view>
 
-      <!-- 加载更多 -->
       <view class="load-more">
-        <button class="load-more-btn">加载更多</button>
+        <button class="load-more-btn" :disabled="loading || noMore" @tap="loadMore">
+          {{ noMore ? '没有更多了' : loading ? '加载中...' : '加载更多' }}
+        </button>
       </view>
     </view>
 
-    <!-- 使用ParentTabBar组件 -->
     <ParentTabBar activeTab="homework" />
   </view>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { computed, reactive, ref } from 'vue'
+import { onLoad, onPullDownRefresh } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import ParentTabBar from '@/components/ParentTabBar.vue'
+import { getChildrenByParentId, getParentHomeworkList } from '@/api/parent/homework'
+import { getSubjectComboxList } from '@/api/common/dictionary'
 
-// 科目列表
-const subjects = ['全部', '语文', '数学', '英语', '物理', '化学']
-const currentSubject = ref('')
+const children = ref([{ id: '', name: '全部学生' }])
+const subjects = ref([{ id: '', name: '全部科目' }])
+const statuses = [
+  { label: '全部状态', value: '' },
+  { label: '未完成', value: 0 },
+  { label: '已完成', value: 1 },
+]
 
-// 状态列表
-const statuses = ['全部', '已完成', '未完成']
-const currentStatus = ref('')
-
-// 发布时间（日期选择器）
-const currentPublishDate = ref('')
-
-// 完成时间（日期选择器）
-const currentCompleteDate = ref('')
-
-// 作业列表数据（完整数据）
-const homeworkList = ref([
-  {
-    subject: '数学',
-    title: '完成课本第3章习题',
-    publishDate: '2025-10-15',
-    deadline: '2025-10-20',
-    completeDate: '2025-10-16',
-    status: 'completed',
-    iconText: '数',
-    color: 'blue',
-  },
-  {
-    subject: '英语',
-    title: '背诵Unit 5单词并完成练习册',
-    publishDate: '2025-10-15',
-    deadline: '2025-10-22',
-    completeDate: null,
-    status: 'pending',
-    iconText: '英',
-    color: 'red',
-  },
-  {
-    subject: '语文',
-    title: '阅读《朝花夕拾》并写读后感',
-    publishDate: '2025-10-14',
-    deadline: '2025-10-21',
-    completeDate: '2025-10-15',
-    status: 'completed',
-    iconText: '语',
-    color: 'green',
-  },
-  {
-    subject: '物理',
-    title: '实验报告：光的折射',
-    publishDate: '2025-10-13',
-    deadline: '2025-10-18',
-    completeDate: '2025-10-14',
-    status: 'completed',
-    iconText: '物',
-    color: 'purple',
-  },
-  {
-    subject: '化学',
-    title: '整理元素周期表前20个元素',
-    publishDate: '2025-10-12',
-    deadline: '2025-10-19',
-    completeDate: null,
-    status: 'pending',
-    iconText: '化',
-    color: 'orange',
-  },
-])
-
-/**
- * 筛选后的作业列表
- * 根据科目、状态、发布时间、完成时间进行过滤
- */
-const filteredHomeworkList = computed(() => {
-  let filtered = homeworkList.value
-
-  // 按科目筛选（只有选择了具体科目时才筛选）
-  if (currentSubject.value && currentSubject.value !== '全部') {
-    filtered = filtered.filter((item) => item.subject === currentSubject.value)
-  }
-
-  // 按状态筛选（只有选择了具体状态时才筛选）
-  if (currentStatus.value && currentStatus.value !== '全部') {
-    const statusValue = currentStatus.value === '已完成' ? 'completed' : 'pending'
-    filtered = filtered.filter((item) => item.status === statusValue)
-  }
-
-  // 按发布时间筛选
-  if (currentPublishDate.value) {
-    filtered = filtered.filter((item) => item.publishDate === currentPublishDate.value)
-  }
-
-  // 按完成时间筛选
-  if (currentCompleteDate.value) {
-    filtered = filtered.filter((item) => item.completeDate === currentCompleteDate.value)
-  }
-
-  return filtered
+const filters = reactive({
+  childIndex: 0,
+  subjectIndex: 0,
+  statusIndex: 0,
+  homeworkDate: '',
 })
 
-/**
- * 科目筛选变化事件
- */
+const homeworkList = ref([])
+const loading = ref(false)
+const noMore = ref(false)
+const page = ref(1)
+const pageSize = 10
+
+const childNames = computed(() => children.value.map((item) => item.name || ''))
+const subjectNames = computed(() => subjects.value.map((item) => item.name || ''))
+const statusLabels = statuses.map((item) => item.label)
+const currentChildName = computed(() => childNames.value[filters.childIndex] || '全部学生')
+const currentSubjectName = computed(() => subjectNames.value[filters.subjectIndex] || '全部科目')
+const currentStatusLabel = computed(() => statusLabels[filters.statusIndex] || '全部状态')
+
+const currentChildId = computed(() => children.value[filters.childIndex]?.id || '')
+const currentSubjectId = computed(() => subjects.value[filters.subjectIndex]?.id || '')
+const currentState = computed(() => statuses[filters.statusIndex]?.value ?? '')
+
+const filteredList = computed(() => {
+  if (!filters.homeworkDate) return homeworkList.value
+  return homeworkList.value.filter((item) => item.homeworkDate === filters.homeworkDate)
+})
+
+const normalizeOptions = (list = []) =>
+  list
+    .map((item) => ({
+      id: item.id ?? item.value ?? item.key ?? '',
+      name: item.name ?? item.label ?? item.text ?? item.value ?? '',
+    }))
+    .filter((item) => item.id || item.name)
+
+const fetchChildren = async () => {
+  try {
+    const res = await getChildrenByParentId()
+    children.value = [{ id: '', name: '全部学生' }, ...(res?.data || [])]
+    filters.childIndex = 0
+  } catch (error) {
+    console.error('获取学生列表失败', error)
+    await uni.showToast({ title: '学生列表获取失败', icon: 'none' })
+  }
+}
+
+const fetchSubjects = async () => {
+  try {
+    const res = await getSubjectComboxList()
+    subjects.value = [{ id: '', name: '全部科目' }, ...normalizeOptions(res || [])]
+    filters.subjectIndex = 0
+  } catch (error) {
+    console.error('获取科目列表失败', error)
+    await uni.showToast({ title: '科目获取失败', icon: 'none' })
+  }
+}
+
+const fetchHomework = async (reset = false) => {
+  if (loading.value) return
+
+  if (reset) {
+    page.value = 1
+    noMore.value = false
+    homeworkList.value = []
+  }
+
+  loading.value = true
+  try {
+    const res = await getParentHomeworkList({
+      page: page.value,
+      pageSize,
+      studentId: currentChildId.value || undefined,
+      subjectId: currentSubjectId.value || undefined,
+      state: currentState.value === '' ? undefined : currentState.value,
+    })
+    const list = res?.data?.list || []
+    homeworkList.value = reset ? list : [...homeworkList.value, ...list]
+    if (!list.length || list.length < pageSize) {
+      noMore.value = true
+    } else {
+      page.value += 1
+    }
+  } catch (error) {
+    console.error('获取作业列表失败', error)
+    await uni.showToast({ title: '加载失败', icon: 'none' })
+  } finally {
+    loading.value = false
+    if (reset) {
+      uni.stopPullDownRefresh()
+    }
+  }
+}
+
+const refreshList = () => {
+  fetchHomework(true)
+}
+
+const loadMore = () => {
+  if (loading.value || noMore.value) return
+  fetchHomework()
+}
+
+const onChildChange = (e) => {
+  filters.childIndex = Number(e.detail.value)
+  refreshList()
+}
+
 const onSubjectChange = (e) => {
-  currentSubject.value = subjects[e.detail.value]
+  filters.subjectIndex = Number(e.detail.value)
+  refreshList()
 }
 
-/**
- * 状态筛选变化事件
- */
 const onStatusChange = (e) => {
-  currentStatus.value = statuses[e.detail.value]
+  filters.statusIndex = Number(e.detail.value)
+  refreshList()
 }
 
-/**
- * 发布时间筛选变化事件
- */
-const onPublishDateChange = (e) => {
-  currentPublishDate.value = e.detail.value
+const onDateChange = (e) => {
+  filters.homeworkDate = e.detail.value
 }
 
-/**
- * 完成时间筛选变化事件
- */
-const onCompleteDateChange = (e) => {
-  currentCompleteDate.value = e.detail.value
-}
-
-/**
- * 跳转到发布作业页面
- */
 const onPublishHomework = () => {
+  const student = children.value[filters.childIndex]
+  const query = student?.id
+    ? `?studentId=${student.id}&studentName=${encodeURIComponent(student.name)}`
+    : ''
   uni.navigateTo({
-    url: '/pages/parent/homework/components/homework-publish',
+    url: `/pages/parent/homework/components/homework-publish${query}`,
   })
 }
 
-/**
- * 跳转到作业详情页
- */
-const gotoDetail = () => {
+const gotoDetail = (item) => {
   uni.navigateTo({
-    url: '/pages/parent/homework/components/homework-detail',
+    url: `/pages/parent/homework/components/homework-detail?homeworkId=${item.id}`,
   })
 }
+
+const initPage = async () => {
+  await Promise.all([fetchChildren(), fetchSubjects()])
+  await fetchHomework(true)
+}
+
+onLoad(() => {
+  initPage()
+})
+
+onPullDownRefresh(() => {
+  fetchHomework(true)
+})
 </script>
 
 <style scoped>
-/* 页面容器 */
 .page {
   min-height: 100vh;
   background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
   padding-bottom: 128rpx;
 }
 
-/* 筛选器区域 - 固定在页面顶部 */
 .filter-section {
   position: fixed;
-  top: 144rpx; /* PageHeader高度 */
+  top: 144rpx;
   left: 0;
   right: 0;
   z-index: 100;
@@ -263,7 +275,6 @@ const gotoDetail = () => {
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
-/* 筛选器行布局 */
 .filter-row {
   display: flex;
   gap: 16rpx;
@@ -274,7 +285,6 @@ const gotoDetail = () => {
   min-width: 0;
 }
 
-/* 筛选器选择框样式 */
 .picker-box {
   background: #f9fafb;
   border: 2rpx solid #e5e7eb;
@@ -294,14 +304,12 @@ const gotoDetail = () => {
   border-color: #0ea5e9;
 }
 
-/* 筛选器标签文本 */
 .label {
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 500;
 }
 
-/* 筛选器下拉箭头 */
 .arrow {
   font-size: 18rpx;
   color: #9ca3af;
@@ -309,10 +317,8 @@ const gotoDetail = () => {
   flex-shrink: 0;
 }
 
-/* 作业列表容器 */
 .list-container {
-  /* PageHeader + 筛选区域高度 + 额外间距 */
-  padding: 380rpx 48rpx 32rpx;
+  padding: 360rpx 48rpx 32rpx;
   display: flex;
   flex-direction: column;
   gap: 24rpx;
@@ -334,7 +340,27 @@ const gotoDetail = () => {
   box-shadow: 0 4rpx 12rpx rgba(16, 185, 129, 0.25);
 }
 
-/* 作业卡片 */
+.empty-state {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 48rpx;
+  text-align: center;
+  color: #6b7280;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.04);
+}
+
+.empty-text {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.empty-sub {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
 .homework-item {
   background: #fff;
   border-radius: 20rpx;
@@ -351,12 +377,6 @@ const gotoDetail = () => {
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
 }
 
-/* 未完成作业左侧红色标记 */
-.homework-item-pending {
-  border-left: 6rpx solid #ef4444;
-}
-
-/* 作业主要信息行 */
 .homework-main {
   display: flex;
   justify-content: space-between;
@@ -364,77 +384,58 @@ const gotoDetail = () => {
   gap: 16rpx;
 }
 
-/* 科目（左对齐）*/
-.subject {
-  font-size: 28rpx;
-  font-weight: bold;
-  color: #1f2937;
-  flex-shrink: 0;
-  min-width: 80rpx;
+.subject-chip {
+  padding: 10rpx 20rpx;
+  background: #e0f2fe;
+  color: #0369a1;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 600;
 }
 
-/* 作业标题（居中，占据剩余空间）*/
-.title {
-  flex: 1;
-  font-size: 30rpx;
-  color: #374151;
-  text-align: center;
-  font-weight: 500;
+.subject-text {
+  display: inline-block;
+  max-width: 320rpx;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-/* 时间信息行 */
+.homework-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+}
+
+.title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  flex: 1;
+}
+
+.title {
+  font-size: 32rpx;
+  color: #1f2937;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
 .homework-time {
   display: flex;
   justify-content: space-between;
   padding: 0 8rpx;
 }
 
-/* 时间文字（小字）*/
 .time-text {
   font-size: 24rpx;
   color: #9ca3af;
 }
 
-/* 状态标签（右对齐）*/
-.status-badge {
-  display: inline-block;
-  padding: 8rpx 20rpx;
-  border-radius: 24rpx;
-  font-size: 24rpx;
-  font-weight: 500;
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-
-.status-text {
-  font-size: 24rpx;
-  font-weight: 500;
-}
-
-/* 已完成状态 */
-.status-completed {
-  background: #dcfce7;
-  color: #15803d;
-}
-
-.status-completed .status-text {
-  color: #15803d;
-}
-
-/* 未完成状态 */
-.status-pending {
-  background: #fee2e2;
-  color: #dc2626;
-}
-
-.status-pending .status-text {
-  color: #dc2626;
-}
-
-/* 加载更多 */
 .load-more {
   text-align: center;
   padding: 32rpx 0;

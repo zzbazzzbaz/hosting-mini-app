@@ -1,254 +1,237 @@
 <template>
   <view class="page">
-    <!-- 使用PageHeader组件 -->
     <PageHeader title="作业详情" :showBack="true" />
 
     <view class="content">
-      <!-- 基本信息卡片 -->
-      <view class="card">
-        <view class="card-header">
-          <view class="subject-info">
-            <view class="subject-icon">
-              <text class="icon-text">🔢</text>
-            </view>
-            <view class="subject-detail">
-              <text class="subject-name">数学</text>
-              <text class="subject-date">2025-10-15</text>
-            </view>
-          </view>
-          <view class="status-badge status-completed">
-            <text class="badge-icon">✓</text>
-            <text class="badge-text">已完成</text>
-          </view>
-        </view>
+      <view v-if="loading" class="loading-box">
+        <text class="loading-text">正在加载作业...</text>
       </view>
 
-      <!-- 作业要求 -->
-      <view class="section-card">
-        <view class="section-header section-header-blue">
-          <text class="section-icon">📝</text>
-          <text class="section-title">作业</text>
+      <view v-else-if="!detail" class="loading-box">
+        <text class="loading-text">未找到作业信息</text>
+      </view>
+
+      <view v-else>
+        <view class="card">
+          <view class="card-header">
+            <view class="subject-info">
+              <view class="subject-icon">
+                <text class="icon-text">📘</text>
+              </view>
+              <view class="subject-detail">
+                <text class="subject-name">{{ detail.subjectName || '未分科目' }}</text>
+                <text class="subject-date">{{ detail.homeworkDate || '日期未填写' }}</text>
+              </view>
+            </view>
+            <view :class="['status-badge', statusBadge.className]">
+              <text class="badge-icon">{{ statusBadge.icon }}</text>
+              <text class="badge-text">{{ statusBadge.text }}</text>
+            </view>
+          </view>
         </view>
-        <view class="section-content">
-          <view class="requirement-box">
-            <text class="requirement-text"
-              >完成课本第45-52页的练习题,包括:\n1. 基础计算题(第45-48页)\n2. 应用题(第49-51页)\n3.
-              拓展思考题(第52页)\n\n要求:字迹工整,过程完整,认真检查</text
-            >
-            <view v-if="requirementImages.length" class="requirement-media">
-              <view class="image-grid requirement-grid">
-                <view
-                  class="image-item requirement-image-item"
-                  v-for="(img, index) in requirementImages"
-                  :key="`requirement-${index}`"
-                  @click="previewRequirementImage(index)"
-                >
-                  <image :src="img" class="homework-image" mode="aspectFill" />
+
+        <view class="section-card">
+          <view class="section-header section-header-blue">
+            <text class="section-icon">📝</text>
+            <text class="section-title">作业内容</text>
+          </view>
+          <view class="section-content">
+            <view class="requirement-box">
+              <text class="requirement-text">{{ detail.content || '暂无作业描述' }}</text>
+
+              <view v-if="requirementImages.length" class="requirement-media">
+                <view class="image-grid requirement-grid">
+                  <view
+                    class="image-item requirement-image-item"
+                    v-for="(img, index) in requirementImages"
+                    :key="`requirement-${index}`"
+                    @click="previewRequirementImage(index)"
+                  >
+                    <image :src="img" class="homework-image" mode="aspectFill" />
+                  </view>
+                </view>
+              </view>
+              <view v-else class="placeholder-text">未上传作业参考图</view>
+            </view>
+          </view>
+        </view>
+
+        <view class="section-card">
+          <view class="section-header section-header-green">
+            <text class="section-icon">✏️</text>
+            <text class="section-title">学生作答</text>
+          </view>
+          <view class="section-content">
+            <view v-if="homeworkImages.length" class="image-grid">
+              <view
+                class="image-item"
+                v-for="(img, index) in displayImages"
+                :key="index"
+                @click="previewHomeworkImage(index)"
+              >
+                <image :src="img" class="homework-image" mode="aspectFill" />
+                <view v-if="index === 6 && hasMoreImages" class="more-badge">
+                  <text class="more-text">+{{ remainingCount }}</text>
                 </view>
               </view>
             </view>
+            <view v-else class="placeholder-text">学生还未上传作答图片</view>
+
+            <view v-if="hasMoreImages" class="view-all-btn" @click="previewHomeworkImage(0)">
+              <text class="btn-icon">🖼️</text>
+              <text class="btn-text">查看全部{{ homeworkImages.length }}张图片</text>
+            </view>
+
+            <text class="submit-time">
+              {{ submitTimeText }}
+            </text>
           </view>
         </view>
-      </view>
 
-      <!-- 学生作答 -->
-      <view class="section-card">
-        <view class="section-header section-header-green">
-          <text class="section-icon">✏️</text>
-          <text class="section-title">学生作答</text>
-        </view>
-        <view class="section-content">
-          <!-- 图片网格：最多显示7张 -->
-          <view class="image-grid">
-            <view
-              class="image-item"
-              v-for="(img, index) in displayImages"
-              :key="index"
-              @click="previewHomeworkImage(index)"
-            >
-              <image :src="img" class="homework-image" mode="aspectFill" />
-              <!-- 第7张图片显示剩余数量角标 -->
-              <view v-if="index === 6 && hasMoreImages" class="more-badge">
-                <text class="more-text">+{{ remainingCount }}</text>
+        <view class="section-card">
+          <view class="section-header section-header-purple">
+            <text class="section-icon">💬</text>
+            <text class="section-title">教师评语</text>
+          </view>
+          <view class="section-content">
+            <view class="comment-box">
+              <text class="comment-text">{{ detail.evaluation || '老师暂未填写评语' }}</text>
+              <view class="teacher-info">
+                <text class="teacher-icon">👨‍🏫</text>
+                <text class="teacher-name">{{ detail.subjectName || '教师' }}</text>
+                <text class="divider">•</text>
+                <text class="comment-time">
+                  {{ detail.finishDate || '等待提交后点评' }}
+                </text>
               </view>
             </view>
           </view>
+        </view>
 
-          <!-- 查看全部按钮（仅当图片超过7张时显示） -->
-          <view v-if="hasMoreImages" class="view-all-btn" @click="previewHomeworkImage(0)">
-            <text class="btn-icon">🖼️</text>
-            <text class="btn-text">查看全部{{ homeworkImages.length }}张图片</text>
+        <view class="section-card">
+          <view class="section-header section-header-orange">
+            <text class="section-icon">😊</text>
+            <text class="section-title">今日学生状态</text>
           </view>
-
-          <text class="submit-time">⏰ 提交时间:2025-10-15 17:30</text>
-        </view>
-      </view>
-
-      <!-- 教师评语 -->
-      <view class="section-card">
-        <view class="section-header section-header-purple">
-          <text class="section-icon">💬</text>
-          <text class="section-title">教师评语</text>
-        </view>
-        <view class="section-content">
-          <view class="comment-box">
-            <text class="comment-text"
-              >作业完成得很好!字迹工整,计算准确。\n基础题全部正确,应用题思路清晰。\n拓展题有一定难度,但你也完成得不错,继续保持!\n建议:第51页第3题的解题步骤可以更详细一些。</text
-            >
-            <view class="teacher-info">
-              <text class="teacher-icon">👨‍🏫</text>
-              <text class="teacher-name">张三老师</text>
-              <text class="divider">•</text>
-              <text class="comment-time">2025-10-15 20:15</text>
-            </view>
-          </view>
-        </view>
-      </view>
-
-      <!-- 今日学生状态 -->
-      <view class="section-card">
-        <view class="section-header section-header-orange">
-          <text class="section-icon">😊</text>
-          <text class="section-title">今日学生状态</text>
-        </view>
-        <view class="section-content">
-          <view class="status-display">
-            <view class="status-icon-wrapper">
-              <text class="status-icon-large">😊</text>
-            </view>
-            <view class="status-info">
-              <text class="status-label">状态良好</text>
-              <text class="status-desc">上课认真,积极回答问题,课间活动正常</text>
+          <view class="section-content">
+            <view class="status-display">
+              <view class="status-icon-wrapper">
+                <text class="status-icon-large">😊</text>
+              </view>
+              <view class="status-info">
+                <text class="status-label">{{ detail.studentState || '暂无状态' }}</text>
+                <text class="status-desc">由老师记录的学生课堂表现</text>
+              </view>
             </view>
           </view>
         </view>
       </view>
     </view>
 
-    <!-- 使用ParentTabBar组件 -->
     <ParentTabBar activeTab="homework" />
   </view>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import ParentTabBar from '@/components/ParentTabBar.vue'
+import { getHomeworkDetail } from '@/api/parent/homework'
 
-// 作业图片列表（使用测试图片）
-// 微信小程序中需要使用 /static/ 开头的绝对路径
-const homeworkImages = ref([
-  '/static/test/1.jpg',
-  '/static/test/2.jpg',
-  '/static/test/3.jpg',
-  '/static/test/4.jpg',
-  '/static/test/5.jpg',
-  '/static/test/6.jpg',
-  '/static/test/7.jpg',
-  '/static/test/3.jpg',
-  '/static/test/4.jpg',
-  '/static/test/5.jpg',
-])
+const detail = ref(null)
+const loading = ref(false)
+const homeworkImages = ref([])
+const requirementImages = ref([])
 
-// 作业要求示例图片（演示数据）
-const requirementImages = ref(['/static/test/1.jpg', '/static/test/4.jpg', '/static/test/6.jpg'])
-
-/**
- * 显示的图片列表（最多7张）
- */
 const displayImages = computed(() => {
   return homeworkImages.value.slice(0, 7)
 })
 
-/**
- * 是否有更多图片
- */
 const hasMoreImages = computed(() => {
   return homeworkImages.value.length > 7
 })
 
-/**
- * 剩余图片数量
- */
 const remainingCount = computed(() => {
-  return homeworkImages.value.length - 7
+  return Math.max(0, homeworkImages.value.length - 7)
 })
 
-/**
- * 预览图片
- * @param {string[]} images - 图片地址数组
- * @param {number} current - 当前图片索引
- */
-const previewImages = async (images, current) => {
-  try {
-    if (!images.length) {
-      return
-    }
-
-    // 微信小程序的 uni.previewImage 对本地图片支持有限
-    // 需要先通过 getImageInfo 获取图片的临时路径
-    const imagePromises = images.map((src) => {
-      return new Promise((resolve) => {
-        uni.getImageInfo({
-          src: src,
-          success: (res) => {
-            console.log('getImageInfo成功:', res.path)
-            resolve(res.path) // 返回图片的临时路径
-          },
-          fail: (err) => {
-            console.error('getImageInfo失败:', err)
-            resolve(src) // 失败时返回原路径
-          },
-        })
-      })
-    })
-
-    // 等待所有图片信息获取完成
-    const imagePaths = await Promise.all(imagePromises)
-
-    console.log('预览图片 - 转换后的路径:', imagePaths)
-
-    // 使用转换后的路径预览图片
-    uni.previewImage({
-      current: imagePaths[current] || imagePaths[0], // 当前图片的临时路径
-      urls: imagePaths, // 所有图片的临时路径
-      success: () => {
-        console.log('预览图片成功')
-      },
-      fail: (err) => {
-        console.error('预览图片失败:', err)
-        uni.showToast({
-          title: '预览失败',
-          icon: 'none',
-          duration: 2000,
-        })
-      },
-    })
-  } catch (err) {
-    console.error('预览过程出错:', err)
-    uni.showToast({
-      title: '预览失败',
-      icon: 'none',
-      duration: 2000,
-    })
+const statusBadge = computed(() => {
+  const state = Number(detail.value?.state ?? 0)
+  if (state === 1) {
+    return { text: '已完成', className: 'status-completed', icon: '✓' }
   }
+  return { text: '未完成', className: 'status-pending', icon: '⌛' }
+})
+
+const submitTimeText = computed(() => {
+  if (detail.value?.finishDate) {
+    return `⏰ 提交时间: ${detail.value.finishDate}`
+  }
+  return '⏰ 尚未提交'
+})
+
+const previewImages = async (images, current) => {
+  if (!images.length) return
+  uni.previewImage({
+    current: images[current] || images[0],
+    urls: images,
+    fail: (err) => {
+      console.error('预览图片失败:', err)
+      uni.showToast({
+        title: '预览失败',
+        icon: 'none',
+        duration: 2000,
+      })
+    },
+  })
 }
 
-/**
- * 预览学生作答图片
- * @param {number} index
- */
 const previewHomeworkImage = (index) => {
   previewImages(homeworkImages.value, index)
 }
 
-/**
- * 预览作业要求图片
- * @param {number} index
- */
 const previewRequirementImage = (index) => {
   previewImages(requirementImages.value, index)
 }
+
+const fetchDetail = async (homeworkId) => {
+  loading.value = true
+  try {
+    const res = await getHomeworkDetail(homeworkId)
+    detail.value = res?.data || null
+    requirementImages.value = (res?.data?.homeworkImages || []).map(
+      (item) => item.url || item.path
+    )
+    homeworkImages.value = (res?.data?.finishImages || []).map((item) => item.url || item.path)
+  } catch (error) {
+    console.error('加载作业详情失败', error)
+    uni.showToast({
+      title: '加载失败',
+      icon: 'none',
+    })
+    setTimeout(() => {
+      uni.navigateBack()
+    }, 1200)
+  } finally {
+    loading.value = false
+  }
+}
+
+onLoad((options) => {
+  const homeworkId = options?.homeworkId || options?.id
+  if (!homeworkId) {
+    uni.showToast({
+      title: '缺少作业ID',
+      icon: 'none',
+    })
+    setTimeout(() => {
+      uni.navigateBack()
+    }, 1200)
+    return
+  }
+  fetchDetail(homeworkId)
+})
 </script>
 
 <style scoped>
@@ -264,6 +247,19 @@ const previewRequirementImage = (index) => {
   display: flex;
   flex-direction: column;
   gap: 32rpx;
+}
+
+.loading-box {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 80rpx 40rpx;
+  text-align: center;
+  color: #6b7280;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.loading-text {
+  font-size: 28rpx;
 }
 
 .card,
@@ -330,9 +326,18 @@ const previewRequirementImage = (index) => {
   background-color: #d1fae5;
 }
 
+.status-pending {
+  background-color: #fee2e2;
+}
+
 .badge-icon,
 .badge-text {
   color: #10b981;
+}
+
+.status-pending .badge-icon,
+.status-pending .badge-text {
+  color: #dc2626;
 }
 
 .badge-icon {
@@ -414,7 +419,6 @@ const previewRequirementImage = (index) => {
   border-color: #0ea5e9;
 }
 
-/* 图片网格 */
 .image-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -422,9 +426,8 @@ const previewRequirementImage = (index) => {
   margin-bottom: 24rpx;
 }
 
-/* 图片项容器 */
 .image-item {
-  position: relative; /* 为角标定位 */
+  position: relative;
   aspect-ratio: 1;
   border-radius: 16rpx;
   overflow: hidden;
@@ -438,35 +441,31 @@ const previewRequirementImage = (index) => {
   opacity: 0.8;
 }
 
-/* 作业图片 */
 .homework-image {
   width: 100%;
   height: 100%;
 }
 
-/* 更多图片角标（显示在第7张图片右上角） */
 .more-badge {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.75); /* 加深半透明黑色背景 */
+  background: rgba(0, 0, 0, 0.75);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1; /* 确保在图片上方 */
+  z-index: 1;
 }
 
-/* 角标文字 */
 .more-text {
-  font-size: 56rpx; /* 增大字号 */
+  font-size: 56rpx;
   font-weight: bold;
   color: #ffffff;
-  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.5); /* 添加文字阴影 */
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.5);
 }
 
-/* 查看全部按钮 */
 .view-all-btn {
   background: linear-gradient(to right, #10b981, #059669);
   border-radius: 24rpx;
@@ -485,12 +484,10 @@ const previewRequirementImage = (index) => {
   opacity: 0.9;
 }
 
-/* 按钮图标 */
 .btn-icon {
   font-size: 36rpx;
 }
 
-/* 按钮文字 */
 .btn-text {
   font-size: 28rpx;
   font-weight: 600;
@@ -583,5 +580,11 @@ const previewRequirementImage = (index) => {
   font-size: 28rpx;
   color: #6b7280;
   line-height: 1.5;
+}
+
+.placeholder-text {
+  font-size: 26rpx;
+  color: #9ca3af;
+  padding: 12rpx 0;
 }
 </style>

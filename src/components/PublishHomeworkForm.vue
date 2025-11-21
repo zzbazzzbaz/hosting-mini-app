@@ -7,7 +7,19 @@
       </view>
       <view class="field">
         <text class="field-label">布置对象</text>
-        <text class="field-value">{{ targetName }}</text>
+        <picker
+          v-if="normalizedTargets.length"
+          :range="normalizedTargets"
+          range-key="name"
+          :value="targetIndex"
+          @change="onTargetChange"
+        >
+          <view class="picker">
+            <text>{{ targetName }}</text>
+            <text class="picker-icon">▼</text>
+          </view>
+        </picker>
+        <text v-else class="field-value">{{ targetName }}</text>
       </view>
       <view class="field">
         <text class="field-label">布置日期</text>
@@ -20,7 +32,7 @@
       </view>
       <view class="field">
         <text class="field-label">科目</text>
-        <picker :range="subjects" @change="onSubjectChange">
+        <picker :range="subjectNames" @change="onSubjectChange">
           <view class="picker">
             <text>{{ form.subject || '请选择科目' }}</text>
             <text class="picker-icon">▼</text>
@@ -69,7 +81,7 @@
 </template>
 
 <script setup>
-import { computed, reactive, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 
 const props = defineProps({
   studentName: {
@@ -88,9 +100,31 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  targetOptions: {
+    type: Array,
+    default: () => [],
+  },
 })
 
-const emit = defineEmits(['submit', 'choose-image', 'remove-image'])
+const emit = defineEmits(['submit', 'choose-image', 'remove-image', 'target-change'])
+
+const normalizedTargets = computed(() =>
+  (props.targetOptions || [])
+    .map((item) => ({
+      id: item.id ?? item.value ?? item.key ?? '',
+      name: item.name ?? item.label ?? item.text ?? '',
+    }))
+    .filter((item) => item.id || item.name)
+)
+
+const normalizedSubjects = computed(() =>
+  (props.subjects || []).map((item) => ({
+    id: typeof item === 'string' ? item : item.id ?? item.value ?? '',
+    name: typeof item === 'string' ? item : item.name ?? item.label ?? '',
+  }))
+)
+
+const subjectNames = computed(() => normalizedSubjects.value.map((item) => item.name))
 
 const createDefaultForm = () => {
   const now = new Date()
@@ -100,12 +134,22 @@ const createDefaultForm = () => {
   return {
     date: `${year}-${month}-${day}`,
     subject: '',
+    subjectId: '',
     content: '',
     images: [],
   }
 }
 
 const form = reactive(createDefaultForm())
+
+const selectedTargetName = ref('')
+const targetIndex = ref(0)
+
+const targetName = computed(() => {
+  const picked = selectedTargetName.value || props.studentName
+  if (picked) return picked
+  return normalizedTargets.value[targetIndex.value]?.name || '请选择布置对象'
+})
 
 const applyInitialForm = (payload) => {
   const next = { ...createDefaultForm(), ...(payload || {}) }
@@ -120,8 +164,6 @@ watch(
   { immediate: true, deep: true }
 )
 
-const targetName = computed(() => (props.studentName ? `${props.studentName}` : '请选择布置对象'))
-
 const isSubmitting = computed(() => props.submitting)
 
 const onDateChange = (event) => {
@@ -129,8 +171,10 @@ const onDateChange = (event) => {
 }
 
 const onSubjectChange = (event) => {
-  const index = event.detail.value
-  form.subject = props.subjects[index] || ''
+  const index = Number(event.detail.value)
+  const subject = normalizedSubjects.value[index] || {}
+  form.subject = subject.name || ''
+  form.subjectId = subject.id || ''
 }
 
 watch(
@@ -141,6 +185,23 @@ watch(
       uni.showToast({ title: '内容最多500字', icon: 'none' })
     }
   }
+)
+
+watch(
+  () => props.studentName,
+  (value) => {
+    selectedTargetName.value = value || ''
+  },
+  { immediate: true }
+)
+
+watch(
+  normalizedTargets,
+  (value) => {
+    const idx = value.findIndex((item) => item.name === selectedTargetName.value)
+    targetIndex.value = idx >= 0 ? idx : 0
+  },
+  { immediate: true }
 )
 
 const chooseImage = () => {
@@ -163,6 +224,16 @@ const removeImage = (index) => {
   next.splice(index, 1)
   form.images = next
   emit('remove-image', form.images)
+}
+
+const onTargetChange = (event) => {
+  const index = Number(event.detail.value)
+  targetIndex.value = index
+  const target = normalizedTargets.value[index]
+  selectedTargetName.value = target?.name || ''
+  if (target) {
+    emit('target-change', target)
+  }
 }
 
 const handleSubmit = () => {
@@ -239,105 +310,127 @@ const handleSubmit = () => {
   align-items: center;
   background: #f0f9ff;
   border: 2rpx solid #bae6fd;
-  border-radius: 20rpx;
-  padding: 24rpx 28rpx;
+  border-radius: 16rpx;
+  padding: 18rpx 20rpx;
   font-size: 28rpx;
   color: #0f172a;
-  box-sizing: border-box;
+}
+
+.picker:active {
+  border-color: #0ea5e9;
+  background: #e0f2fe;
 }
 
 .picker-icon {
   font-size: 28rpx;
-  color: #0ea5e9;
-  margin-left: 16rpx;
+  color: #38bdf8;
 }
 
 .textarea {
   width: 100%;
   min-height: 240rpx;
-  background: #f8fafc;
+  padding: 20rpx;
   border: 2rpx solid #e2e8f0;
-  border-radius: 20rpx;
-  padding: 28rpx 32rpx;
+  border-radius: 16rpx;
+  background: #f8fafc;
   font-size: 28rpx;
-  color: #1f2937;
+  color: #0f172a;
   box-sizing: border-box;
-  line-height: 1.6;
+}
+
+.textarea:focus {
+  border-color: #0ea5e9;
+  background: #ffffff;
 }
 
 .counter {
   display: flex;
   justify-content: flex-end;
-  font-size: 22rpx;
+  font-size: 24rpx;
   color: #94a3b8;
 }
 
 .upload-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20rpx;
+  gap: 24rpx;
 }
 
 .upload-item {
   position: relative;
-  height: 200rpx;
-  border-radius: 20rpx;
+  width: 100%;
+  padding-bottom: 100%;
+  border-radius: 16rpx;
   overflow: hidden;
   background: #f8fafc;
-  border: 2rpx dashed #bae6fd;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 8rpx;
+  border: 2rpx dashed #e2e8f0;
 }
 
 .upload-placeholder {
-  color: #38bdf8;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  color: #94a3b8;
+}
+
+.upload-placeholder:active {
+  border-color: #0ea5e9;
+  color: #0ea5e9;
 }
 
 .upload-plus {
-  font-size: 60rpx;
-  line-height: 1;
+  font-size: 40rpx;
+  font-weight: 700;
 }
 
 .upload-text {
   font-size: 24rpx;
+  margin-top: 8rpx;
 }
 
 .upload-image {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
 }
 
 .remove {
   position: absolute;
-  top: 12rpx;
-  right: 12rpx;
-  width: 48rpx;
-  height: 48rpx;
-  border-radius: 50%;
-  background: rgba(15, 23, 42, 0.65);
+  top: 8rpx;
+  right: 8rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 18rpx;
+  background: rgba(0, 0, 0, 0.6);
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28rpx;
+  font-size: 24rpx;
 }
 
 .submit {
+  margin-top: 12rpx;
   width: 100%;
-  background: linear-gradient(120deg, #38bdf8, #0ea5e9);
+  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  color: #fff;
   border: none;
-  border-radius: 24rpx;
-  padding: 32rpx;
+  border-radius: 20rpx;
+  padding: 24rpx;
   font-size: 32rpx;
-  font-weight: 600;
-  color: #ffffff;
-  box-shadow: 0 8rpx 24rpx rgba(14, 165, 233, 0.35);
+  font-weight: 700;
+  box-shadow: 0 8rpx 24rpx rgba(99, 102, 241, 0.25);
+}
+
+.submit:active {
+  opacity: 0.9;
 }
 
 .submit:disabled {
-  opacity: 0.7;
+  opacity: 0.5;
 }
 </style>
