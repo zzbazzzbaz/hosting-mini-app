@@ -100,11 +100,14 @@
 
 <script setup>
 import { ref } from 'vue'
+import { login } from '@/api/auth'
+import { setAuth } from '@/store/auth'
 
 // 响应式数据
 const selectedRole = ref('parent') // 默认选中家长
 const phone = ref('')
 const password = ref('')
+const isLoading = ref(false)
 
 /**
  * 选择角色
@@ -117,7 +120,7 @@ const selectRole = (role) => {
 /**
  * 处理登录逻辑
  */
-const handleLogin = () => {
+const handleLogin = async () => {
   // 表单验证
   if (!phone.value) {
     uni.showToast({
@@ -127,15 +130,6 @@ const handleLogin = () => {
     return
   }
 
-  // 手机号格式验证（已注释，方便测试）
-  // if (phone.value.length !== 11 || !/^1[3-9]\d{9}$/.test(phone.value)) {
-  //   uni.showToast({
-  //     title: '请输入正确的手机号格式',
-  //     icon: 'none'
-  //   })
-  //   return
-  // }
-
   if (!password.value) {
     uni.showToast({
       title: '请输入密码',
@@ -144,17 +138,53 @@ const handleLogin = () => {
     return
   }
 
-  // 根据角色跳转到对应页面
-  if (selectedRole.value === 'parent') {
-    // 家长端登录成功后跳转到家长首页
-    uni.reLaunch({
-      url: '/pages/parent/home/parent-home',
+  // 防止重复提交
+  if (isLoading.value) return
+  isLoading.value = true
+
+  try {
+    // 调用登录接口
+    const type = selectedRole.value === 'parent' ? 2 : 3
+    const response = await login({
+      phone: phone.value,
+      password: password.value,
+      type: type,
     })
-  } else {
-    // 教师端登录成功后跳转到教师首页
-    uni.reLaunch({
-      url: '/pages/teacher/home/teacher-home',
+
+    // 检查响应数据
+    if (!response.data || !response.data.authToken) {
+      throw new Error(response.message || '登录失败')
+    }
+
+    // 登录成功，保存 token 和用户信息
+    setAuth(response.data.authToken, {
+      userId: response.data.userId,
+      phone: response.data.phone,
+      userName: response.data.userName,
+      type: type,
     })
+
+    uni.showToast({
+      title: '登录成功',
+      icon: 'success',
+    })
+
+    // 根据角色跳转到对应页面
+    setTimeout(() => {
+      if (selectedRole.value === 'parent') {
+        uni.reLaunch({
+          url: '/pages/parent/home/parent-home',
+        })
+      } else {
+        uni.reLaunch({
+          url: '/pages/teacher/home/teacher-home',
+        })
+      }
+    }, 500)
+  } catch (error) {
+    console.error('登录失败:', error)
+  } finally {
+    isLoading.value = false
   }
 }
 </script>
