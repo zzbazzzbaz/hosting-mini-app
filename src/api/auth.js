@@ -10,16 +10,38 @@ function adaptLoginResponse(response) {
     return response
   }
 
-  return {
-    code: response.code,
-    message: response.message,
-    data: {
-      authToken: response.data.Authorization,
-      userId: response.data.userId,
-      phone: response.data.phone,
-      userName: response.data.userName,
-    },
+  const data = response.data
+
+  // 家长端返回数据
+  if (data.parentId) {
+    return {
+      code: response.code,
+      message: response.message,
+      data: {
+        authToken: data.Authorization,
+        userId: data.parentId,
+        userName: data.parentName,
+        phone: data.phone,
+        studentList: data.studentList,
+      },
+    }
   }
+
+  // 教师端返回数据
+  if (data.teacherId) {
+    return {
+      code: response.code,
+      message: response.message,
+      data: {
+        authToken: data.Authorization,
+        userId: data.teacherId,
+        userName: data.teacherName,
+        phone: data.phone,
+      },
+    }
+  }
+
+  return response
 }
 
 /**

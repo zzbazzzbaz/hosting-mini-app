@@ -157,14 +157,21 @@ const handleLogin = async () => {
     }
 
     // 登录成功，保存 token 和用户信息
-    setAuth(response.data.authToken, {
+    const userInfo = {
       userId: response.data.userId,
       phone: response.data.phone,
       userName: response.data.userName,
       type: type,
-    })
+    }
 
-    uni.showToast({
+    // 家长端保存学生列表
+    if (type === 2 && response.data.studentList) {
+      userInfo.studentList = response.data.studentList
+    }
+
+    setAuth(response.data.authToken, userInfo)
+
+    await uni.showToast({
       title: '登录成功',
       icon: 'success',
     })
