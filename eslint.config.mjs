@@ -22,5 +22,13 @@ export default [
 
   // 应用规则集
   js.configs.recommended,
-  ...pluginVue.configs['flat/essential']
+  ...pluginVue.configs['flat/essential'],
+
+  // 关闭 Vue 文件中的基础 no-unused-vars，交由 vue/no-unused-vars 处理模板引用
+  {
+    files: ['**/*.vue'],
+    rules: {
+      'no-unused-vars': 'off'
+    }
+  }
 ]
