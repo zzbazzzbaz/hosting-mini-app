@@ -11,7 +11,7 @@ const adaptComboxResponse = (response) => {
   return list
     .map((item, index) => ({
       id: item.id ?? `dict-${index}`,
-      name: item.dicName  ?? '',
+      name: item.dicName ?? '',
     }))
     .filter((item) => item.name)
 }

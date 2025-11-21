@@ -20,11 +20,7 @@ import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import PublishHomeworkForm from '@/components/PublishHomeworkForm.vue'
-import {
-  getChildrenByParentId,
-  publishHomework,
-  uploadHomeworkImage,
-} from '@/api/parent/homework'
+import { getChildrenByParentId, publishHomework, uploadHomeworkImage } from '@/api/parent/homework'
 import { getSubjectComboxList } from '@/api/common/dictionary'
 
 const childName = ref('')

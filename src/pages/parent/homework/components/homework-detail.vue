@@ -185,9 +185,7 @@ const fetchDetail = async (homeworkId) => {
   try {
     const res = await getHomeworkDetail(homeworkId)
     detail.value = res?.data || null
-    requirementImages.value = (res?.data?.homeworkImages || []).map(
-      (item) => item.url || item.path
-    )
+    requirementImages.value = (res?.data?.homeworkImages || []).map((item) => item.url || item.path)
     homeworkImages.value = (res?.data?.finishImages || []).map((item) => item.url || item.path)
   } catch (error) {
     console.error('加载作业详情失败', error)

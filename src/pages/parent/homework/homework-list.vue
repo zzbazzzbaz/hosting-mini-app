@@ -70,7 +70,9 @@
 
         <view class="homework-time">
           <text class="time-text">布置: {{ item.homeworkDate || '-' }}</text>
-          <text class="time-text">{{ item.finishDate ? `完成: ${item.finishDate}` : '未完成' }}</text>
+          <text class="time-text">{{
+            item.finishDate ? `完成: ${item.finishDate}` : '未完成'
+          }}</text>
         </view>
       </view>
 

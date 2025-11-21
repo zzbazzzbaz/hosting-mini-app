@@ -15,7 +15,12 @@
               <text class="arrow">▼</text>
             </view>
           </picker>
-          <picker class="filter-picker" mode="date" :value="filters.signDate" @change="onDateChange">
+          <picker
+            class="filter-picker"
+            mode="date"
+            :value="filters.signDate"
+            @change="onDateChange"
+          >
             <view class="picker-box">
               <text class="label">{{ dateLabel }}</text>
               <text class="arrow">▼</text>

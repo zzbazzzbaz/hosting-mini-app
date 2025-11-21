@@ -119,8 +119,8 @@ const normalizedTargets = computed(() =>
 
 const normalizedSubjects = computed(() =>
   (props.subjects || []).map((item) => ({
-    id: typeof item === 'string' ? item : item.id ?? item.value ?? '',
-    name: typeof item === 'string' ? item : item.name ?? item.label ?? '',
+    id: typeof item === 'string' ? item : (item.id ?? item.value ?? ''),
+    name: typeof item === 'string' ? item : (item.name ?? item.label ?? ''),
   }))
 )
 

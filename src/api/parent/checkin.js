@@ -53,7 +53,13 @@ const adaptSigninList = (response) => {
   }
 }
 
-export const getParentSigninList = async ({ page = 1, pageSize = 10, parentId, studentId, signDate } = {}) => {
+export const getParentSigninList = async ({
+  page = 1,
+  pageSize = 10,
+  parentId,
+  studentId,
+  signDate,
+} = {}) => {
   const params = {
     page,
     pageSize,
