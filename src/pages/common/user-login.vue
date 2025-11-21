@@ -100,7 +100,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { login } from '@/api/auth'
+import { login } from '@/api/common/auth'
 import { setAuth } from '@/store/auth'
 
 // 响应式数据

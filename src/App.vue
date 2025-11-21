@@ -1,6 +1,6 @@
 <script setup>
 import { isAuthenticated, getToken, clearAuth } from '@/store/auth'
-import { checkToken } from '@/api/auth'
+import { checkToken } from '@/api/common/auth'
 import { onLaunch, onShow, onHide } from '@dcloudio/uni-app'
 
 /**
