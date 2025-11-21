@@ -24,7 +24,7 @@ const submitting = ref(false)
 const subjects = ['语文', '数学', '英语', '科学', '美术', '音乐']
 const initialForm = ref({})
 
-const handleSubmit = (payload) => {
+const handleSubmit = () => {
   if (submitting.value) return
   submitting.value = true
 

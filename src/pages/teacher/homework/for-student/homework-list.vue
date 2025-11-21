@@ -54,32 +54,33 @@
 
     <!-- 作业列表 -->
     <view class="homework-list">
-      <view
-        v-if="filteredHomeworkList.length > 0"
-        v-for="item in filteredHomeworkList"
-        :key="item.id"
-        class="homework-item"
-        @tap="openHomeworkDetail(item)"
-      >
-        <!-- 第一行：科目 | 作业标题 | 状态 -->
-        <view class="homework-main">
-          <text class="subject">{{ item.subject }}</text>
-          <text class="title">{{ item.title }}</text>
-          <view
-            :class="[
-              'status-badge',
-              item.status === 'completed' ? 'status-completed' : 'status-pending',
-            ]"
-          >
-            <text>{{ item.status === 'completed' ? '已完成' : '未完成' }}</text>
+      <template v-if="filteredHomeworkList.length > 0">
+        <view
+          v-for="item in filteredHomeworkList"
+          :key="item.id"
+          class="homework-item"
+          @tap="openHomeworkDetail(item)"
+        >
+          <!-- 第一行：科目 | 作业标题 | 状态 -->
+          <view class="homework-main">
+            <text class="subject">{{ item.subject }}</text>
+            <text class="title">{{ item.title }}</text>
+            <view
+              :class="[
+                'status-badge',
+                item.status === 'completed' ? 'status-completed' : 'status-pending',
+              ]"
+            >
+              <text>{{ item.status === 'completed' ? '已完成' : '未完成' }}</text>
+            </view>
+          </view>
+          <!-- 第二行：发布时间 | 需要完成时间 -->
+          <view class="homework-time">
+            <text class="time-text">发布: {{ item.publishTime }}</text>
+            <text class="time-text">截止: {{ item.deadline }}</text>
           </view>
         </view>
-        <!-- 第二行：发布时间 | 需要完成时间 -->
-        <view class="homework-time">
-          <text class="time-text">发布: {{ item.publishTime }}</text>
-          <text class="time-text">截止: {{ item.deadline }}</text>
-        </view>
-      </view>
+      </template>
 
       <!-- 没有作业时显示空状态 -->
       <view v-else class="empty-state">

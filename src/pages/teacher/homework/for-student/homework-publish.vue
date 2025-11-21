@@ -28,7 +28,7 @@ const headerTitle = computed(() =>
   studentName.value ? `发布作业给 ${studentName.value}` : '发布作业'
 )
 
-const onSubmit = (payload) => {
+const onSubmit = () => {
   if (submitting.value) return
   submitting.value = true
 

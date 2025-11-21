@@ -23,7 +23,7 @@
  * @props title - 标题文字
  * @props showBack - 是否显示返回按钮，默认false
  */
-const props = defineProps({
+defineProps({
   title: {
     type: String,
     default: '',

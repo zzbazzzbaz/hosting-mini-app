@@ -233,7 +233,7 @@ const onPublishHomework = () => {
 /**
  * 跳转到作业详情页
  */
-const gotoDetail = (item) => {
+const gotoDetail = () => {
   uni.navigateTo({
     url: '/pages/parent/homework/homework-detail',
   })
