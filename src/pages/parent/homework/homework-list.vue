@@ -226,7 +226,7 @@ const onCompleteDateChange = (e) => {
  */
 const onPublishHomework = () => {
   uni.navigateTo({
-    url: '/pages/parent/homework/homework-publish',
+    url: '/pages/parent/homework/components/homework-publish',
   })
 }
 
@@ -235,7 +235,7 @@ const onPublishHomework = () => {
  */
 const gotoDetail = () => {
   uni.navigateTo({
-    url: '/pages/parent/homework/homework-detail',
+    url: '/pages/parent/homework/components/homework-detail',
   })
 }
 </script>

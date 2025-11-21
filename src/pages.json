@@ -29,14 +29,14 @@
 			}
 		},
 		{
-			"path": "pages/parent/homework/homework-detail",
+			"path": "pages/parent/homework/components/homework-detail",
 			"style": {
 				"navigationBarTitleText": "作业详情",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/parent/homework/homework-publish",
+			"path": "pages/parent/homework/components/homework-publish",
 			"style": {
 				"navigationBarTitleText": "发布作业",
 				"navigationStyle": "custom"
