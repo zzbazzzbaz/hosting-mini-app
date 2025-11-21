@@ -6,41 +6,56 @@
         <view class="filter-row">
           <picker
             class="filter-picker"
-            :range="nameOptions"
-            :value="selectedNameIndex"
-            @change="onNameChange"
+            :range="studentNames"
+            :value="filters.studentIndex"
+            @change="onStudentChange"
           >
             <view class="picker-box">
-              <text class="label">{{ selectedNameLabel }}</text>
+              <text class="label">{{ currentStudentName }}</text>
               <text class="arrow">▼</text>
             </view>
           </picker>
-          <picker class="filter-picker" mode="date" :value="pickerDateValue" @change="onDateChange">
+          <picker class="filter-picker" mode="date" :value="filters.signDate" @change="onDateChange">
             <view class="picker-box">
-              <text class="label">{{ selectedDateLabel }}</text>
+              <text class="label">{{ dateLabel }}</text>
               <text class="arrow">▼</text>
             </view>
           </picker>
         </view>
       </view>
+
       <view class="list-container">
-        <view v-if="filteredCheckins.length === 0" class="empty-state">
+        <view v-if="!checkinList.length && !loading" class="empty-state">
           <text class="empty-title">暂无签到记录</text>
           <text class="empty-subtitle">调整筛选条件试试</text>
         </view>
-        <view v-for="record in filteredCheckins" :key="record.id" class="checkin-card">
-          <view class="cell cell-name">
-            <text class="cell-text">{{ record.name }}</text>
+
+        <view v-for="record in checkinList" :key="record.id" class="checkin-card">
+          <view class="card-header">
+            <view class="title-wrap">
+              <text class="student-name">{{ record.studentName }}</text>
+              <text class="grade">{{ record.gradeName }}</text>
+            </view>
+            <text class="timestamp">{{ record.createTime || '-' }}</text>
           </view>
-          <view class="cell cell-date">
-            <text class="cell-text single-line">{{ formatDate(record.date) }}</text>
+
+          <view class="photo-row" v-if="record.photos.length">
+            <view
+              v-for="(photo, index) in record.photos"
+              :key="photo.id || index"
+              class="photo-wrap"
+              @click="previewPhotos(record.photos, index)"
+            >
+              <image :src="photo.url" class="photo" mode="aspectFill" />
+            </view>
           </view>
-          <view class="cell cell-time">
-            <text class="cell-text">{{ record.time }}</text>
-          </view>
-          <view class="cell cell-photo">
-            <image class="photo-preview" :src="record.photo" mode="aspectFill"></image>
-          </view>
+          <view v-else class="empty-inline">未上传签到照片</view>
+        </view>
+
+        <view class="load-more" v-if="checkinList.length">
+          <button class="load-more-btn" :disabled="loading || noMore" @tap="loadMore">
+            {{ noMore ? '没有更多了' : loading ? '加载中...' : '加载更多' }}
+          </button>
         </view>
       </view>
     </view>
@@ -49,63 +64,113 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
+import { onLoad, onPullDownRefresh } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import ParentTabBar from '@/components/ParentTabBar.vue'
+import { getChildrenByParentId } from '@/api/parent/homework'
+import { getParentSigninList } from '@/api/parent/checkin'
 
-const checkinRecords = ref([
-  { id: 1, name: '张明', date: '2025-10-15', time: '08:25', photo: '/static/logo.png' },
-  { id: 2, name: '张明', date: '2025-10-14', time: '08:27', photo: '/static/logo.png' },
-  { id: 3, name: '李华', date: '2025-10-15', time: '08:22', photo: '/static/logo.png' },
-  { id: 4, name: '李华', date: '2025-10-13', time: '08:19', photo: '/static/logo.png' },
-])
-
-const selectedNameIndex = ref(0)
-const selectedDate = ref('')
-
-const uniqueNames = computed(() => {
-  const names = checkinRecords.value.map((item) => item.name)
-  return Array.from(new Set(names))
+const students = ref([{ id: '', name: '全部学生' }])
+const filters = reactive({
+  studentIndex: 0,
+  signDate: '',
 })
+const checkinList = ref([])
+const loading = ref(false)
+const noMore = ref(false)
+const page = ref(1)
+const pageSize = 10
 
-const nameOptions = computed(() => ['全部', ...uniqueNames.value])
+const studentNames = computed(() => students.value.map((item) => item.name || ''))
+const currentStudentName = computed(() => studentNames.value[filters.studentIndex] || '全部学生')
+const currentStudentId = computed(() => students.value[filters.studentIndex]?.id || '')
+const dateLabel = computed(() => filters.signDate || '请选择日期')
 
-const selectedNameLabel = computed(() => {
-  const current = nameOptions.value[selectedNameIndex.value]
-  return selectedNameIndex.value === 0 || !current ? '请选择孩子' : current
-})
+const normalizeChildren = (list = []) =>
+  list
+    .map((item, index) => ({
+      id: item.id ?? `student-${index}`,
+      name: item.studentName ?? item.name ?? '',
+    }))
+    .filter((item) => item.name)
 
-const fallbackDate = computed(() => {
-  if (checkinRecords.value.length > 0) {
-    return checkinRecords.value[0].date
+const fetchStudents = async () => {
+  try {
+    const res = await getChildrenByParentId()
+    students.value = [{ id: '', name: '全部学生' }, ...normalizeChildren(res?.data || [])]
+    filters.studentIndex = 0
+  } catch (error) {
+    console.error('获取学生列表失败', error)
+    uni.showToast({ title: '学生列表获取失败', icon: 'none' })
   }
-  const now = new Date()
-  const month = `${now.getMonth() + 1}`.padStart(2, '0')
-  const day = `${now.getDate()}`.padStart(2, '0')
-  return `${now.getFullYear()}-${month}-${day}`
-})
+}
 
-const pickerDateValue = computed(() => selectedDate.value || fallbackDate.value)
-const selectedDateLabel = computed(() => selectedDate.value || '请选择日期')
+const fetchCheckins = async (reset = false) => {
+  if (loading.value) return
+  if (reset) {
+    page.value = 1
+    noMore.value = false
+    checkinList.value = []
+  }
+  loading.value = true
+  try {
+    const res = await getParentSigninList({
+      page: page.value,
+      pageSize,
+      studentId: currentStudentId.value || undefined,
+      signDate: filters.signDate || undefined,
+    })
+    const list = res?.data?.list || []
+    checkinList.value = reset ? list : [...checkinList.value, ...list]
+    if (!list.length || list.length < pageSize) {
+      noMore.value = true
+    } else {
+      page.value += 1
+    }
+  } catch (error) {
+    console.error('获取签到列表失败', error)
+    uni.showToast({ title: '加载失败', icon: 'none' })
+  } finally {
+    loading.value = false
+    if (reset) uni.stopPullDownRefresh()
+  }
+}
 
-const filteredCheckins = computed(() => {
-  const targetName = nameOptions.value[selectedNameIndex.value] || '全部'
-  return checkinRecords.value.filter((item) => {
-    const matchName = targetName === '全部' || item.name === targetName
-    const matchDate = !selectedDate.value || item.date === selectedDate.value
-    return matchName && matchDate
+const previewPhotos = (photos, current) => {
+  if (!photos || !photos.length) {
+    uni.showToast({ title: '无可预览图片', icon: 'none' })
+    return
+  }
+  uni.previewImage({
+    current: photos[current]?.url || photos[0]?.url,
+    urls: photos.map((item) => item.url).filter(Boolean),
   })
-})
+}
 
-const formatDate = (value) => value.replace(/-/g, '/')
+const loadMore = () => {
+  if (loading.value || noMore.value) return
+  fetchCheckins()
+}
 
-const onNameChange = (event) => {
-  selectedNameIndex.value = Number(event.detail.value)
+const onStudentChange = (event) => {
+  filters.studentIndex = Number(event.detail.value)
+  fetchCheckins(true)
 }
 
 const onDateChange = (event) => {
-  selectedDate.value = event.detail.value
+  filters.signDate = event.detail.value
+  fetchCheckins(true)
 }
+
+onLoad(() => {
+  fetchStudents()
+  fetchCheckins(true)
+})
+
+onPullDownRefresh(() => {
+  fetchCheckins(true)
+})
 </script>
 
 <style scoped>
@@ -165,8 +230,8 @@ const onDateChange = (event) => {
 .list-container {
   display: flex;
   flex-direction: column;
-  gap: 8rpx;
-  padding: 110rpx 32rpx 32rpx;
+  gap: 12rpx;
+  padding: 140rpx 32rpx 32rpx;
 }
 
 .checkin-card {
@@ -175,7 +240,8 @@ const onDateChange = (event) => {
   box-shadow: 0 4rpx 16rpx rgba(15, 23, 42, 0.06);
   padding: 16rpx 20rpx;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 12rpx;
   transition: transform 0.2s;
 }
 
@@ -183,46 +249,55 @@ const onDateChange = (event) => {
   transform: scale(0.99);
 }
 
-.cell {
+.card-header {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  padding: 0 12rpx;
-  text-align: center;
 }
 
-.cell:not(:first-child) {
-  border-left: 2rpx solid #e2e8f0;
+.title-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 10rpx;
 }
 
-.cell-name,
-.cell-date,
-.cell-time {
-  flex: 1 1 0;
-}
-
-.cell-photo {
-  flex: 0 0 108rpx;
-}
-
-.cell-text {
-  font-size: 28rpx;
-  font-weight: 600;
+.student-name {
+  font-size: 32rpx;
+  font-weight: 700;
   color: #0f172a;
 }
 
-.single-line {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.grade {
+  font-size: 24rpx;
+  color: #22c55e;
+  background: #ecfdf3;
+  padding: 6rpx 12rpx;
+  border-radius: 12rpx;
 }
 
-.photo-preview {
-  width: 88rpx;
-  height: 88rpx;
-  border-radius: 12rpx;
-  border: 2rpx solid #22c55e;
+.timestamp {
+  font-size: 24rpx;
+  color: #94a3b8;
+}
+
+.photo-row {
+  display: flex;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
+.photo-wrap {
+  width: 118rpx;
+  height: 118rpx;
+  border-radius: 14rpx;
   overflow: hidden;
+  background: #f1f5f9;
+  border: 2rpx solid #e2e8f0;
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
 }
 
 .empty-state {
@@ -244,5 +319,23 @@ const onDateChange = (event) => {
 .empty-subtitle {
   font-size: 26rpx;
   color: #94a3b8;
+}
+
+.empty-inline {
+  font-size: 26rpx;
+  color: #94a3b8;
+}
+
+.load-more {
+  text-align: center;
+  padding: 20rpx 0;
+}
+
+.load-more-btn {
+  padding: 18rpx 40rpx;
+  font-size: 26rpx;
+  color: #2563eb;
+  background: transparent;
+  border: none;
 }
 </style>
