@@ -1,5 +1,5 @@
-import request, { BASE_URL } from '@/utils/request'
-import { getUserId } from '@/utils/util'
+import request from '@/utils/request'
+import { buildImageUrl, getUserId } from '@/utils/util'
 
 const formatDateTime = (value) => {
   if (!value) return ''
@@ -16,12 +16,6 @@ const formatDateTime = (value) => {
     time: `${hh}:${mm}:${ss}`,
     full: `${y}-${m}-${d} ${hh}:${mm}:${ss}`,
   }
-}
-
-const buildImageUrl = (path) => {
-  if (!path) return ''
-  if (/^https?:\/\//i.test(path)) return path
-  return `${BASE_URL}${path}`
 }
 
 const adaptSigninList = (response) => {

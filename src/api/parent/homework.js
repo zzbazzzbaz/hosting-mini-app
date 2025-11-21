@@ -1,22 +1,6 @@
 import request, { BASE_URL } from '@/utils/request'
 import { getToken } from '@/store/auth'
-import { getUserId } from '@/utils/util'
-
-const formatDate = (value) => {
-  if (!value) return ''
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return value
-  const y = date.getFullYear()
-  const m = String(date.getMonth() + 1).padStart(2, '0')
-  const d = String(date.getDate()).padStart(2, '0')
-  return `${y}-${m}-${d}`
-}
-
-const buildImageUrl = (path) => {
-  if (!path) return ''
-  if (/^https?:\/\//i.test(path)) return path
-  return `${BASE_URL}${path}`
-}
+import { buildImageUrl, formatDate, getUserId } from '@/utils/util'
 
 const adaptChildren = (response) => {
   const list = (response?.data || []).map((item, index) => ({
@@ -217,5 +201,3 @@ export const publishHomework = async ({
     params,
   })
 }
-
-export { buildImageUrl }

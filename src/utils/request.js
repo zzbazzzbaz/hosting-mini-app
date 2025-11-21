@@ -28,7 +28,7 @@ const request = (options) => {
     let url = BASE_URL + options.url
     if (options.params) {
       const query = Object.keys(options.params)
-        .map((key) => `${key}=${options.params[key]}`)
+        .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(options.params[key])}`)
         .join('&')
       url += (url.includes('?') ? '&' : '?') + query
     }
