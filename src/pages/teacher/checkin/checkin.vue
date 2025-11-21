@@ -1,7 +1,7 @@
 <template>
   <view class="page">
     <!-- 使用PageHeader组件 -->
-    <PageHeader title="签到信息"  />
+    <PageHeader title="签到信息" />
 
     <!-- 筛选区域：教师、学校、年级、日期、签到状态、班级 -->
     <view class="filter-section">
@@ -10,7 +10,9 @@
         <view class="filter-item">
           <picker class="filter-picker" :range="teacherOptions" @change="onTeacherChange">
             <view class="picker-box">
-              <text class="label">{{currentTeacher === '全部' ? '请选择教师' : currentTeacher}}</text>
+              <text class="label">{{
+                currentTeacher === '全部' ? '请选择教师' : currentTeacher
+              }}</text>
               <text class="arrow">▼</text>
             </view>
           </picker>
@@ -18,7 +20,9 @@
         <view class="filter-item">
           <picker class="filter-picker" :range="schoolOptions" @change="onSchoolChange">
             <view class="picker-box">
-              <text class="label">{{currentSchool === '全部' ? '请选择学校' : currentSchool}}</text>
+              <text class="label">{{
+                currentSchool === '全部' ? '请选择学校' : currentSchool
+              }}</text>
               <text class="arrow">▼</text>
             </view>
           </picker>
@@ -26,7 +30,7 @@
         <view class="filter-item">
           <picker class="filter-picker" :range="gradeOptions" @change="onGradeChange">
             <view class="picker-box">
-              <text class="label">{{currentGrade === '全部' ? '请选择年级' : currentGrade}}</text>
+              <text class="label">{{ currentGrade === '全部' ? '请选择年级' : currentGrade }}</text>
               <text class="arrow">▼</text>
             </view>
           </picker>
@@ -37,7 +41,7 @@
         <view class="filter-item">
           <picker class="filter-picker" mode="date" :value="currentDate" @change="onDateChange">
             <view class="picker-box">
-              <text class="label">{{currentDate}}</text>
+              <text class="label">{{ currentDate }}</text>
               <text class="arrow">▼</text>
             </view>
           </picker>
@@ -50,7 +54,7 @@
             @change="onStatusChange"
           >
             <view class="picker-box">
-              <text class="label">{{currentStatus}}</text>
+              <text class="label">{{ currentStatus }}</text>
               <text class="arrow">▼</text>
             </view>
           </picker>
@@ -58,7 +62,7 @@
         <view class="filter-item">
           <picker class="filter-picker" :range="classOptions" @change="onClassChange">
             <view class="picker-box">
-              <text class="label">{{currentClass === '全部' ? '请选择班级' : currentClass}}</text>
+              <text class="label">{{ currentClass === '全部' ? '请选择班级' : currentClass }}</text>
               <text class="arrow">▼</text>
             </view>
           </picker>
@@ -96,10 +100,10 @@
         </view>
         <!-- 学生信息：姓名、学校、年级、班级 -->
         <view class="student-info">
-          <text class="name">{{item.name}}</text>
-          <text class="detail">{{item.school}}</text>
-          <text class="detail grade">{{item.grade}}</text>
-          <text class="detail">{{item.class}}</text>
+          <text class="name">{{ item.name }}</text>
+          <text class="detail">{{ item.school }}</text>
+          <text class="detail grade">{{ item.grade }}</text>
+          <text class="detail">{{ item.class }}</text>
         </view>
       </view>
     </view>
@@ -117,7 +121,7 @@
 </template>
 
 <script setup>
-import {ref, computed} from 'vue'
+import { ref, computed } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import TeacherTabBar from '@/components/TeacherTabBar.vue'
 
@@ -133,9 +137,9 @@ const currentTeacher = ref('全部')
 const currentSchool = ref('全部')
 const currentGrade = ref('全部')
 const currentClass = ref('全部')
-const currentDate = ref(todayDate)  // 默认当天
-const currentStatus = ref('未签到')  // 默认筛未签到
-const searchName = ref('')  // 名称搜索关键词
+const currentDate = ref(todayDate) // 默认当天
+const currentStatus = ref('未签到') // 默认筛未签到
+const searchName = ref('') // 名称搜索关键词
 
 // 筛选选项数据
 const teacherOptions = ['全部', '张三', '李四', '王五']
@@ -146,46 +150,446 @@ const statusOptions = ['全部', '未签到', '已签到']
 
 // 学生列表数据（添加日期、教师、签到状态字段）
 const studentList = ref([
-  {id: 1, name: '张同学', teacher: '张三', school: '实验小学', grade: '一年级', class: '1班', date: todayDate, checkInStatus: '未签到', checked: false},
-  {id: 2, name: '赵同学', teacher: '张三', school: '实验小学', grade: '二年级', class: '3班', date: todayDate, checkInStatus: '已签到', checked: false},
-  {id: 3, name: '刘同学', teacher: '李四', school: '第二小学', grade: '五年级', class: '2班', date: todayDate, checkInStatus: '未签到', checked: false},
-  {id: 4, name: '易同学', teacher: '王五', school: '第三小学', grade: '一年级', class: '4班', date: todayDate, checkInStatus: '已签到', checked: false},
-  {id: 5, name: '章同学', teacher: '张三', school: '实验小学', grade: '六年级', class: '1班', date: todayDate, checkInStatus: '未签到', checked: false},
-  {id: 6, name: '天同学', teacher: '李四', school: '第二小学', grade: '一年级', class: '2班', date: '2025-10-25', checkInStatus: '已签到', checked: false},
-  {id: 7, name: '王明', teacher: '张三', school: '实验小学', grade: '三年级', class: '1班', date: '2025-10-25', checkInStatus: '已签到', checked: false},
-  {id: 8, name: '李华', teacher: '李四', school: '第二小学', grade: '四年级', class: '2班', date: todayDate, checkInStatus: '未签到', checked: false},
-  {id: 9, name: '陈静', teacher: '王五', school: '第三小学', grade: '二年级', class: '3班', date: todayDate, checkInStatus: '已签到', checked: false},
-  {id: 10, name: '林峰', teacher: '张三', school: '实验小学', grade: '五年级', class: '1班', date: todayDate, checkInStatus: '未签到', checked: false},
-  {id: 11, name: '周雨', teacher: '李四', school: '第二小学', grade: '一年级', class: '4班', date: '2025-10-25', checkInStatus: '未签到', checked: false},
-  {id: 12, name: '吴晨', teacher: '张三', school: '实验小学', grade: '六年级', class: '2班', date: todayDate, checkInStatus: '已签到', checked: false},
-  {id: 13, name: '郑宇', teacher: '王五', school: '第三小学', grade: '三年级', class: '1班', date: todayDate, checkInStatus: '未签到', checked: false},
-  {id: 14, name: '孙涛', teacher: '张三', school: '实验小学', grade: '二年级', class: '3班', date: '2025-10-25', checkInStatus: '已签到', checked: false},
-  {id: 15, name: '何敏', teacher: '李四', school: '第二小学', grade: '四年级', class: '1班', date: todayDate, checkInStatus: '未签到', checked: false},
-  {id: 16, name: '高强', teacher: '王五', school: '第三小学', grade: '五年级', class: '2班', date: todayDate, checkInStatus: '已签到', checked: false},
-  {id: 17, name: '马丽', teacher: '张三', school: '实验小学', grade: '一年级', class: '4班', date: todayDate, checkInStatus: '未签到', checked: false},
-  {id: 18, name: '朱亮', teacher: '李四', school: '第二小学', grade: '六年级', class: '3班', date: '2025-10-25', checkInStatus: '未签到', checked: false},
-  {id: 19, name: '胡娟', teacher: '张三', school: '实验小学', grade: '三年级', class: '2班', date: todayDate, checkInStatus: '已签到', checked: false},
-  {id: 20, name: '郭伟', teacher: '王五', school: '第三小学', grade: '二年级', class: '1班', date: todayDate, checkInStatus: '未签到', checked: false},
-  {id: 21, name: '罗琪', teacher: '李四', school: '第二小学', grade: '四年级', class: '4班', date: todayDate, checkInStatus: '已签到', checked: false},
-  {id: 22, name: '梁洁', teacher: '张三', school: '实验小学', grade: '五年级', class: '3班', date: '2025-10-25', checkInStatus: '已签到', checked: false},
-  {id: 23, name: '宋欢', teacher: '王五', school: '第三小学', grade: '一年级', class: '2班', date: todayDate, checkInStatus: '未签到', checked: false},
-  {id: 24, name: '唐军', teacher: '张三', school: '实验小学', grade: '六年级', class: '1班', date: todayDate, checkInStatus: '已签到', checked: false},
-  {id: 25, name: '韩冰', teacher: '李四', school: '第二小学', grade: '三年级', class: '4班', date: todayDate, checkInStatus: '未签到', checked: false},
-  {id: 26, name: '冯磊', teacher: '王五', school: '第三小学', grade: '二年级', class: '2班', date: '2025-10-25', checkInStatus: '未签到', checked: false},
-  {id: 27, name: '于芳', teacher: '张三', school: '实验小学', grade: '四年级', class: '3班', date: todayDate, checkInStatus: '已签到', checked: false},
-  {id: 28, name: '董超', teacher: '李四', school: '第二小学', grade: '五年级', class: '1班', date: todayDate, checkInStatus: '未签到', checked: false},
-  {id: 29, name: '萧雪', teacher: '张三', school: '实验小学', grade: '一年级', class: '2班', date: todayDate, checkInStatus: '已签到', checked: false},
-  {id: 30, name: '程浩', teacher: '王五', school: '第三小学', grade: '六年级', class: '4班', date: '2025-10-25', checkInStatus: '已签到', checked: false},
-  {id: 31, name: '曹慧', teacher: '李四', school: '第二小学', grade: '三年级', class: '3班', date: todayDate, checkInStatus: '未签到', checked: false},
-  {id: 32, name: '袁杰', teacher: '张三', school: '实验小学', grade: '二年级', class: '1班', date: todayDate, checkInStatus: '已签到', checked: false},
-  {id: 33, name: '邓蕾', teacher: '王五', school: '第三小学', grade: '四年级', class: '2班', date: todayDate, checkInStatus: '未签到', checked: false},
-  {id: 34, name: '许鹏', teacher: '张三', school: '实验小学', grade: '五年级', class: '4班', date: '2025-10-25', checkInStatus: '未签到', checked: false},
-  {id: 35, name: '傅婷', teacher: '李四', school: '第二小学', grade: '一年级', class: '3班', date: todayDate, checkInStatus: '已签到', checked: false},
-  {id: 36, name: '沈刚', teacher: '王五', school: '第三小学', grade: '六年级', class: '1班', date: todayDate, checkInStatus: '未签到', checked: false},
-  {id: 37, name: '彭颖', teacher: '张三', school: '实验小学', grade: '三年级', class: '2班', date: todayDate, checkInStatus: '已签到', checked: false},
-  {id: 38, name: '吕波', teacher: '李四', school: '第二小学', grade: '二年级', class: '4班', date: '2025-10-25', checkInStatus: '已签到', checked: false},
-  {id: 39, name: '苏悦', teacher: '张三', school: '实验小学', grade: '四年级', class: '1班', date: todayDate, checkInStatus: '未签到', checked: false},
-  {id: 40, name: '卢翔', teacher: '王五', school: '第三小学', grade: '五年级', class: '3班', date: todayDate, checkInStatus: '已签到', checked: false}
+  {
+    id: 1,
+    name: '张同学',
+    teacher: '张三',
+    school: '实验小学',
+    grade: '一年级',
+    class: '1班',
+    date: todayDate,
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 2,
+    name: '赵同学',
+    teacher: '张三',
+    school: '实验小学',
+    grade: '二年级',
+    class: '3班',
+    date: todayDate,
+    checkInStatus: '已签到',
+    checked: false,
+  },
+  {
+    id: 3,
+    name: '刘同学',
+    teacher: '李四',
+    school: '第二小学',
+    grade: '五年级',
+    class: '2班',
+    date: todayDate,
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 4,
+    name: '易同学',
+    teacher: '王五',
+    school: '第三小学',
+    grade: '一年级',
+    class: '4班',
+    date: todayDate,
+    checkInStatus: '已签到',
+    checked: false,
+  },
+  {
+    id: 5,
+    name: '章同学',
+    teacher: '张三',
+    school: '实验小学',
+    grade: '六年级',
+    class: '1班',
+    date: todayDate,
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 6,
+    name: '天同学',
+    teacher: '李四',
+    school: '第二小学',
+    grade: '一年级',
+    class: '2班',
+    date: '2025-10-25',
+    checkInStatus: '已签到',
+    checked: false,
+  },
+  {
+    id: 7,
+    name: '王明',
+    teacher: '张三',
+    school: '实验小学',
+    grade: '三年级',
+    class: '1班',
+    date: '2025-10-25',
+    checkInStatus: '已签到',
+    checked: false,
+  },
+  {
+    id: 8,
+    name: '李华',
+    teacher: '李四',
+    school: '第二小学',
+    grade: '四年级',
+    class: '2班',
+    date: todayDate,
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 9,
+    name: '陈静',
+    teacher: '王五',
+    school: '第三小学',
+    grade: '二年级',
+    class: '3班',
+    date: todayDate,
+    checkInStatus: '已签到',
+    checked: false,
+  },
+  {
+    id: 10,
+    name: '林峰',
+    teacher: '张三',
+    school: '实验小学',
+    grade: '五年级',
+    class: '1班',
+    date: todayDate,
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 11,
+    name: '周雨',
+    teacher: '李四',
+    school: '第二小学',
+    grade: '一年级',
+    class: '4班',
+    date: '2025-10-25',
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 12,
+    name: '吴晨',
+    teacher: '张三',
+    school: '实验小学',
+    grade: '六年级',
+    class: '2班',
+    date: todayDate,
+    checkInStatus: '已签到',
+    checked: false,
+  },
+  {
+    id: 13,
+    name: '郑宇',
+    teacher: '王五',
+    school: '第三小学',
+    grade: '三年级',
+    class: '1班',
+    date: todayDate,
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 14,
+    name: '孙涛',
+    teacher: '张三',
+    school: '实验小学',
+    grade: '二年级',
+    class: '3班',
+    date: '2025-10-25',
+    checkInStatus: '已签到',
+    checked: false,
+  },
+  {
+    id: 15,
+    name: '何敏',
+    teacher: '李四',
+    school: '第二小学',
+    grade: '四年级',
+    class: '1班',
+    date: todayDate,
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 16,
+    name: '高强',
+    teacher: '王五',
+    school: '第三小学',
+    grade: '五年级',
+    class: '2班',
+    date: todayDate,
+    checkInStatus: '已签到',
+    checked: false,
+  },
+  {
+    id: 17,
+    name: '马丽',
+    teacher: '张三',
+    school: '实验小学',
+    grade: '一年级',
+    class: '4班',
+    date: todayDate,
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 18,
+    name: '朱亮',
+    teacher: '李四',
+    school: '第二小学',
+    grade: '六年级',
+    class: '3班',
+    date: '2025-10-25',
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 19,
+    name: '胡娟',
+    teacher: '张三',
+    school: '实验小学',
+    grade: '三年级',
+    class: '2班',
+    date: todayDate,
+    checkInStatus: '已签到',
+    checked: false,
+  },
+  {
+    id: 20,
+    name: '郭伟',
+    teacher: '王五',
+    school: '第三小学',
+    grade: '二年级',
+    class: '1班',
+    date: todayDate,
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 21,
+    name: '罗琪',
+    teacher: '李四',
+    school: '第二小学',
+    grade: '四年级',
+    class: '4班',
+    date: todayDate,
+    checkInStatus: '已签到',
+    checked: false,
+  },
+  {
+    id: 22,
+    name: '梁洁',
+    teacher: '张三',
+    school: '实验小学',
+    grade: '五年级',
+    class: '3班',
+    date: '2025-10-25',
+    checkInStatus: '已签到',
+    checked: false,
+  },
+  {
+    id: 23,
+    name: '宋欢',
+    teacher: '王五',
+    school: '第三小学',
+    grade: '一年级',
+    class: '2班',
+    date: todayDate,
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 24,
+    name: '唐军',
+    teacher: '张三',
+    school: '实验小学',
+    grade: '六年级',
+    class: '1班',
+    date: todayDate,
+    checkInStatus: '已签到',
+    checked: false,
+  },
+  {
+    id: 25,
+    name: '韩冰',
+    teacher: '李四',
+    school: '第二小学',
+    grade: '三年级',
+    class: '4班',
+    date: todayDate,
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 26,
+    name: '冯磊',
+    teacher: '王五',
+    school: '第三小学',
+    grade: '二年级',
+    class: '2班',
+    date: '2025-10-25',
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 27,
+    name: '于芳',
+    teacher: '张三',
+    school: '实验小学',
+    grade: '四年级',
+    class: '3班',
+    date: todayDate,
+    checkInStatus: '已签到',
+    checked: false,
+  },
+  {
+    id: 28,
+    name: '董超',
+    teacher: '李四',
+    school: '第二小学',
+    grade: '五年级',
+    class: '1班',
+    date: todayDate,
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 29,
+    name: '萧雪',
+    teacher: '张三',
+    school: '实验小学',
+    grade: '一年级',
+    class: '2班',
+    date: todayDate,
+    checkInStatus: '已签到',
+    checked: false,
+  },
+  {
+    id: 30,
+    name: '程浩',
+    teacher: '王五',
+    school: '第三小学',
+    grade: '六年级',
+    class: '4班',
+    date: '2025-10-25',
+    checkInStatus: '已签到',
+    checked: false,
+  },
+  {
+    id: 31,
+    name: '曹慧',
+    teacher: '李四',
+    school: '第二小学',
+    grade: '三年级',
+    class: '3班',
+    date: todayDate,
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 32,
+    name: '袁杰',
+    teacher: '张三',
+    school: '实验小学',
+    grade: '二年级',
+    class: '1班',
+    date: todayDate,
+    checkInStatus: '已签到',
+    checked: false,
+  },
+  {
+    id: 33,
+    name: '邓蕾',
+    teacher: '王五',
+    school: '第三小学',
+    grade: '四年级',
+    class: '2班',
+    date: todayDate,
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 34,
+    name: '许鹏',
+    teacher: '张三',
+    school: '实验小学',
+    grade: '五年级',
+    class: '4班',
+    date: '2025-10-25',
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 35,
+    name: '傅婷',
+    teacher: '李四',
+    school: '第二小学',
+    grade: '一年级',
+    class: '3班',
+    date: todayDate,
+    checkInStatus: '已签到',
+    checked: false,
+  },
+  {
+    id: 36,
+    name: '沈刚',
+    teacher: '王五',
+    school: '第三小学',
+    grade: '六年级',
+    class: '1班',
+    date: todayDate,
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 37,
+    name: '彭颖',
+    teacher: '张三',
+    school: '实验小学',
+    grade: '三年级',
+    class: '2班',
+    date: todayDate,
+    checkInStatus: '已签到',
+    checked: false,
+  },
+  {
+    id: 38,
+    name: '吕波',
+    teacher: '李四',
+    school: '第二小学',
+    grade: '二年级',
+    class: '4班',
+    date: '2025-10-25',
+    checkInStatus: '已签到',
+    checked: false,
+  },
+  {
+    id: 39,
+    name: '苏悦',
+    teacher: '张三',
+    school: '实验小学',
+    grade: '四年级',
+    class: '1班',
+    date: todayDate,
+    checkInStatus: '未签到',
+    checked: false,
+  },
+  {
+    id: 40,
+    name: '卢翔',
+    teacher: '王五',
+    school: '第三小学',
+    grade: '五年级',
+    class: '3班',
+    date: todayDate,
+    checkInStatus: '已签到',
+    checked: false,
+  },
 ])
 
 // 教师筛选器变化事件
@@ -235,37 +639,37 @@ const filteredStudentList = computed(() => {
 
   // 按教师筛选
   if (currentTeacher.value !== '全部') {
-    filtered = filtered.filter(item => item.teacher === currentTeacher.value)
+    filtered = filtered.filter((item) => item.teacher === currentTeacher.value)
   }
 
   // 按学校筛选
   if (currentSchool.value !== '全部') {
-    filtered = filtered.filter(item => item.school === currentSchool.value)
+    filtered = filtered.filter((item) => item.school === currentSchool.value)
   }
 
   // 按年级筛选
   if (currentGrade.value !== '全部') {
-    filtered = filtered.filter(item => item.grade === currentGrade.value)
+    filtered = filtered.filter((item) => item.grade === currentGrade.value)
   }
 
   // 按班级筛选
   if (currentClass.value !== '全部') {
-    filtered = filtered.filter(item => item.class === currentClass.value)
+    filtered = filtered.filter((item) => item.class === currentClass.value)
   }
 
   // 按日期筛选
   if (currentDate.value) {
-    filtered = filtered.filter(item => item.date === currentDate.value)
+    filtered = filtered.filter((item) => item.date === currentDate.value)
   }
 
   // 按签到状态筛选
   if (currentStatus.value !== '全部') {
-    filtered = filtered.filter(item => item.checkInStatus === currentStatus.value)
+    filtered = filtered.filter((item) => item.checkInStatus === currentStatus.value)
   }
 
   // 按名称搜索
   if (searchName.value.trim()) {
-    filtered = filtered.filter(item => item.name.includes(searchName.value.trim()))
+    filtered = filtered.filter((item) => item.name.includes(searchName.value.trim()))
   }
 
   return filtered
@@ -273,7 +677,9 @@ const filteredStudentList = computed(() => {
 
 // 计算是否全选（基于筛选后的列表）
 const isAllSelected = computed(() => {
-  return filteredStudentList.value.length > 0 && filteredStudentList.value.every(item => item.checked)
+  return (
+    filteredStudentList.value.length > 0 && filteredStudentList.value.every((item) => item.checked)
+  )
 })
 
 // 切换学生的签到状态
@@ -284,18 +690,18 @@ const toggleCheck = (item) => {
 // 全选/取消全选
 const toggleSelectAll = () => {
   const newCheckedState = !isAllSelected.value
-  filteredStudentList.value.forEach(item => {
+  filteredStudentList.value.forEach((item) => {
     item.checked = newCheckedState
   })
 }
 
 // 批量签到按钮点击事件
 const handleBatchCheckin = () => {
-  const checkedStudents = filteredStudentList.value.filter(s => s.checked)
+  const checkedStudents = filteredStudentList.value.filter((s) => s.checked)
   if (checkedStudents.length === 0) {
     uni.showToast({
       title: '请至少选择一个学生',
-      icon: 'none'
+      icon: 'none',
     })
     return
   }
@@ -305,7 +711,7 @@ const handleBatchCheckin = () => {
 
   // 跳转到签到确认页面
   uni.navigateTo({
-    url: '/pages/teacher/checkin/checkin-confirm'
+    url: '/pages/teacher/checkin/checkin-confirm',
   })
 }
 </script>

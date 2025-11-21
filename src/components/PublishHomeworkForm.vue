@@ -51,11 +51,7 @@
         <text class="section-subtitle">上传配图或附件（可选）</text>
       </view>
       <view class="upload-grid">
-        <view
-          v-for="(img, index) in form.images"
-          :key="img"
-          class="upload-item"
-        >
+        <view v-for="(img, index) in form.images" :key="img" class="upload-item">
           <image :src="img" mode="aspectFill" class="upload-image" />
           <view class="remove" @click="removeImage(index)">✕</view>
         </view>
@@ -73,25 +69,25 @@
 </template>
 
 <script setup>
-import {computed, reactive, watch} from 'vue'
+import { computed, reactive, watch } from 'vue'
 
 const props = defineProps({
   studentName: {
     type: String,
-    default: ''
+    default: '',
   },
   initialForm: {
     type: Object,
-    default: () => ({})
+    default: () => ({}),
   },
   subjects: {
     type: Array,
-    default: () => ['语文', '数学', '英语', '科学', '美术', '音乐']
+    default: () => ['语文', '数学', '英语', '科学', '美术', '音乐'],
   },
   submitting: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 const emit = defineEmits(['submit', 'choose-image', 'remove-image'])
@@ -105,14 +101,14 @@ const createDefaultForm = () => {
     date: `${year}-${month}-${day}`,
     subject: '',
     content: '',
-    images: []
+    images: [],
   }
 }
 
 const form = reactive(createDefaultForm())
 
 const applyInitialForm = (payload) => {
-  const next = {...createDefaultForm(), ...(payload || {})}
+  const next = { ...createDefaultForm(), ...(payload || {}) }
   Object.assign(form, next)
 }
 
@@ -121,7 +117,7 @@ watch(
   (value) => {
     applyInitialForm(value)
   },
-  {immediate: true, deep: true}
+  { immediate: true, deep: true }
 )
 
 const targetName = computed(() => (props.studentName ? `${props.studentName}` : '请选择布置对象'))
@@ -142,14 +138,14 @@ watch(
   (value) => {
     if (value.length > 500) {
       form.content = value.slice(0, 500)
-      uni.showToast({title: '内容最多500字', icon: 'none'})
+      uni.showToast({ title: '内容最多500字', icon: 'none' })
     }
   }
 )
 
 const chooseImage = () => {
   if (form.images.length >= 6) {
-    uni.showToast({title: '最多上传6张图片', icon: 'none'})
+    uni.showToast({ title: '最多上传6张图片', icon: 'none' })
     return
   }
   uni.chooseImage({
@@ -158,7 +154,7 @@ const chooseImage = () => {
       const paths = res.tempFilePaths || []
       form.images = [...form.images, ...paths].slice(0, 6)
       emit('choose-image', form.images)
-    }
+    },
   })
 }
 
@@ -171,14 +167,14 @@ const removeImage = (index) => {
 
 const handleSubmit = () => {
   if (!form.subject) {
-    uni.showToast({title: '请选择科目', icon: 'none'})
+    uni.showToast({ title: '请选择科目', icon: 'none' })
     return
   }
   if (!form.content.trim()) {
-    uni.showToast({title: '请输入作业内容', icon: 'none'})
+    uni.showToast({ title: '请输入作业内容', icon: 'none' })
     return
   }
-  emit('submit', {...form})
+  emit('submit', { ...form })
 }
 </script>
 

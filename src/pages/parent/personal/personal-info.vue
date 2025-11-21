@@ -55,7 +55,7 @@ import PageHeader from '@/components/PageHeader.vue'
 
 const parentInfo = ref({
   name: '李女士',
-  phone: '138****1234'
+  phone: '138****1234',
 })
 
 const handleChangeAvatar = () => {
@@ -68,15 +68,15 @@ const handleChangeAvatar = () => {
         sourceType,
         success: () => {
           uni.showToast({ title: '头像上传功能开发中', icon: 'none' })
-        }
+        },
       })
-    }
+    },
   })
 }
 
 const fieldMap = {
   name: '姓名',
-  phone: '手机号码'
+  phone: '手机号码',
 }
 
 const handleEdit = (field) => {
@@ -91,7 +91,7 @@ const handleEdit = (field) => {
         parentInfo.value[field] = res.content
         uni.showToast({ title: `${label}已更新`, icon: 'success' })
       }
-    }
+    },
   })
 }
 
@@ -103,7 +103,7 @@ const handleChangePassword = () => {
       if (res.confirm) {
         uni.showToast({ title: '密码修改功能开发中', icon: 'none' })
       }
-    }
+    },
   })
 }
 </script>

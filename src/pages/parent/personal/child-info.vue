@@ -42,7 +42,7 @@ const children = ref([
     completedHours: 26,
     pendingHours: 4,
     teacherName: '王老师',
-    teacherPhone: '138****2222'
+    teacherPhone: '138****2222',
   },
   {
     id: 2,
@@ -50,8 +50,8 @@ const children = ref([
     completedHours: 18,
     pendingHours: 8,
     teacherName: '赵老师',
-    teacherPhone: '139****7788'
-  }
+    teacherPhone: '139****7788',
+  },
 ])
 </script>
 

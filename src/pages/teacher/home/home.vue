@@ -13,8 +13,8 @@
           </view>
         </view>
         <view class="header-time">
-          <text class="time-text">{{currentTime}}</text>
-          <text class="date-text">{{currentDate}}</text>
+          <text class="time-text">{{ currentTime }}</text>
+          <text class="date-text">{{ currentDate }}</text>
         </view>
       </view>
     </view>
@@ -29,21 +29,21 @@
           <view class="icon-box icon-blue">
             <uni-icons type="person" size="24" color="#3b82f6"></uni-icons>
           </view>
-          <text class="value">{{stats.totalStudents}}</text>
+          <text class="value">{{ stats.totalStudents }}</text>
           <text class="label">学生总数</text>
         </view>
         <view class="stat-card stat-green" @click="goToCheckin">
           <view class="icon-box icon-green">
             <uni-icons type="checkmarkempty" size="24" color="#10b981"></uni-icons>
           </view>
-          <text class="value">{{checkinRate}}%</text>
+          <text class="value">{{ checkinRate }}%</text>
           <text class="label">今日签到率</text>
         </view>
         <view class="stat-card stat-purple" @click="goToHomework">
           <view class="icon-box icon-purple">
             <uni-icons type="paperplane" size="24" color="#8b5cf6"></uni-icons>
           </view>
-          <text class="value">{{homeworkRate}}%</text>
+          <text class="value">{{ homeworkRate }}%</text>
           <text class="label">作业完成率</text>
         </view>
       </view>
@@ -63,7 +63,7 @@
               <uni-icons type="checkmarkempty" size="20" color="#10b981"></uni-icons>
             </view>
             <view class="detail-info">
-              <text class="detail-value">{{stats.todayChecked}}</text>
+              <text class="detail-value">{{ stats.todayChecked }}</text>
               <text class="detail-label">已签到</text>
             </view>
           </view>
@@ -73,7 +73,7 @@
               <uni-icons type="closeempty" size="20" color="#ef4444"></uni-icons>
             </view>
             <view class="detail-info">
-              <text class="detail-value">{{stats.todayUnchecked}}</text>
+              <text class="detail-value">{{ stats.todayUnchecked }}</text>
               <text class="detail-label">未签到</text>
             </view>
           </view>
@@ -92,37 +92,42 @@
         <view class="homework-grid">
           <view class="homework-item">
             <text class="homework-label">累计完成</text>
-            <text class="homework-value green">{{stats.completedHomework}}</text>
+            <text class="homework-value green">{{ stats.completedHomework }}</text>
           </view>
           <view class="homework-item">
             <text class="homework-label">累计未完成</text>
-            <text class="homework-value red">{{stats.pendingHomework}}</text>
+            <text class="homework-value red">{{ stats.pendingHomework }}</text>
           </view>
           <view class="homework-item">
             <text class="homework-label">今日完成</text>
-            <text class="homework-value green">{{stats.todayCompleted}}</text>
+            <text class="homework-value green">{{ stats.todayCompleted }}</text>
           </view>
           <view class="homework-item">
             <text class="homework-label">今日待完成</text>
-            <text class="homework-value orange">{{stats.todayPending}}</text>
+            <text class="homework-value orange">{{ stats.todayPending }}</text>
           </view>
         </view>
       </view>
 
       <!-- 公告通知卡片 -->
-      <view class="section-title" style="margin-top: 32rpx;">
+      <view class="section-title" style="margin-top: 32rpx">
         <uni-icons type="sound" size="24" color="#1f2937"></uni-icons>
         <text class="title">公告通知</text>
       </view>
       <view class="notice-card">
-        <view class="notice-item" v-for="(notice, index) in notices" :key="index" @click="viewNotice(notice)">
+        <view
+          class="notice-item"
+          v-for="(notice, index) in notices"
+          :key="index"
+          @click="viewNotice(notice)"
+        >
           <view class="notice-left">
             <view class="notice-icon" :class="notice.type">
               <uni-icons :type="notice.icon" size="20" :color="notice.color"></uni-icons>
             </view>
             <view class="notice-content">
-              <text class="notice-title">{{notice.title}}</text>
-              <text class="notice-time">{{notice.time}}</text>
+              <text class="notice-title">{{ notice.title }}</text>
+              <text class="notice-time">{{ notice.time }}</text>
             </view>
           </view>
           <uni-icons type="forward" size="16" color="#d1d5db"></uni-icons>
@@ -138,7 +143,7 @@
   </view>
 </template>
 <script setup>
-import {ref, computed, onMounted, onUnmounted} from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import TeacherTabBar from '@/components/TeacherTabBar.vue'
 
 /**
@@ -167,13 +172,13 @@ const updateTime = () => {
 
 // 统计数据
 const stats = ref({
-  totalStudents: 20,      // 学生总数
-  todayChecked: 18,       // 今日已签到
-  todayUnchecked: 2,      // 今日未签到
+  totalStudents: 20, // 学生总数
+  todayChecked: 18, // 今日已签到
+  todayUnchecked: 2, // 今日未签到
   completedHomework: 186, // 累计完成作业
-  pendingHomework: 32,    // 累计未完成作业
-  todayCompleted: 15,     // 今日完成作业
-  todayPending: 6         // 今日待完成作业
+  pendingHomework: 32, // 累计未完成作业
+  todayCompleted: 15, // 今日完成作业
+  todayPending: 6, // 今日待完成作业
 })
 
 // 计算签到率
@@ -197,7 +202,7 @@ const notices = ref([
     icon: 'info',
     color: '#ef4444',
     title: '关于期末考试安排的通知',
-    time: '2小时前'
+    time: '2小时前',
   },
   {
     id: 2,
@@ -205,7 +210,7 @@ const notices = ref([
     icon: 'chatbubble',
     color: '#3b82f6',
     title: '下周一开始使用新教材',
-    time: '5小时前'
+    time: '5小时前',
   },
   {
     id: 3,
@@ -213,21 +218,21 @@ const notices = ref([
     icon: 'calendar',
     color: '#10b981',
     title: '本周五下午教研活动',
-    time: '1天前'
-  }
+    time: '1天前',
+  },
 ])
 
 // 导航方法
-const goToCheckin = () => uni.navigateTo({url: '/pages/teacher/checkin/checkin'})
-const goToHomework = () => uni.navigateTo({url: '/pages/teacher/homework/homework-list'})
+const goToCheckin = () => uni.navigateTo({ url: '/pages/teacher/checkin/checkin' })
+const goToHomework = () => uni.navigateTo({ url: '/pages/teacher/homework/homework-list' })
 
 // 查看公告详情
 const viewNotice = (notice) => {
   uni.showModal({
     title: notice.title,
     content: '这里显示公告详细内容...',
-    showCancel: false,  // 不显示取消按钮
-    confirmText: '确认'
+    showCancel: false, // 不显示取消按钮
+    confirmText: '确认',
   })
 }
 

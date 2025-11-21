@@ -57,7 +57,6 @@
           <uni-icons type="forward" size="18" color="#d1d5db"></uni-icons>
         </view>
       </view>
-
     </view>
 
     <view class="logout-section">
@@ -69,7 +68,7 @@
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import { ref } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import ParentTabBar from '@/components/ParentTabBar.vue'
 
@@ -94,7 +93,7 @@ const handleLogout = () => {
         uni.reLaunch({ url: '/pages/common/login' })
         uni.showToast({ title: '已退出', icon: 'success' })
       }
-    }
+    },
   })
 }
 </script>

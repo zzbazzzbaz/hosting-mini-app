@@ -8,12 +8,12 @@
       <view class="profile-header">
         <view class="avatar-wrapper">
           <view class="avatar">
-            <text class="avatar-text">{{teacherInfo.name[0]}}</text>
+            <text class="avatar-text">{{ teacherInfo.name[0] }}</text>
           </view>
           <view class="online-badge"></view>
         </view>
         <view class="user-info">
-          <text class="username">{{teacherInfo.name}}</text>
+          <text class="username">{{ teacherInfo.name }}</text>
           <text class="role">👨‍🏫 教师</text>
         </view>
       </view>
@@ -21,21 +21,20 @@
       <!-- 统计数据卡片 -->
       <view class="stats-grid">
         <view class="stat-item">
-          <text class="stat-value">{{stats.totalStudents}}</text>
+          <text class="stat-value">{{ stats.totalStudents }}</text>
           <text class="stat-label">学生总数</text>
         </view>
         <view class="stat-divider"></view>
         <view class="stat-item">
-          <text class="stat-value">{{stats.todayChecked}}</text>
+          <text class="stat-value">{{ stats.todayChecked }}</text>
           <text class="stat-label">今日签到</text>
         </view>
         <view class="stat-divider"></view>
         <view class="stat-item">
-          <text class="stat-value">{{stats.completedHomework}}</text>
+          <text class="stat-value">{{ stats.completedHomework }}</text>
           <text class="stat-label">学生作业</text>
         </view>
       </view>
-
     </view>
 
     <view class="menu-section">
@@ -62,7 +61,7 @@
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import { ref } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import TeacherTabBar from '@/components/TeacherTabBar.vue'
 
@@ -72,16 +71,16 @@ import TeacherTabBar from '@/components/TeacherTabBar.vue'
 const teacherInfo = ref({
   name: '张三',
   phone: '138****5678',
-  email: 'zhangsan@example.com'
+  email: 'zhangsan@example.com',
 })
 
 /**
  * 统计数据
  */
 const stats = ref({
-  totalStudents: 20,       // 学生总数
-  todayChecked: 18,        // 今日签到数
-  completedHomework: 186   // 累计批改作业数
+  totalStudents: 20, // 学生总数
+  todayChecked: 18, // 今日签到数
+  completedHomework: 186, // 累计批改作业数
 })
 
 /**
@@ -89,7 +88,7 @@ const stats = ref({
  */
 const handlePersonalInfo = () => {
   uni.navigateTo({
-    url: '/pages/teacher/personal/personal-info'
+    url: '/pages/teacher/personal/personal-info',
   })
 }
 
@@ -105,17 +104,16 @@ const handleLogout = () => {
         uni.removeStorageSync('userInfo')
         uni.removeStorageSync('token')
         uni.reLaunch({
-          url: '/pages/common/login'
+          url: '/pages/common/login',
         })
         uni.showToast({
           title: '已退出登录',
-          icon: 'success'
+          icon: 'success',
         })
       }
-    }
+    },
   })
 }
-
 </script>
 
 <style scoped>
@@ -296,7 +294,9 @@ const handleLogout = () => {
   align-items: center;
   justify-content: center;
   box-shadow: 0 4rpx 16rpx rgba(239, 68, 68, 0.2);
-  transition: opacity 0.2s, transform 0.2s;
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
 }
 
 .logout-btn::after {

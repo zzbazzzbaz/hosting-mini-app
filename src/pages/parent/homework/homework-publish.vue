@@ -14,8 +14,8 @@
 </template>
 
 <script setup>
-import {ref} from 'vue'
-import {onLoad} from '@dcloudio/uni-app'
+import { ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import PublishHomeworkForm from '@/components/PublishHomeworkForm.vue'
 
@@ -28,7 +28,7 @@ const handleSubmit = (payload) => {
   if (submitting.value) return
   submitting.value = true
 
-  uni.showToast({title: '发布成功', icon: 'success'})
+  uni.showToast({ title: '发布成功', icon: 'success' })
 
   setTimeout(() => {
     submitting.value = false

@@ -9,26 +9,36 @@
       <view class="filter-row">
         <picker class="filter-picker" :range="subjects" @change="onSubjectChange">
           <view class="picker-box">
-            <text class="label">{{ currentSubject || '请选择科目'}}</text>
+            <text class="label">{{ currentSubject || '请选择科目' }}</text>
             <text class="arrow">▼</text>
           </view>
         </picker>
         <picker class="filter-picker" :range="statuses" @change="onStatusChange">
           <view class="picker-box">
-            <text class="label">{{ currentStatus || '请选择状态'}}</text>
+            <text class="label">{{ currentStatus || '请选择状态' }}</text>
             <text class="arrow">▼</text>
           </view>
         </picker>
       </view>
       <!-- 第二行：发布时间、完成时间 -->
       <view class="filter-row">
-        <picker class="filter-picker" mode="date" :value="currentPublishDate" @change="onPublishDateChange">
+        <picker
+          class="filter-picker"
+          mode="date"
+          :value="currentPublishDate"
+          @change="onPublishDateChange"
+        >
           <view class="picker-box">
             <text class="label">{{ currentPublishDate || '发布时间' }}</text>
             <text class="arrow">▼</text>
           </view>
         </picker>
-        <picker class="filter-picker" mode="date" :value="currentCompleteDate" @change="onCompleteDateChange">
+        <picker
+          class="filter-picker"
+          mode="date"
+          :value="currentCompleteDate"
+          @change="onCompleteDateChange"
+        >
           <view class="picker-box">
             <text class="label">{{ currentCompleteDate || '完成时间' }}</text>
             <text class="arrow">▼</text>
@@ -52,7 +62,12 @@
         <view class="homework-main">
           <text class="subject">{{ item.subject }}</text>
           <text class="title">{{ item.title }}</text>
-          <view :class="['status-badge', item.status === 'completed' ? 'status-completed' : 'status-pending']">
+          <view
+            :class="[
+              'status-badge',
+              item.status === 'completed' ? 'status-completed' : 'status-pending',
+            ]"
+          >
             <text class="status-text">{{ item.status === 'completed' ? '已完成' : '未完成' }}</text>
           </view>
         </view>
@@ -103,7 +118,7 @@ const homeworkList = ref([
     completeDate: '2025-10-16',
     status: 'completed',
     iconText: '数',
-    color: 'blue'
+    color: 'blue',
   },
   {
     subject: '英语',
@@ -113,7 +128,7 @@ const homeworkList = ref([
     completeDate: null,
     status: 'pending',
     iconText: '英',
-    color: 'red'
+    color: 'red',
   },
   {
     subject: '语文',
@@ -123,7 +138,7 @@ const homeworkList = ref([
     completeDate: '2025-10-15',
     status: 'completed',
     iconText: '语',
-    color: 'green'
+    color: 'green',
   },
   {
     subject: '物理',
@@ -133,7 +148,7 @@ const homeworkList = ref([
     completeDate: '2025-10-14',
     status: 'completed',
     iconText: '物',
-    color: 'purple'
+    color: 'purple',
   },
   {
     subject: '化学',
@@ -143,8 +158,8 @@ const homeworkList = ref([
     completeDate: null,
     status: 'pending',
     iconText: '化',
-    color: 'orange'
-  }
+    color: 'orange',
+  },
 ])
 
 /**
@@ -156,23 +171,23 @@ const filteredHomeworkList = computed(() => {
 
   // 按科目筛选（只有选择了具体科目时才筛选）
   if (currentSubject.value && currentSubject.value !== '全部') {
-    filtered = filtered.filter(item => item.subject === currentSubject.value)
+    filtered = filtered.filter((item) => item.subject === currentSubject.value)
   }
 
   // 按状态筛选（只有选择了具体状态时才筛选）
   if (currentStatus.value && currentStatus.value !== '全部') {
     const statusValue = currentStatus.value === '已完成' ? 'completed' : 'pending'
-    filtered = filtered.filter(item => item.status === statusValue)
+    filtered = filtered.filter((item) => item.status === statusValue)
   }
 
   // 按发布时间筛选
   if (currentPublishDate.value) {
-    filtered = filtered.filter(item => item.publishDate === currentPublishDate.value)
+    filtered = filtered.filter((item) => item.publishDate === currentPublishDate.value)
   }
 
   // 按完成时间筛选
   if (currentCompleteDate.value) {
-    filtered = filtered.filter(item => item.completeDate === currentCompleteDate.value)
+    filtered = filtered.filter((item) => item.completeDate === currentCompleteDate.value)
   }
 
   return filtered
@@ -211,7 +226,7 @@ const onCompleteDateChange = (e) => {
  */
 const onPublishHomework = () => {
   uni.navigateTo({
-    url: '/pages/parent/homework/homework-publish'
+    url: '/pages/parent/homework/homework-publish',
   })
 }
 
@@ -220,7 +235,7 @@ const onPublishHomework = () => {
  */
 const gotoDetail = (item) => {
   uni.navigateTo({
-    url: '/pages/parent/homework/homework-detail'
+    url: '/pages/parent/homework/homework-detail',
   })
 }
 </script>

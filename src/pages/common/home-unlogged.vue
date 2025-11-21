@@ -129,7 +129,7 @@
  */
 const gotoLogin = () => {
   uni.navigateTo({
-    url: '/pages/common/login'
+    url: '/pages/common/login',
   })
 }
 </script>
@@ -172,7 +172,6 @@ const gotoLogin = () => {
   width: 120rpx;
   height: 120rpx;
 }
-
 
 .header-title {
   display: block;
@@ -259,7 +258,6 @@ const gotoLogin = () => {
   margin-bottom: 32rpx;
 }
 
-
 .section-title {
   font-size: 36rpx;
   font-weight: bold;
@@ -307,7 +305,6 @@ const gotoLogin = () => {
   background: linear-gradient(135deg, #f97316, #dc2626);
 }
 
-
 .feature-title {
   display: block;
   font-size: 32rpx;
@@ -346,7 +343,6 @@ const gotoLogin = () => {
   align-items: center;
   justify-content: center;
 }
-
 
 .advantage-content {
   flex: 1;
@@ -408,7 +404,6 @@ const gotoLogin = () => {
   color: #d1d5db;
   cursor: not-allowed;
 }
-
 
 .tabbar-label {
   font-size: 24rpx;

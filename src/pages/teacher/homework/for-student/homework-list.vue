@@ -1,7 +1,7 @@
 <template>
   <view class="page">
     <!-- 使用PageHeader组件 -->
-    <PageHeader title="作业详情列表" :showBack="true"/>
+    <PageHeader title="作业详情列表" :showBack="true" />
 
     <!-- 学生信息卡片 -->
     <view class="student-card">
@@ -65,7 +65,12 @@
         <view class="homework-main">
           <text class="subject">{{ item.subject }}</text>
           <text class="title">{{ item.title }}</text>
-          <view :class="['status-badge', item.status === 'completed' ? 'status-completed' : 'status-pending']">
+          <view
+            :class="[
+              'status-badge',
+              item.status === 'completed' ? 'status-completed' : 'status-pending',
+            ]"
+          >
             <text>{{ item.status === 'completed' ? '已完成' : '未完成' }}</text>
           </view>
         </view>
@@ -86,8 +91,8 @@
 </template>
 
 <script setup>
-import {ref, computed} from 'vue'
-import {onLoad} from '@dcloudio/uni-app'
+import { ref, computed } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 
 // 学生信息
@@ -97,7 +102,7 @@ const studentInfo = ref({
   grade: '一年级',
   class: '1班',
   completed: 10,
-  pending: 2
+  pending: 2,
 })
 
 // 当前选择的筛选项
@@ -111,7 +116,9 @@ const currentMonthNum = now.getMonth() + 1
 const currentDay = now.getDate()
 
 // 时间筛选 - 默认为当天日期
-const currentDate = ref(`${currentYear}-${String(currentMonthNum).padStart(2, '0')}-${String(currentDay).padStart(2, '0')}`)
+const currentDate = ref(
+  `${currentYear}-${String(currentMonthNum).padStart(2, '0')}-${String(currentDay).padStart(2, '0')}`
+)
 
 // 筛选选项
 const subjectOptions = ['请选择科目', '语文', '数学', '英语', '科学', '美术', '音乐', '体育']
@@ -126,7 +133,7 @@ const homeworkList = ref([
     date: '2025-10-26',
     publishTime: '10-25 14:30',
     deadline: '10-26 18:00',
-    status: 'pending'
+    status: 'pending',
   },
   {
     id: 2,
@@ -135,7 +142,7 @@ const homeworkList = ref([
     date: '2025-10-26',
     publishTime: '10-25 15:00',
     deadline: '10-26 20:00',
-    status: 'completed'
+    status: 'completed',
   },
   {
     id: 3,
@@ -144,7 +151,7 @@ const homeworkList = ref([
     date: '2025-10-26',
     publishTime: '10-26 08:00',
     deadline: '10-26 17:00',
-    status: 'pending'
+    status: 'pending',
   },
   {
     id: 4,
@@ -153,7 +160,7 @@ const homeworkList = ref([
     date: '2025-10-25',
     publishTime: '10-24 14:00',
     deadline: '10-25 19:00',
-    status: 'completed'
+    status: 'completed',
   },
   {
     id: 5,
@@ -162,7 +169,7 @@ const homeworkList = ref([
     date: '2025-10-25',
     publishTime: '10-24 10:00',
     deadline: '10-25 18:00',
-    status: 'completed'
+    status: 'completed',
   },
   {
     id: 6,
@@ -171,8 +178,8 @@ const homeworkList = ref([
     date: '2025-10-24',
     publishTime: '10-23 15:30',
     deadline: '10-24 21:00',
-    status: 'pending'
-  }
+    status: 'pending',
+  },
 ])
 
 // 科目筛选器变化事件
@@ -198,18 +205,18 @@ const filteredHomeworkList = computed(() => {
 
   // 按科目筛选
   if (currentSubject.value !== '请选择科目') {
-    filtered = filtered.filter(item => item.subject === currentSubject.value)
+    filtered = filtered.filter((item) => item.subject === currentSubject.value)
   }
 
   // 按状态筛选
   if (currentStatus.value !== '请选择状态') {
     const statusValue = currentStatus.value === '已完成' ? 'completed' : 'pending'
-    filtered = filtered.filter(item => item.status === statusValue)
+    filtered = filtered.filter((item) => item.status === statusValue)
   }
 
   // 按日期筛选
   if (currentDate.value) {
-    filtered = filtered.filter(item => item.date === currentDate.value)
+    filtered = filtered.filter((item) => item.date === currentDate.value)
   }
 
   return filtered
@@ -218,7 +225,7 @@ const filteredHomeworkList = computed(() => {
 const openHomeworkDetail = (item) => {
   if (!item?.id) return
   uni.navigateTo({
-    url: `/pages/teacher/homework/for-student/homework-detail?id=${item.id}`
+    url: `/pages/teacher/homework/for-student/homework-detail?id=${item.id}`,
   })
 }
 
@@ -226,7 +233,7 @@ const openHomeworkDetail = (item) => {
 const onPublishHomework = () => {
   // 跳转到发布作业页面
   uni.navigateTo({
-    url: `/pages/teacher/homework/for-student/homework-publish?name=${encodeURIComponent(studentInfo.value.name || '')}`
+    url: `/pages/teacher/homework/for-student/homework-publish?name=${encodeURIComponent(studentInfo.value.name || '')}`,
   })
 }
 

@@ -7,7 +7,7 @@
     <view class="avatar-section">
       <view class="avatar-wrapper">
         <view class="avatar">
-          <text class="avatar-text">{{teacherInfo.name[0]}}</text>
+          <text class="avatar-text">{{ teacherInfo.name[0] }}</text>
         </view>
         <view class="camera-icon" @tap="handleChangeAvatar">
           <uni-icons type="camera" size="20" color="#fff"></uni-icons>
@@ -27,7 +27,7 @@
         <view class="info-item" @tap="handleEdit('name')">
           <text class="item-label">姓名</text>
           <view class="item-right">
-            <text class="item-value">{{teacherInfo.name}}</text>
+            <text class="item-value">{{ teacherInfo.name }}</text>
             <uni-icons type="forward" size="16" color="#d1d5db"></uni-icons>
           </view>
         </view>
@@ -35,7 +35,7 @@
         <view class="info-item" @tap="handleEdit('phone')">
           <text class="item-label">手机号码</text>
           <view class="item-right">
-            <text class="item-value">{{teacherInfo.phone}}</text>
+            <text class="item-value">{{ teacherInfo.phone }}</text>
             <uni-icons type="forward" size="16" color="#d1d5db"></uni-icons>
           </view>
         </view>
@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import { ref } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 
 /**
@@ -61,7 +61,7 @@ import PageHeader from '@/components/PageHeader.vue'
  */
 const teacherInfo = ref({
   name: '张三',
-  phone: '138****5678'
+  phone: '138****5678',
 })
 
 /**
@@ -80,9 +80,9 @@ const handleChangeAvatar = () => {
             console.log('拍照成功:', res.tempFilePaths)
             uni.showToast({
               title: '头像上传功能开发中',
-              icon: 'none'
+              icon: 'none',
             })
-          }
+          },
         })
       } else if (res.tapIndex === 1) {
         // 从相册选择
@@ -93,12 +93,12 @@ const handleChangeAvatar = () => {
             console.log('选择照片成功:', res.tempFilePaths)
             uni.showToast({
               title: '头像上传功能开发中',
-              icon: 'none'
+              icon: 'none',
             })
-          }
+          },
         })
       }
-    }
+    },
   })
 }
 
@@ -109,7 +109,7 @@ const handleChangeAvatar = () => {
 const handleEdit = (field) => {
   const fieldNames = {
     name: '姓名',
-    phone: '手机号码'
+    phone: '手机号码',
   }
 
   // 其他字段使用输入框编辑
@@ -123,10 +123,10 @@ const handleEdit = (field) => {
         teacherInfo.value[field] = res.content
         uni.showToast({
           title: `${fieldNames[field]}已更新`,
-          icon: 'success'
+          icon: 'success',
         })
       }
-    }
+    },
   })
 }
 
@@ -141,13 +141,12 @@ const handleChangePassword = () => {
       if (res.confirm) {
         uni.showToast({
           title: '密码修改功能开发中',
-          icon: 'none'
+          icon: 'none',
         })
       }
-    }
+    },
   })
 }
-
 </script>
 
 <style scoped>
@@ -281,5 +280,4 @@ const handleChangePassword = () => {
 .item-value.placeholder {
   color: #0ea5e9;
 }
-
 </style>

@@ -2,10 +2,7 @@
   <!-- 教师端底部导航栏组件 -->
   <view class="tabbar">
     <!-- 首页 -->
-    <view
-      :class="['tab', activeTab === 'home' ? 'tab-active' : '']"
-      @click="goToPage('home')"
-    >
+    <view :class="['tab', activeTab === 'home' ? 'tab-active' : '']" @click="goToPage('home')">
       <uni-icons
         type="home-filled"
         :size="26"
@@ -63,8 +60,8 @@
 const props = defineProps({
   activeTab: {
     type: String,
-    default: 'home'
-  }
+    default: 'home',
+  },
 })
 
 /**
@@ -77,13 +74,13 @@ const goToPage = (page) => {
     home: '/pages/teacher/home/home',
     checkin: '/pages/teacher/checkin/checkin',
     homework: '/pages/teacher/homework/homework',
-    publish: '/pages/teacher/personal/profile'
+    publish: '/pages/teacher/personal/profile',
   }
 
   // 如果点击的不是当前页面，则跳转
   if (routes[page] && page !== props.activeTab) {
     uni.reLaunch({
-      url: routes[page]
+      url: routes[page],
     })
   }
 }

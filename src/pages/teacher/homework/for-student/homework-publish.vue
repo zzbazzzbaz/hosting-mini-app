@@ -14,8 +14,8 @@
 </template>
 
 <script setup>
-import {computed, ref} from 'vue'
-import {onLoad} from '@dcloudio/uni-app'
+import { computed, ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import PublishHomeworkForm from '@/components/PublishHomeworkForm.vue'
 
@@ -32,7 +32,7 @@ const onSubmit = (payload) => {
   if (submitting.value) return
   submitting.value = true
 
-  uni.showToast({title: '发布成功', icon: 'success'})
+  uni.showToast({ title: '发布成功', icon: 'success' })
 
   setTimeout(() => {
     submitting.value = false
@@ -45,7 +45,7 @@ onLoad((options) => {
   if (options.subject) {
     initialForm.value = {
       ...initialForm.value,
-      subject: decodeURIComponent(options.subject)
+      subject: decodeURIComponent(options.subject),
     }
   }
 })

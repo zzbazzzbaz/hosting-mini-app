@@ -63,8 +63,8 @@
 const props = defineProps({
   activeTab: {
     type: String,
-    default: 'home'
-  }
+    default: 'home',
+  },
 })
 
 /**
@@ -77,13 +77,13 @@ const goToPage = (page) => {
     home: '/pages/parent/home/home',
     homework: '/pages/parent/homework/homework-list',
     checkin: '/pages/parent/checkin/checkin',
-    publish: '/pages/parent/personal/profile'
+    publish: '/pages/parent/personal/profile',
   }
 
   // 如果点击的不是当前页面，则跳转
   if (routes[page] && page !== props.activeTab) {
     uni.reLaunch({
-      url: routes[page]
+      url: routes[page],
     })
   }
 }

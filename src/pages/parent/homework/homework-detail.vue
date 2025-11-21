@@ -31,7 +31,10 @@
         </view>
         <view class="section-content">
           <view class="requirement-box">
-            <text class="requirement-text">完成课本第45-52页的练习题,包括:\n1. 基础计算题(第45-48页)\n2. 应用题(第49-51页)\n3. 拓展思考题(第52页)\n\n要求:字迹工整,过程完整,认真检查</text>
+            <text class="requirement-text"
+              >完成课本第45-52页的练习题,包括:\n1. 基础计算题(第45-48页)\n2. 应用题(第49-51页)\n3.
+              拓展思考题(第52页)\n\n要求:字迹工整,过程完整,认真检查</text
+            >
             <view v-if="requirementImages.length" class="requirement-media">
               <view class="image-grid requirement-grid">
                 <view
@@ -89,7 +92,9 @@
         </view>
         <view class="section-content">
           <view class="comment-box">
-            <text class="comment-text">作业完成得很好!字迹工整,计算准确。\n基础题全部正确,应用题思路清晰。\n拓展题有一定难度,但你也完成得不错,继续保持!\n建议:第51页第3题的解题步骤可以更详细一些。</text>
+            <text class="comment-text"
+              >作业完成得很好!字迹工整,计算准确。\n基础题全部正确,应用题思路清晰。\n拓展题有一定难度,但你也完成得不错,继续保持!\n建议:第51页第3题的解题步骤可以更详细一些。</text
+            >
             <view class="teacher-info">
               <text class="teacher-icon">👨‍🏫</text>
               <text class="teacher-name">张三老师</text>
@@ -142,15 +147,11 @@ const homeworkImages = ref([
   '/static/test/7.jpg',
   '/static/test/3.jpg',
   '/static/test/4.jpg',
-  '/static/test/5.jpg'
+  '/static/test/5.jpg',
 ])
 
 // 作业要求示例图片（演示数据）
-const requirementImages = ref([
-  '/static/test/1.jpg',
-  '/static/test/4.jpg',
-  '/static/test/6.jpg'
-])
+const requirementImages = ref(['/static/test/1.jpg', '/static/test/4.jpg', '/static/test/6.jpg'])
 
 /**
  * 显示的图片列表（最多7张）
@@ -186,7 +187,7 @@ const previewImages = async (images, current) => {
 
     // 微信小程序的 uni.previewImage 对本地图片支持有限
     // 需要先通过 getImageInfo 获取图片的临时路径
-    const imagePromises = images.map(src => {
+    const imagePromises = images.map((src) => {
       return new Promise((resolve) => {
         uni.getImageInfo({
           src: src,
@@ -197,7 +198,7 @@ const previewImages = async (images, current) => {
           fail: (err) => {
             console.error('getImageInfo失败:', err)
             resolve(src) // 失败时返回原路径
-          }
+          },
         })
       })
     })
@@ -219,16 +220,16 @@ const previewImages = async (images, current) => {
         uni.showToast({
           title: '预览失败',
           icon: 'none',
-          duration: 2000
+          duration: 2000,
         })
-      }
+      },
     })
   } catch (err) {
     console.error('预览过程出错:', err)
     uni.showToast({
       title: '预览失败',
       icon: 'none',
-      duration: 2000
+      duration: 2000,
     })
   }
 }
@@ -254,7 +255,8 @@ const previewRequirementImage = (index) => {
 .page {
   min-height: 100vh;
   background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  padding-top:144rpx;padding-bottom: 128rpx;
+  padding-top: 144rpx;
+  padding-bottom: 128rpx;
 }
 
 .content {
@@ -264,7 +266,8 @@ const previewRequirementImage = (index) => {
   gap: 32rpx;
 }
 
-.card, .section-card {
+.card,
+.section-card {
   background-color: #ffffff;
   border-radius: 32rpx;
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
@@ -327,7 +330,8 @@ const previewRequirementImage = (index) => {
   background-color: #d1fae5;
 }
 
-.badge-icon, .badge-text {
+.badge-icon,
+.badge-text {
   color: #10b981;
 }
 
@@ -363,7 +367,8 @@ const previewRequirementImage = (index) => {
   background: linear-gradient(to right, #f59e0b, #f97316);
 }
 
-.section-icon, .section-title {
+.section-icon,
+.section-title {
   color: #ffffff;
 }
 
@@ -419,7 +424,7 @@ const previewRequirementImage = (index) => {
 
 /* 图片项容器 */
 .image-item {
-  position: relative;  /* 为角标定位 */
+  position: relative; /* 为角标定位 */
   aspect-ratio: 1;
   border-radius: 16rpx;
   overflow: hidden;
@@ -446,19 +451,19 @@ const previewRequirementImage = (index) => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.75);  /* 加深半透明黑色背景 */
+  background: rgba(0, 0, 0, 0.75); /* 加深半透明黑色背景 */
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1;  /* 确保在图片上方 */
+  z-index: 1; /* 确保在图片上方 */
 }
 
 /* 角标文字 */
 .more-text {
-  font-size: 56rpx;  /* 增大字号 */
+  font-size: 56rpx; /* 增大字号 */
   font-weight: bold;
   color: #ffffff;
-  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.5);  /* 添加文字阴影 */
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.5); /* 添加文字阴影 */
 }
 
 /* 查看全部按钮 */

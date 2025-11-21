@@ -9,9 +9,16 @@
           <view class="subject-info">
             <text class="subject-name">{{ homework.subject }}</text>
             <text class="subject-title">{{ homework.title }}</text>
-            <text class="subject-meta">布置：{{ homework.publishDate }} · 截止：{{ homework.deadline }}</text>
+            <text class="subject-meta"
+              >布置：{{ homework.publishDate }} · 截止：{{ homework.deadline }}</text
+            >
           </view>
-          <view :class="['status-badge', homework.status === 'completed' ? 'status-completed' : 'status-pending']">
+          <view
+            :class="[
+              'status-badge',
+              homework.status === 'completed' ? 'status-completed' : 'status-pending',
+            ]"
+          >
             <text>{{ homework.status === 'completed' ? '已完成' : '未完成' }}</text>
           </view>
         </view>
@@ -19,7 +26,10 @@
         <view class="summary-bottom">
           <view class="student">
             <text class="student-name">{{ homework.student.name }}</text>
-            <text class="student-detail">{{ homework.student.school }} · {{ homework.student.grade }} · {{ homework.student.class }}</text>
+            <text class="student-detail"
+              >{{ homework.student.school }} · {{ homework.student.grade }} ·
+              {{ homework.student.class }}</text
+            >
           </view>
           <view class="stats">
             <text class="stat submitted">提交 {{ homework.metrics.submitted }}</text>
@@ -113,26 +123,22 @@ const assignments = [
       name: '喜洋洋',
       school: '实验小学',
       grade: '一年级',
-      class: '1班'
+      class: '1班',
     },
     metrics: {
       submitted: 8,
-      pending: 4
+      pending: 4,
     },
     requirement:
       '完成课本第3章练习题，重点关注乘法运算。\n1. 练习题3-1~3-6\n2. 应用题3-7~3-9\n3. 思考题请写出解题过程。',
     requirementImages: ['/static/test/1.jpg', '/static/test/2.jpg'],
-    submissionImages: [
-      '/static/test/3.jpg',
-      '/static/test/4.jpg',
-      '/static/test/5.jpg'
-    ],
+    submissionImages: ['/static/test/3.jpg', '/static/test/4.jpg', '/static/test/5.jpg'],
     submitTime: '2025-10-26 17:20',
     comment: {
       text: '整体完成较好，注意第3-8题的列式步骤，下次再接再厉。',
       teacher: '张老师',
-      time: '2025-10-26 21:05'
-    }
+      time: '2025-10-26 21:05',
+    },
   },
   {
     id: 2,
@@ -146,30 +152,29 @@ const assignments = [
       name: '美羊羊',
       school: '实验小学',
       grade: '一年级',
-      class: '2班'
+      class: '2班',
     },
     metrics: {
       submitted: 12,
-      pending: 0
+      pending: 0,
     },
-    requirement:
-      '熟读并背诵《望庐山瀑布》，录音发送至班级群。\n写出古诗中的生僻字并注音。',
+    requirement: '熟读并背诵《望庐山瀑布》，录音发送至班级群。\n写出古诗中的生僻字并注音。',
     requirementImages: ['/static/test/6.jpg'],
     submissionImages: ['/static/test/7.jpg'],
     submitTime: '2025-10-25 20:10',
     comment: {
       text: '背诵流利，字迹工整，继续保持！',
       teacher: '李老师',
-      time: '2025-10-25 22:18'
-    }
-  }
+      time: '2025-10-25 22:18',
+    },
+  },
 ]
 
 const homework = ref(null)
 
 onLoad((options) => {
   const id = Number(options?.id)
-  homework.value = assignments.find(item => item.id === id) || assignments[0]
+  homework.value = assignments.find((item) => item.id === id) || assignments[0]
 })
 
 const displaySubmissionImages = computed(() => {
@@ -180,19 +185,22 @@ const displaySubmissionImages = computed(() => {
 const previewImages = async (images, index) => {
   if (!images.length) return
 
-  const tasks = images.map(src => new Promise((resolve) => {
-    uni.getImageInfo({
-      src,
-      success: (res) => resolve(res.path),
-      fail: () => resolve(src)
-    })
-  }))
+  const tasks = images.map(
+    (src) =>
+      new Promise((resolve) => {
+        uni.getImageInfo({
+          src,
+          success: (res) => resolve(res.path),
+          fail: () => resolve(src),
+        })
+      })
+  )
 
   const urls = await Promise.all(tasks)
 
   uni.previewImage({
     current: urls[index] || urls[0],
-    urls
+    urls,
   })
 }
 

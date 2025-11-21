@@ -1,4 +1,4 @@
-import {request} from './http'
+import { request } from './http'
 
 /**
  * 获取作业列表
@@ -10,7 +10,7 @@ export const fetchHomeworkList = (params) => {
     method: 'GET',
     data: params,
     showLoading: true,
-    loadingText: '加载作业...'
+    loadingText: '加载作业...',
   })
 }
 
@@ -24,6 +24,6 @@ export const createHomework = (payload) => {
     method: 'POST',
     data: payload,
     showLoading: true,
-    loadingText: '发布中...'
+    loadingText: '发布中...',
   })
 }

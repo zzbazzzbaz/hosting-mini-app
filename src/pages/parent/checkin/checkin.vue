@@ -4,7 +4,12 @@
     <view class="content">
       <view class="filter-section">
         <view class="filter-row">
-          <picker class="filter-picker" :range="nameOptions" :value="selectedNameIndex" @change="onNameChange">
+          <picker
+            class="filter-picker"
+            :range="nameOptions"
+            :value="selectedNameIndex"
+            @change="onNameChange"
+          >
             <view class="picker-box">
               <text class="label">{{ selectedNameLabel }}</text>
               <text class="arrow">▼</text>
@@ -52,7 +57,7 @@ const checkinRecords = ref([
   { id: 1, name: '张明', date: '2025-10-15', time: '08:25', photo: '/static/logo.png' },
   { id: 2, name: '张明', date: '2025-10-14', time: '08:27', photo: '/static/logo.png' },
   { id: 3, name: '李华', date: '2025-10-15', time: '08:22', photo: '/static/logo.png' },
-  { id: 4, name: '李华', date: '2025-10-13', time: '08:19', photo: '/static/logo.png' }
+  { id: 4, name: '李华', date: '2025-10-13', time: '08:19', photo: '/static/logo.png' },
 ])
 
 const selectedNameIndex = ref(0)
@@ -101,7 +106,6 @@ const onNameChange = (event) => {
 const onDateChange = (event) => {
   selectedDate.value = event.detail.value
 }
-
 </script>
 
 <style scoped>

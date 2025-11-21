@@ -19,14 +19,25 @@
           :class="['role-btn', selectedRole === 'parent' ? 'role-btn-active' : 'role-btn-inactive']"
           @click="selectRole('parent')"
         >
-          <uni-icons type="person" :size="22" :color="selectedRole === 'parent' ? '#ffffff' : '#0369a1'"></uni-icons>
+          <uni-icons
+            type="person"
+            :size="22"
+            :color="selectedRole === 'parent' ? '#ffffff' : '#0369a1'"
+          ></uni-icons>
           <text>家长</text>
         </view>
         <view
-          :class="['role-btn', selectedRole === 'teacher' ? 'role-btn-active' : 'role-btn-inactive']"
+          :class="[
+            'role-btn',
+            selectedRole === 'teacher' ? 'role-btn-active' : 'role-btn-inactive',
+          ]"
           @click="selectRole('teacher')"
         >
-          <uni-icons type="staff" :size="22" :color="selectedRole === 'teacher' ? '#ffffff' : '#0369a1'"></uni-icons>
+          <uni-icons
+            type="staff"
+            :size="22"
+            :color="selectedRole === 'teacher' ? '#ffffff' : '#0369a1'"
+          ></uni-icons>
           <text>教师</text>
         </view>
       </view>
@@ -111,7 +122,7 @@ const handleLogin = () => {
   if (!phone.value) {
     uni.showToast({
       title: '请输入手机号',
-      icon: 'none'
+      icon: 'none',
     })
     return
   }
@@ -128,7 +139,7 @@ const handleLogin = () => {
   if (!password.value) {
     uni.showToast({
       title: '请输入密码',
-      icon: 'none'
+      icon: 'none',
     })
     return
   }
@@ -137,12 +148,12 @@ const handleLogin = () => {
   if (selectedRole.value === 'parent') {
     // 家长端登录成功后跳转到家长首页
     uni.reLaunch({
-      url: '/pages/parent/home/home'
+      url: '/pages/parent/home/home',
     })
   } else {
     // 教师端登录成功后跳转到教师首页
     uni.reLaunch({
-      url: '/pages/teacher/home/home'
+      url: '/pages/teacher/home/home',
     })
   }
 }
@@ -183,7 +194,6 @@ const handleLogin = () => {
   width: 120rpx;
   height: 120rpx;
 }
-
 
 .app-title {
   display: block;
@@ -228,7 +238,6 @@ const handleLogin = () => {
   justify-content: center;
   gap: 16rpx;
 }
-
 
 /* 未选中状态 - 浅蓝色 */
 .role-btn-inactive {

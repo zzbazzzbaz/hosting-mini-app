@@ -6,11 +6,11 @@
     <!-- 选中学生列表 -->
     <view class="student-section">
       <view class="section-title">
-        <text>已选学生 ({{students.length}}人)</text>
+        <text>已选学生 ({{ students.length }}人)</text>
       </view>
       <view class="student-tags">
         <view v-for="student in students" :key="student.id" class="student-tag">
-          <text>{{student.name}}</text>
+          <text>{{ student.name }}</text>
         </view>
       </view>
     </view>
@@ -73,7 +73,7 @@ onMounted(() => {
     } else {
       uni.showToast({
         title: '未找到学生数据',
-        icon: 'none'
+        icon: 'none',
       })
       // 返回上一页
       setTimeout(() => {
@@ -84,7 +84,7 @@ onMounted(() => {
     console.error('读取学生数据失败:', e)
     uni.showToast({
       title: '数据加载失败',
-      icon: 'none'
+      icon: 'none',
     })
   }
 })
@@ -102,16 +102,16 @@ const choosePhoto = () => {
       photoUrl.value = res.tempFilePaths[0]
       uni.showToast({
         title: '照片上传成功',
-        icon: 'success'
+        icon: 'success',
       })
     },
     fail: (err) => {
       console.error('选择照片失败:', err)
       uni.showToast({
         title: '照片上传失败',
-        icon: 'none'
+        icon: 'none',
       })
-    }
+    },
   })
 }
 
@@ -128,16 +128,16 @@ const takePhoto = () => {
       photoUrl.value = res.tempFilePaths[0]
       uni.showToast({
         title: '拍照成功',
-        icon: 'success'
+        icon: 'success',
       })
     },
     fail: (err) => {
       console.error('拍照失败:', err)
       uni.showToast({
         title: '拍照失败',
-        icon: 'none'
+        icon: 'none',
       })
-    }
+    },
   })
 }
 
@@ -153,10 +153,10 @@ const removePhoto = () => {
         photoUrl.value = ''
         uni.showToast({
           title: '照片已删除',
-          icon: 'success'
+          icon: 'success',
         })
       }
-    }
+    },
   })
 }
 
@@ -168,7 +168,7 @@ const confirmCheckin = () => {
   if (!photoUrl.value) {
     uni.showToast({
       title: '请先上传或拍摄签到照片',
-      icon: 'none'
+      icon: 'none',
     })
     return
   }
@@ -176,7 +176,7 @@ const confirmCheckin = () => {
   // TODO: 这里应该调用后端API上传签到数据和照片
   console.log('签到数据:', {
     students: students.value,
-    photo: photoUrl.value
+    photo: photoUrl.value,
   })
 
   // 清除本地存储的学生数据
@@ -186,7 +186,7 @@ const confirmCheckin = () => {
   uni.showToast({
     title: `${students.value.length}位学生签到成功`,
     icon: 'success',
-    duration: 2000
+    duration: 2000,
   })
 
   // 延迟返回上一页

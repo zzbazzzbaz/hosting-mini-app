@@ -4,7 +4,7 @@ const DEFAULT_BASE_URL =
   ''
 
 const defaultHeaders = {
-  'Content-Type': 'application/json'
+  'Content-Type': 'application/json',
 }
 
 /**
@@ -20,7 +20,7 @@ export const request = (options = {}) => {
     header,
     baseURL = DEFAULT_BASE_URL,
     showLoading = false,
-    loadingText = '加载中...'
+    loadingText = '加载中...',
   } = options
 
   if (!url) {
@@ -30,7 +30,7 @@ export const request = (options = {}) => {
   const fullUrl = url.startsWith('http') ? url : `${baseURL}${url}`
 
   if (showLoading) {
-    uni.showLoading({title: loadingText})
+    uni.showLoading({ title: loadingText })
   }
 
   return new Promise((resolve, reject) => {
@@ -40,13 +40,13 @@ export const request = (options = {}) => {
       data,
       header: {
         ...defaultHeaders,
-        ...(header || {})
+        ...(header || {}),
       },
       success: (res) => {
         if (showLoading) {
           uni.hideLoading()
         }
-        const {statusCode, data: responseData} = res
+        const { statusCode, data: responseData } = res
         if (statusCode >= 200 && statusCode < 300) {
           resolve(responseData)
         } else {
@@ -58,7 +58,7 @@ export const request = (options = {}) => {
           uni.hideLoading()
         }
         reject(err)
-      }
+      },
     })
   })
 }

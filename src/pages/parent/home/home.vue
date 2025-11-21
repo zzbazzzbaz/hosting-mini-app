@@ -4,7 +4,7 @@
       <view class="header-content">
         <view class="logo-area">
           <view class="logo-icon">
-            <uni-icons type="home" size="28" color="#fff"/>
+            <uni-icons type="home" size="28" color="#fff" />
           </view>
           <view class="app-info">
             <text class="app-name">托管小程序</text>
@@ -15,7 +15,7 @@
 
     <view class="content">
       <view class="section-title">
-        <uni-icons type="bars" size="24" color="#1f2937"/>
+        <uni-icons type="bars" size="24" color="#1f2937" />
         <text class="title">学习数据总览</text>
       </view>
       <view class="stats-row">
@@ -23,7 +23,7 @@
           <view class="stat-header">
             <text class="label">累计课时</text>
             <view class="icon-box icon-blue">
-              <uni-icons type="calendar" size="20" color="#2563eb"/>
+              <uni-icons type="calendar" size="20" color="#2563eb" />
             </view>
           </view>
           <text class="value">{{ stats.totalHours }}</text>
@@ -34,44 +34,51 @@
           <view class="stat-header">
             <text class="label">作业完成率</text>
             <view class="icon-box icon-green">
-              <uni-icons type="checkbox" size="20" color="#059669"/>
+              <uni-icons type="checkbox" size="20" color="#059669" />
             </view>
           </view>
           <text class="value">{{ homeworkRate }}%</text>
-          <text class="desc">已完成 {{ stats.completedHomework }} · 未完成 {{ stats.pendingHomework }}</text>
+          <text class="desc"
+            >已完成 {{ stats.completedHomework }} · 未完成 {{ stats.pendingHomework }}</text
+          >
         </view>
       </view>
 
       <view class="section-title section-notice">
-        <uni-icons type="sound" size="24" color="#1f2937"/>
+        <uni-icons type="sound" size="24" color="#1f2937" />
         <text class="title">公告通知</text>
       </view>
       <view class="notice-card">
-        <view class="notice-item" v-for="notice in notices" :key="notice.id" @click="viewNotice(notice)">
+        <view
+          class="notice-item"
+          v-for="notice in notices"
+          :key="notice.id"
+          @click="viewNotice(notice)"
+        >
           <view class="notice-left">
             <view class="notice-icon" :class="notice.type">
-              <uni-icons :type="notice.icon" size="20" :color="notice.color"/>
+              <uni-icons :type="notice.icon" size="20" :color="notice.color" />
             </view>
             <view class="notice-content">
               <text class="notice-title">{{ notice.title }}</text>
               <text class="notice-time">{{ notice.time }}</text>
             </view>
           </view>
-          <uni-icons type="forward" size="16" color="#d1d5db"/>
+          <uni-icons type="forward" size="16" color="#d1d5db" />
         </view>
         <view class="notice-empty" v-if="notices.length === 0">
-          <uni-icons type="info" size="48" color="#d1d5db"/>
+          <uni-icons type="info" size="48" color="#d1d5db" />
           <text class="empty-text">暂无公告通知</text>
         </view>
       </view>
     </view>
 
-    <ParentTabBar activeTab="home"/>
+    <ParentTabBar activeTab="home" />
   </view>
 </template>
 
 <script setup>
-import {computed, ref} from 'vue'
+import { computed, ref } from 'vue'
 import ParentTabBar from '@/components/ParentTabBar.vue'
 
 const stats = ref({
@@ -83,7 +90,7 @@ const stats = ref({
   voicePractice: 6,
   readingCount: 12,
   latestScore: 92,
-  teacherComments: 5
+  teacherComments: 5,
 })
 
 const homeworkRate = computed(() => {
@@ -99,7 +106,7 @@ const notices = ref([
     icon: 'info',
     color: '#ef4444',
     title: '周五家长会提醒',
-    time: '2小时前'
+    time: '2小时前',
   },
   {
     id: 2,
@@ -107,8 +114,8 @@ const notices = ref([
     icon: 'chatbubble',
     color: '#3b82f6',
     title: '课程调整通知',
-    time: '昨天'
-  }
+    time: '昨天',
+  },
 ])
 
 const viewNotice = (notice) => {
@@ -116,7 +123,7 @@ const viewNotice = (notice) => {
     title: notice.title,
     content: '这里显示公告详细内容...',
     showCancel: false,
-    confirmText: '确认'
+    confirmText: '确认',
   })
 }
 </script>
@@ -173,7 +180,6 @@ const viewNotice = (notice) => {
   color: #fff;
 }
 
-
 .content {
   padding: 0 48rpx 48rpx;
 }
@@ -211,7 +217,6 @@ const viewNotice = (notice) => {
   flex-direction: column;
   gap: 16rpx;
 }
-
 
 .stat-blue {
   border-left: 8rpx solid #2563eb;

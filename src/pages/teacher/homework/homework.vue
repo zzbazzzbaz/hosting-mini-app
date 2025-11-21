@@ -1,7 +1,7 @@
 <template>
   <view class="page">
     <!-- 使用PageHeader组件 -->
-    <PageHeader title="作业信息"/>
+    <PageHeader title="作业信息" />
 
     <!-- 筛选区域：教师、学校、年级、班级四个筛选项 -->
     <view class="filter-section">
@@ -9,7 +9,9 @@
       <view class="filter-row">
         <picker class="filter-picker" :range="teacherOptions" @change="onTeacherChange">
           <view class="picker-box">
-            <text class="label">{{ currentTeacher === '全部' ? '请选择教师' : currentTeacher }}</text>
+            <text class="label">{{
+              currentTeacher === '全部' ? '请选择教师' : currentTeacher
+            }}</text>
             <text class="arrow">▼</text>
           </view>
         </picker>
@@ -38,17 +40,22 @@
       <!-- 第三行：姓名搜索框 -->
       <view class="search-row">
         <input
-            class="search-input"
-            v-model="searchName"
-            placeholder="搜索学生姓名"
-            placeholder-style="color: #9ca3af"
+          class="search-input"
+          v-model="searchName"
+          placeholder="搜索学生姓名"
+          placeholder-style="color: #9ca3af"
         />
       </view>
     </view>
 
     <!-- 作业列表 -->
     <view class="list">
-      <view v-for="item in filteredHomeworkList" :key="item.id" class="item" @click="goDetail(item)">
+      <view
+        v-for="item in filteredHomeworkList"
+        :key="item.id"
+        class="item"
+        @click="goDetail(item)"
+      >
         <!-- 左侧学生信息 -->
         <view class="student-info">
           <text class="name">{{ item.name }}</text>
@@ -66,11 +73,11 @@
       </view>
     </view>
     <!-- 使用TeacherTabBar组件 -->
-    <TeacherTabBar activeTab="homework"/>
+    <TeacherTabBar activeTab="homework" />
   </view>
 </template>
 <script setup>
-import {ref, computed} from 'vue'
+import { ref, computed } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import TeacherTabBar from '@/components/TeacherTabBar.vue'
 
@@ -79,7 +86,7 @@ const currentTeacher = ref('全部')
 const currentSchool = ref('全部')
 const currentGrade = ref('全部')
 const currentClass = ref('全部')
-const searchName = ref('')  // 名称搜索关键词
+const searchName = ref('') // 名称搜索关键词
 
 // 筛选选项数据
 const teacherOptions = ['全部', '张三', '李四', '王五']
@@ -97,9 +104,18 @@ const homeworkList = ref([
     grade: '一年级',
     class: '1班',
     completed: 10,
-    pending: 2
+    pending: 2,
   },
-  {id: 2, name: '美羊羊', teacher: '张三', school: '实验小学', grade: '一年级', class: '2班', completed: 8, pending: 4},
+  {
+    id: 2,
+    name: '美羊羊',
+    teacher: '张三',
+    school: '实验小学',
+    grade: '一年级',
+    class: '2班',
+    completed: 8,
+    pending: 4,
+  },
   {
     id: 3,
     name: '懒羊羊',
@@ -108,9 +124,18 @@ const homeworkList = ref([
     grade: '二年级',
     class: '3班',
     completed: 12,
-    pending: 0
+    pending: 0,
   },
-  {id: 4, name: '沸羊羊', teacher: '王五', school: '第三小学', grade: '三年级', class: '1班', completed: 6, pending: 5}
+  {
+    id: 4,
+    name: '沸羊羊',
+    teacher: '王五',
+    school: '第三小学',
+    grade: '三年级',
+    class: '1班',
+    completed: 6,
+    pending: 5,
+  },
 ])
 
 // 教师筛选器变化事件
@@ -147,27 +172,27 @@ const filteredHomeworkList = computed(() => {
 
   // 按教师筛选
   if (currentTeacher.value !== '全部') {
-    filtered = filtered.filter(item => item.teacher === currentTeacher.value)
+    filtered = filtered.filter((item) => item.teacher === currentTeacher.value)
   }
 
   // 按学校筛选
   if (currentSchool.value !== '全部') {
-    filtered = filtered.filter(item => item.school === currentSchool.value)
+    filtered = filtered.filter((item) => item.school === currentSchool.value)
   }
 
   // 按年级筛选
   if (currentGrade.value !== '全部') {
-    filtered = filtered.filter(item => item.grade === currentGrade.value)
+    filtered = filtered.filter((item) => item.grade === currentGrade.value)
   }
 
   // 按班级筛选
   if (currentClass.value !== '全部') {
-    filtered = filtered.filter(item => item.class === currentClass.value)
+    filtered = filtered.filter((item) => item.class === currentClass.value)
   }
 
   // 按名称搜索
   if (searchName.value.trim()) {
-    filtered = filtered.filter(item => item.name.includes(searchName.value.trim()))
+    filtered = filtered.filter((item) => item.name.includes(searchName.value.trim()))
   }
 
   return filtered
@@ -177,7 +202,7 @@ const filteredHomeworkList = computed(() => {
 const goDetail = (item) => {
   if (!item?.id) return
   uni.navigateTo({
-    url: `/pages/teacher/homework/for-student/homework-list?id=${item.id}`
+    url: `/pages/teacher/homework/for-student/homework-list?id=${item.id}`,
   })
 }
 </script>
@@ -187,7 +212,7 @@ const goDetail = (item) => {
   min-height: 100vh;
   background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
   padding-top: 144rpx;
-  padding-bottom: 128rpx
+  padding-bottom: 128rpx;
 }
 
 /* 筛选区域：支持多行布局，固定在顶部 */
@@ -265,7 +290,7 @@ const goDetail = (item) => {
   padding: 360rpx 48rpx 32rpx;
   display: flex;
   flex-direction: column;
-  gap: 4rpx
+  gap: 4rpx;
 }
 
 /* 列表项 */
@@ -336,5 +361,4 @@ const goDetail = (item) => {
 .pending {
   color: #ef4444;
 }
-
 </style>

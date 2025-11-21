@@ -26,12 +26,12 @@
 const props = defineProps({
   title: {
     type: String,
-    default: ''
+    default: '',
   },
   showBack: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 /**
