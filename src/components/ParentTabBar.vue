@@ -74,10 +74,10 @@ const props = defineProps({
 const goToPage = (page) => {
   // 路由映射
   const routes = {
-    home: '/pages/parent/home/home',
+    home: '/pages/parent/home/parent-home',
     homework: '/pages/parent/homework/homework-list',
-    checkin: '/pages/parent/checkin/checkin',
-    publish: '/pages/parent/personal/profile',
+    checkin: '/pages/parent/checkin/student-checkin',
+    publish: '/pages/parent/personal/user-profile',
   }
 
   // 如果点击的不是当前页面，则跳转

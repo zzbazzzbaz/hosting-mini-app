@@ -711,7 +711,7 @@ const handleBatchCheckin = () => {
 
   // 跳转到签到确认页面
   uni.navigateTo({
-    url: '/pages/teacher/checkin/checkin-confirm',
+    url: '/pages/teacher/checkin/teacher-checkin-confirm',
   })
 }
 </script>

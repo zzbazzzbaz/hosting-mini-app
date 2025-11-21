@@ -21,13 +21,6 @@ export default [
   },
 
   // 应用规则集
-  js.configs.recommended,                  // JavaScript 推荐规则
-  ...pluginVue.configs['flat/essential'],  // Vue 3 基础规则
-
-  // 自定义规则覆盖
-  {
-    rules: {
-      'vue/multi-word-component-names': 'off'
-    }
-  }
+  js.configs.recommended,
+  ...pluginVue.configs['flat/essential']
 ]

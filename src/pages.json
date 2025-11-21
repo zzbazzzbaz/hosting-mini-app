@@ -8,14 +8,14 @@
 			}
 		},
 		{
-			"path": "pages/common/login",
+			"path": "pages/common/user-login",
 			"style": {
 				"navigationBarTitleText": "登录",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/parent/home/home",
+			"path": "pages/parent/home/parent-home",
 			"style": {
 				"navigationBarTitleText": "首页",
 				"navigationStyle": "custom"
@@ -43,14 +43,14 @@
 			}
 		},
 		{
-			"path": "pages/parent/checkin/checkin",
+			"path": "pages/parent/checkin/student-checkin",
 			"style": {
 				"navigationBarTitleText": "签到信息",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/parent/personal/profile",
+			"path": "pages/parent/personal/user-profile",
 			"style": {
 				"navigationBarTitleText": "我的",
 				"navigationStyle": "custom"
@@ -71,14 +71,14 @@
 			}
 		},
 		{
-			"path": "pages/teacher/home/home",
+			"path": "pages/teacher/home/teacher-home",
 			"style": {
 				"navigationBarTitleText": "教师工作台",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/teacher/checkin/checkin",
+			"path": "pages/teacher/checkin/teacher-checkin",
 			"style": {
 				"navigationBarTitleText": "签到信息",
 				"navigationStyle": "custom"
@@ -92,7 +92,7 @@
 			}
 		},
 		{
-			"path": "pages/teacher/homework/homework",
+			"path": "pages/teacher/homework/teacher-homework",
 			"style": {
 				"navigationBarTitleText": "作业详情列表",
 				"navigationStyle": "custom"
@@ -113,7 +113,7 @@
 			}
 		},
 		{
-			"path": "pages/teacher/personal/profile",
+			"path": "pages/teacher/personal/teacher-profile",
 			"style": {
 				"navigationBarTitleText": "我的",
 				"navigationStyle": "custom"

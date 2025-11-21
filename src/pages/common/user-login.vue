@@ -148,12 +148,12 @@ const handleLogin = () => {
   if (selectedRole.value === 'parent') {
     // 家长端登录成功后跳转到家长首页
     uni.reLaunch({
-      url: '/pages/parent/home/home',
+      url: '/pages/parent/home/parent-home',
     })
   } else {
     // 教师端登录成功后跳转到教师首页
     uni.reLaunch({
-      url: '/pages/teacher/home/home',
+      url: '/pages/teacher/home/teacher-home',
     })
   }
 }
