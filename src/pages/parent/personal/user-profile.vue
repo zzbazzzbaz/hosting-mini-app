@@ -30,7 +30,7 @@
         <view class="stat-divider"></view>
         <view class="stat-item">
           <text class="stat-value">{{ stats.upcomingEvents }}</text>
-          <text class="stat-label">近期提醒</text>
+          <text class="stat-label">已完成作业</text>
         </view>
       </view>
     </view>
@@ -68,20 +68,44 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import ParentTabBar from '@/components/ParentTabBar.vue'
+import { getMyInfo } from '@/api/parent/personal'
 
+// 家长信息
 const parentInfo = ref({ name: '李女士' })
-const stats = ref({ totalChildren: 1, pendingHomework: 2, upcomingEvents: 3 })
+// 统计数据
+const stats = ref({ totalChildren: 0, pendingHomework: 0, upcomingEvents: 0 })
+
+/**
+ * 加载个人信息数据
+ */
+const loadMyInfo = async () => {
+  try {
+    const res = await getMyInfo()
+    if (res.code === 200) {
+      parentInfo.value = res.data.info
+      stats.value = {
+        totalChildren: res.data.studentCount,
+        pendingHomework: res.data.nofinishTotalCount,
+        upcomingEvents: res.data.finishTotalCount,
+      }
+    }
+  } catch (error) {
+    console.error('加载个人信息失败:', error)
+    uni.showToast({ title: '加载失败', icon: 'none' })
+  }
+}
 
 const handleChildInfo = () => {
-  uni.navigateTo({ url: '/pages/parent/personal/child-info' })
+  uni.navigateTo({ url: '/pages/parent/personal/components/child-info' })
 }
 
 const handleProfile = () => {
-  uni.navigateTo({ url: '/pages/parent/personal/personal-info' })
+  uni.navigateTo({ url: '/pages/parent/personal/components/personal-info' })
 }
+
 const handleLogout = () => {
   uni.showModal({
     title: '退出登录',
@@ -96,6 +120,10 @@ const handleLogout = () => {
     },
   })
 }
+
+onMounted(() => {
+  loadMyInfo()
+})
 </script>
 
 <style scoped>

@@ -3,28 +3,29 @@
     <PageHeader title="孩子信息" :showBack="true" />
 
     <view class="content">
-      <view v-for="child in children" :key="child.id" class="child-card">
+      <view v-for="child in studentList" :key="child.id" class="child-card">
         <view class="card-top">
-          <text class="child-name">{{ child.name }}</text>
-          <view class="contact">
-            <uni-icons type="phone" size="18" color="#0ea5e9" />
-            <text class="contact-text">{{ child.teacherPhone }}</text>
-          </view>
+          <text class="child-name">{{ child.studentName }}</text>
         </view>
 
         <view class="info-grid">
           <view class="info-item">
-            <text class="item-label">已修课时</text>
-            <text class="item-value completed">{{ child.completedHours }}</text>
+            <text class="item-label">已用课时</text>
+            <text class="item-value completed">{{ child.hours.usedHours }}</text>
           </view>
           <view class="info-item">
-            <text class="item-label">未修课时</text>
-            <text class="item-value pending">{{ child.pendingHours }}</text>
+            <text class="item-label">剩余课时</text>
+            <text class="item-value pending">{{ child.hours.remainingHours }}</text>
           </view>
           <view class="info-item">
-            <text class="item-label">班主任</text>
-            <text class="item-value">{{ child.teacherName }}</text>
+            <text class="item-label">总课时</text>
+            <text class="item-value">{{ child.hours.sumHours }}</text>
           </view>
+        </view>
+
+        <view class="teacher-info">
+          <text class="teacher-label">托管教师：</text>
+          <text class="teacher-name">{{ child.teacherName }}</text>
         </view>
       </view>
     </view>
@@ -32,27 +33,30 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
+import { getMyInfo } from '@/api/parent/personal'
 
-const children = ref([
-  {
-    id: 1,
-    name: '李华',
-    completedHours: 26,
-    pendingHours: 4,
-    teacherName: '王老师',
-    teacherPhone: '138****2222',
-  },
-  {
-    id: 2,
-    name: '张明',
-    completedHours: 18,
-    pendingHours: 8,
-    teacherName: '赵老师',
-    teacherPhone: '139****7788',
-  },
-])
+const studentList = ref([])
+
+/**
+ * 加载学生列表
+ */
+const loadStudentList = async () => {
+  try {
+    const res = await getMyInfo()
+    if (res.code === 200) {
+      studentList.value = res.data.studentList
+    }
+  } catch (error) {
+    console.error('加载学生列表失败:', error)
+    uni.showToast({ title: '加载失败', icon: 'none' })
+  }
+}
+
+onMounted(() => {
+  loadStudentList()
+})
 </script>
 
 <style scoped>
@@ -141,5 +145,24 @@ const children = ref([
 .info-item:not(:last-child) {
   border-right: 1rpx solid rgba(59, 130, 246, 0.2);
   padding-right: 24rpx;
+}
+
+.teacher-info {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 24rpx;
+  background: #f9fafb;
+  border-radius: 16rpx;
+}
+
+.teacher-label {
+  font-size: 26rpx;
+  color: #6b7280;
+}
+
+.teacher-name {
+  font-size: 26rpx;
+  color: #1f2937;
+  font-weight: 600;
 }
 </style>

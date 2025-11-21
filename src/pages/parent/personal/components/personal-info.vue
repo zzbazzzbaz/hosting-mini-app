@@ -21,19 +21,17 @@
           <text class="title-text">监护人信息</text>
         </view>
 
-        <view class="info-item" @tap="handleEdit('name')">
+        <view class="info-item">
           <text class="item-label">姓名</text>
           <view class="item-right">
             <text class="item-value">{{ parentInfo.name }}</text>
-            <uni-icons type="forward" size="16" color="#d1d5db"></uni-icons>
           </view>
         </view>
 
-        <view class="info-item" @tap="handleEdit('phone')">
+        <view class="info-item">
           <text class="item-label">手机号码</text>
           <view class="item-right">
             <text class="item-value">{{ parentInfo.phone }}</text>
-            <uni-icons type="forward" size="16" color="#d1d5db"></uni-icons>
           </view>
         </view>
 
@@ -50,13 +48,28 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
+import { getMyInfo, editPassword } from '@/api/parent/personal'
 
 const parentInfo = ref({
   name: '李女士',
   phone: '138****1234',
 })
+
+/**
+ * 加载个人信息
+ */
+const loadMyInfo = async () => {
+  try {
+    const res = await getMyInfo()
+    if (res.code === 200) {
+      parentInfo.value = res.data.info
+    }
+  } catch (error) {
+    console.error('加载个人信息失败:', error)
+  }
+}
 
 const handleChangeAvatar = () => {
   uni.showActionSheet({
@@ -74,38 +87,58 @@ const handleChangeAvatar = () => {
   })
 }
 
-const fieldMap = {
-  name: '姓名',
-  phone: '手机号码',
-}
-
-const handleEdit = (field) => {
-  const label = fieldMap[field]
-  uni.showModal({
-    title: `修改${label}`,
-    editable: true,
-    placeholderText: `请输入${label}`,
-    content: parentInfo.value[field],
-    success: (res) => {
-      if (res.confirm && res.content) {
-        parentInfo.value[field] = res.content
-        uni.showToast({ title: `${label}已更新`, icon: 'success' })
-      }
-    },
-  })
-}
-
+/**
+ * 修改密码
+ */
 const handleChangePassword = () => {
+  let oldPassword = ''
+  let newPassword = ''
+
+  // 第一步：输入旧密码
   uni.showModal({
     title: '修改密码',
-    content: '即将跳转到密码修改页面',
-    success: (res) => {
-      if (res.confirm) {
-        uni.showToast({ title: '密码修改功能开发中', icon: 'none' })
+    editable: true,
+    placeholderText: '请输入旧密码',
+    success: (res1) => {
+      if (res1.confirm && res1.content) {
+        oldPassword = res1.content
+
+        // 第二步：输入新密码
+        uni.showModal({
+          title: '修改密码',
+          editable: true,
+          placeholderText: '请输入新密码',
+          success: async (res2) => {
+            if (res2.confirm && res2.content) {
+              newPassword = res2.content
+
+              // 调用API修改密码
+              try {
+                const result = await editPassword({
+                  oldPassword,
+                  newPassword,
+                })
+
+                if (result.code === 200) {
+                  uni.showToast({ title: '密码修改成功', icon: 'success' })
+                } else {
+                  uni.showToast({ title: result.message || '密码修改失败', icon: 'none' })
+                }
+              } catch (error) {
+                console.error('修改密码失败:', error)
+                uni.showToast({ title: '修改密码失败', icon: 'none' })
+              }
+            }
+          },
+        })
       }
     },
   })
 }
+
+onMounted(() => {
+  loadMyInfo()
+})
 </script>
 
 <style scoped>

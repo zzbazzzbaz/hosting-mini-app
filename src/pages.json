@@ -57,14 +57,14 @@
 			}
 		},
 		{
-			"path": "pages/parent/personal/child-info",
+			"path": "pages/parent/personal/components/child-info",
 			"style": {
 				"navigationBarTitleText": "孩子信息",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/parent/personal/personal-info",
+			"path": "pages/parent/personal/components/personal-info",
 			"style": {
 				"navigationBarTitleText": "个人信息",
 				"navigationStyle": "custom"
