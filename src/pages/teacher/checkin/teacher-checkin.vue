@@ -81,6 +81,7 @@ import TeacherTabBar from '@/components/TeacherTabBar.vue'
 import { getStudentList } from '@/api/teacher/checkin'
 import { getTeacherComboxList } from '@/api/common/dictionary'
 import { getUserInfo } from '@/store/auth'
+import { setCheckinStudents } from '@/store/checkin'
 
 /**
  * 教师列表
@@ -220,8 +221,8 @@ const handleBatchCheckin = () => {
     return
   }
 
-  // 将选中的学生数据存储到本地，传递给确认页面
-  uni.setStorageSync('checkinStudents', checkedStudents)
+  // 将选中的学生数据存储到 store
+  setCheckinStudents(checkedStudents)
   uni.navigateTo({
     url: '/pages/teacher/checkin/components/checkin-confirm',
   })

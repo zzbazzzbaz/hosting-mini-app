@@ -49,6 +49,7 @@
 import { ref, onMounted } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import { uploadSigninPic, addSignin } from '@/api/teacher/checkin'
+import { getCheckinStudents, clearCheckinStudents } from '@/store/checkin'
 
 /**
  * 学生列表
@@ -69,7 +70,7 @@ const submitting = ref(false)
  * 加载学生数据
  */
 onMounted(() => {
-  const checkinStudents = uni.getStorageSync('checkinStudents')
+  const checkinStudents = getCheckinStudents()
   if (checkinStudents && checkinStudents.length > 0) {
     students.value = checkinStudents
   } else {
@@ -149,7 +150,7 @@ const handleSubmit = async () => {
     })
 
     await uni.showToast({ title: '签到成功', icon: 'success' })
-    uni.removeStorageSync('checkinStudents')
+    clearCheckinStudents()
     setTimeout(() => {
       uni.navigateBack()
     }, 1200)
