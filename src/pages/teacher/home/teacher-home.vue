@@ -19,95 +19,62 @@
       </view>
     </view>
     <view class="content">
-      <!-- 关键数据概览 -->
-      <view class="section-title">
-        <uni-icons type="bars" size="24" color="#1f2937"></uni-icons>
-        <text class="title">数据概览</text>
-      </view>
-      <view class="stats-row-3">
-        <view class="stat-card stat-blue">
-          <view class="icon-box icon-blue">
-            <uni-icons type="person" size="24" color="#3b82f6"></uni-icons>
+      <!-- 顶部卡片行 -->
+      <view class="top-cards">
+        <!-- 学生总数卡片 -->
+        <view class="student-card">
+          <view class="card-icon-wrapper student-bg">
+            <uni-icons type="person-filled" size="28" color="#3b82f6"></uni-icons>
           </view>
-          <text class="value">{{ stats.totalStudents }}</text>
-          <text class="label">学生总数</text>
+          <text class="card-title">学生总数</text>
+          <text class="student-value">{{ stats.totalStudents }}</text>
         </view>
-        <view class="stat-card stat-green" @click="goToCheckin">
-          <view class="icon-box icon-green">
-            <uni-icons type="checkmarkempty" size="24" color="#10b981"></uni-icons>
-          </view>
-          <text class="value">{{ checkinRate }}%</text>
-          <text class="label">今日签到率</text>
-        </view>
-        <view class="stat-card stat-purple" @click="goToHomework">
-          <view class="icon-box icon-purple">
-            <uni-icons type="paperplane" size="24" color="#8b5cf6"></uni-icons>
-          </view>
-          <text class="value">{{ homeworkRate }}%</text>
-          <text class="label">作业完成率</text>
-        </view>
-      </view>
 
-      <!-- 签到详情卡片 -->
-      <view class="detail-card checkin-card" @click="goToCheckin">
-        <view class="card-header">
-          <view class="header-left">
-            <uni-icons type="calendar" size="24" color="#3b82f6"></uni-icons>
-            <text class="card-title">今日签到详情</text>
+        <!-- 签到卡片 -->
+        <view class="checkin-card">
+          <view class="card-icon-wrapper checkin-bg">
+            <uni-icons type="calendar-filled" size="28" color="#10b981"></uni-icons>
           </view>
-          <uni-icons type="forward" size="20" color="#9ca3af"></uni-icons>
-        </view>
-        <view class="detail-stats">
-          <view class="detail-item">
-            <view class="detail-icon-box icon-green">
-              <uni-icons type="checkmarkempty" size="20" color="#10b981"></uni-icons>
+          <text class="card-title">今日签到</text>
+          <view class="card-stats">
+            <view class="stat-item">
+              <text class="stat-num green">{{ stats.todayChecked }}</text>
+              <text class="stat-text">已签到</text>
             </view>
-            <view class="detail-info">
-              <text class="detail-value">{{ stats.todayChecked }}</text>
-              <text class="detail-label">已签到</text>
-            </view>
-          </view>
-          <view class="detail-divider"></view>
-          <view class="detail-item">
-            <view class="detail-icon-box icon-red">
-              <uni-icons type="closeempty" size="20" color="#ef4444"></uni-icons>
-            </view>
-            <view class="detail-info">
-              <text class="detail-value">{{ stats.todayUnchecked }}</text>
-              <text class="detail-label">未签到</text>
+            <view class="stat-divider"></view>
+            <view class="stat-item">
+              <text class="stat-num red">{{ stats.todayUnchecked }}</text>
+              <text class="stat-text">未签到</text>
             </view>
           </view>
         </view>
       </view>
 
-      <!-- 作业详情卡片 -->
-      <view class="detail-card homework-card" @click="goToHomework">
-        <view class="card-header">
-          <view class="header-left">
-            <uni-icons type="compose" size="24" color="#8b5cf6"></uni-icons>
-            <text class="card-title">作业统计详情</text>
+      <!-- 作业卡片 -->
+      <view class="homework-card">
+          <view class="card-icon-wrapper homework-bg">
+            <uni-icons type="compose" size="28" color="#8b5cf6"></uni-icons>
           </view>
-          <uni-icons type="forward" size="20" color="#9ca3af"></uni-icons>
-        </view>
-        <view class="homework-grid">
-          <view class="homework-item">
-            <text class="homework-label">累计完成</text>
-            <text class="homework-value green">{{ stats.completedHomework }}</text>
-          </view>
-          <view class="homework-item">
-            <text class="homework-label">累计未完成</text>
-            <text class="homework-value red">{{ stats.pendingHomework }}</text>
-          </view>
-          <view class="homework-item">
-            <text class="homework-label">今日完成</text>
-            <text class="homework-value green">{{ stats.todayCompleted }}</text>
-          </view>
-          <view class="homework-item">
-            <text class="homework-label">今日待完成</text>
-            <text class="homework-value orange">{{ stats.todayPending }}</text>
+          <text class="card-title">作业统计</text>
+          <view class="card-stats-grid">
+            <view class="grid-item">
+              <text class="grid-num green">{{ stats.completedHomework }}</text>
+              <text class="grid-label">累计完成</text>
+            </view>
+            <view class="grid-item">
+              <text class="grid-num red">{{ stats.pendingHomework }}</text>
+              <text class="grid-label">累计未完成</text>
+            </view>
+            <view class="grid-item">
+              <text class="grid-num green">{{ stats.todayCompleted }}</text>
+              <text class="grid-label">今日完成</text>
+            </view>
+            <view class="grid-item">
+              <text class="grid-num orange">{{ stats.todayPending }}</text>
+              <text class="grid-label">今日待完成</text>
+            </view>
           </view>
         </view>
-      </view>
 
       <!-- 公告通知卡片 -->
       <view class="section-title" style="margin-top: 32rpx">
@@ -143,8 +110,9 @@
   </view>
 </template>
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import TeacherTabBar from '@/components/TeacherTabBar.vue'
+import { getTeacherHomeData } from '@/api/teacher/home'
 
 /**
  * 当前时间和日期
@@ -172,77 +140,75 @@ const updateTime = () => {
 
 // 统计数据
 const stats = ref({
-  totalStudents: 20, // 学生总数
-  todayChecked: 18, // 今日已签到
-  todayUnchecked: 2, // 今日未签到
-  completedHomework: 186, // 累计完成作业
-  pendingHomework: 32, // 累计未完成作业
-  todayCompleted: 15, // 今日完成作业
-  todayPending: 6, // 今日待完成作业
-})
-
-// 计算签到率
-const checkinRate = computed(() => {
-  if (stats.value.totalStudents === 0) return 0
-  return Math.round((stats.value.todayChecked / stats.value.totalStudents) * 100)
-})
-
-// 计算作业完成率（基于累计数据）
-const homeworkRate = computed(() => {
-  const total = stats.value.completedHomework + stats.value.pendingHomework
-  if (total === 0) return 0
-  return Math.round((stats.value.completedHomework / total) * 100)
+  totalStudents: 0, // 学生总数
+  todayChecked: 0, // 今日已签到
+  todayUnchecked: 0, // 今日未签到
+  completedHomework: 0, // 累计完成作业
+  pendingHomework: 0, // 累计未完成作业
+  todayCompleted: 0, // 今日完成作业
+  todayPending: 0, // 今日待完成作业
 })
 
 // 公告通知数据
-const notices = ref([
-  {
-    id: 1,
-    type: 'important',
-    icon: 'info',
-    color: '#ef4444',
-    title: '关于期末考试安排的通知',
-    time: '2小时前',
-  },
-  {
-    id: 2,
-    type: 'normal',
-    icon: 'chatbubble',
-    color: '#3b82f6',
-    title: '下周一开始使用新教材',
-    time: '5小时前',
-  },
-  {
-    id: 3,
-    type: 'normal',
-    icon: 'calendar',
-    color: '#10b981',
-    title: '本周五下午教研活动',
-    time: '1天前',
-  },
-])
+const notices = ref([])
 
-// 导航方法
-const goToCheckin = () => uni.navigateTo({ url: '/pages/teacher/checkin/teacher-checkin' })
-const goToHomework = () => uni.navigateTo({ url: '/pages/teacher/homework/teacher-homework-list' })
+/**
+ * 加载首页数据
+ */
+const loadHomeData = async () => {
+  try {
+    const response = await getTeacherHomeData()
+    if (response.code === 200 && response.data) {
+      const data = response.data
+      // 更新统计数据
+      stats.value = {
+        totalStudents: data.studentCount,
+        todayChecked: data.signinCount,
+        todayUnchecked: data.noSigninCount,
+        completedHomework: data.sumFinishCount,
+        pendingHomework: data.noSumFinishCount,
+        todayCompleted: data.finishCount,
+        todayPending: data.noFinishCount,
+      }
+      // 更新通知列表
+      notices.value = data.notices.map((item) => ({
+        id: item.id,
+        type: 'normal',
+        icon: 'chatbubble',
+        color: '#3b82f6',
+        title: item.title,
+        time: item.time,
+        content: item.content,
+      }))
+    }
+  } catch (error) {
+    console.error('加载首页数据失败:', error)
+    await uni.showToast({
+      title: '数据加载失败',
+      icon: 'none',
+    })
+  }
+}
 
 // 查看公告详情
 const viewNotice = (notice) => {
   uni.showModal({
     title: notice.title,
-    content: '这里显示公告详细内容...',
-    showCancel: false, // 不显示取消按钮
+    content: notice.content || '暂无详细内容',
+    showCancel: false,
     confirmText: '确认',
   })
 }
 
 /**
- * 组件挂载时启动定时器
+ * 组件挂载时启动定时器并加载数据
  */
 onMounted(() => {
   updateTime()
   // 每分钟更新一次时间
   timer = setInterval(updateTime, 60000)
+  // 加载首页数据
+  loadHomeData()
 })
 
 /**
@@ -334,7 +300,150 @@ onUnmounted(() => {
 
 /* 内容区域 */
 .content {
-  padding: 0 48rpx;
+  padding: 0 32rpx;
+}
+
+/* 顶部卡片行 */
+.top-cards {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+/* 学生总数卡片 */
+.student-card {
+  flex: 1;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.student-bg {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+}
+
+.student-value {
+  font-size: 56rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-top: 8rpx;
+}
+
+/* 签到卡片 */
+.checkin-card {
+  flex: 1;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 作业卡片 */
+.homework-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  margin-bottom: 32rpx;
+}
+
+.card-icon-wrapper {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16rpx;
+}
+
+.checkin-bg {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+}
+
+.homework-bg {
+  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+}
+
+.card-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 20rpx;
+}
+
+/* 签到卡片统计 */
+.card-stats {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+  flex: 1;
+  align-items: center;
+}
+
+.stat-num {
+  font-size: 40rpx;
+  font-weight: bold;
+}
+
+.stat-text {
+  font-size: 22rpx;
+  color: #6b7280;
+}
+
+.stat-divider {
+  width: 2rpx;
+  height: 48rpx;
+  background: #e5e7eb;
+}
+
+/* 作业卡片统计 */
+.card-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24rpx 32rpx;
+}
+
+.grid-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.grid-num {
+  font-size: 40rpx;
+  font-weight: bold;
+}
+
+.grid-label {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+/* 颜色类 */
+.green {
+  color: #10b981;
+}
+
+.red {
+  color: #ef4444;
+}
+
+.orange {
+  color: #f97316;
 }
 
 /* 区块标题 */
@@ -342,226 +451,13 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 16rpx;
-  margin-bottom: 32rpx;
+  margin-bottom: 24rpx;
 }
 
 .section-title .title {
-  font-size: 36rpx;
-  font-weight: bold;
-  color: #1f2937;
-}
-
-/* 统计卡片行布局 - 3列 */
-.stats-row-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24rpx;
-  margin-bottom: 32rpx;
-}
-
-/* 统计卡片 */
-.stat-card {
-  background: #fff;
-  border-radius: 32rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
-  padding: 32rpx;
-  transition: all 0.3s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-}
-
-.stat-card:active {
-  transform: scale(0.98);
-}
-
-/* 卡片左侧边框颜色 */
-.stat-blue {
-  border-left: 8rpx solid #3b82f6;
-}
-
-.stat-green {
-  border-left: 8rpx solid #10b981;
-}
-
-.stat-purple {
-  border-left: 8rpx solid #8b5cf6;
-}
-
-/* 图标盒子 */
-.icon-box {
-  width: 96rpx;
-  height: 96rpx;
-  border-radius: 24rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 16rpx;
-}
-
-.icon-blue {
-  background: #dbeafe;
-}
-
-.icon-green {
-  background: #d1fae5;
-}
-
-.icon-purple {
-  background: #ede9fe;
-}
-
-.icon-red {
-  background: #fee2e2;
-}
-
-/* 数值 */
-.value {
-  display: block;
-  font-size: 60rpx;
-  font-weight: bold;
-  margin-bottom: 8rpx;
-}
-
-.stat-blue .value {
-  color: #3b82f6;
-}
-
-.stat-green .value {
-  color: #10b981;
-}
-
-.stat-purple .value {
-  color: #8b5cf6;
-}
-
-/* 标签 */
-.label {
-  font-size: 24rpx;
-  color: #9ca3af;
-  text-align: center;
-}
-
-/* 详情卡片样式 */
-.detail-card {
-  background: #fff;
-  border-radius: 32rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
-  padding: 32rpx;
-  margin-bottom: 24rpx;
-  transition: all 0.3s;
-}
-
-.detail-card:active {
-  transform: scale(0.99);
-}
-
-/* 卡片头部 */
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 32rpx;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-}
-
-.card-title {
   font-size: 32rpx;
   font-weight: bold;
   color: #1f2937;
-}
-
-/* 签到详情卡片 */
-.checkin-card {
-  border-left: 8rpx solid #3b82f6;
-}
-
-.detail-stats {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
-
-.detail-item {
-  display: flex;
-  align-items: center;
-  gap: 24rpx;
-}
-
-.detail-icon-box {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 20rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.detail-info {
-  display: flex;
-  flex-direction: column;
-  gap: 8rpx;
-}
-
-.detail-value {
-  font-size: 48rpx;
-  font-weight: bold;
-}
-
-.detail-label {
-  font-size: 24rpx;
-  color: #9ca3af;
-}
-
-.detail-divider {
-  width: 2rpx;
-  height: 80rpx;
-  background: #e5e7eb;
-}
-
-/* 作业详情卡片 */
-.homework-card {
-  border-left: 8rpx solid #8b5cf6;
-}
-
-.homework-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 32rpx;
-}
-
-.homework-item {
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-}
-
-.homework-label {
-  font-size: 28rpx;
-  color: #6b7280;
-}
-
-.homework-value {
-  font-size: 56rpx;
-  font-weight: bold;
-}
-
-.homework-value.green {
-  color: #10b981;
-}
-
-.homework-value.red {
-  color: #ef4444;
-}
-
-.homework-value.orange {
-  color: #f97316;
 }
 
 /* 公告通知卡片 */

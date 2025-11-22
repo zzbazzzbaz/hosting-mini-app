@@ -88,7 +88,7 @@ const stats = ref({
  */
 const handlePersonalInfo = () => {
   uni.navigateTo({
-    url: '/pages/teacher/personal/personal-info',
+    url: '/pages/teacher/personal/components/personal-info',
   })
 }
 
