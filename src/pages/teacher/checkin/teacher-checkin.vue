@@ -1,117 +1,70 @@
 <template>
   <view class="page">
     <!-- 使用PageHeader组件 -->
-    <PageHeader title="签到信息" />
+    <PageHeader title="学生签到" />
 
-    <!-- 筛选区域：教师、学校、年级、日期、签到状态、班级 -->
+    <!-- 筛选卡片 -->
     <view class="filter-section">
-      <!-- 第一行：教师、学校、年级 -->
-      <view class="filter-row">
+      <view class="filter-card">
         <view class="filter-item">
-          <picker class="filter-picker" :range="teacherOptions" @change="onTeacherChange">
-            <view class="picker-box">
-              <text class="label">{{
-                currentTeacher === '全部' ? '请选择教师' : currentTeacher
-              }}</text>
-              <text class="arrow">▼</text>
-            </view>
-          </picker>
-        </view>
-        <view class="filter-item">
-          <picker class="filter-picker" :range="schoolOptions" @change="onSchoolChange">
-            <view class="picker-box">
-              <text class="label">{{
-                currentSchool === '全部' ? '请选择学校' : currentSchool
-              }}</text>
-              <text class="arrow">▼</text>
-            </view>
-          </picker>
-        </view>
-        <view class="filter-item">
-          <picker class="filter-picker" :range="gradeOptions" @change="onGradeChange">
-            <view class="picker-box">
-              <text class="label">{{ currentGrade === '全部' ? '请选择年级' : currentGrade }}</text>
-              <text class="arrow">▼</text>
-            </view>
-          </picker>
-        </view>
-      </view>
-      <!-- 第二行：日期、签到状态、班级 -->
-      <view class="filter-row">
-        <view class="filter-item">
-          <picker class="filter-picker" mode="date" :value="currentDate" @change="onDateChange">
-            <view class="picker-box">
-              <text class="label">{{ currentDate }}</text>
-              <text class="arrow">▼</text>
-            </view>
-          </picker>
-        </view>
-        <view class="filter-item">
-          <picker
-            class="filter-picker"
-            :range="statusOptions"
-            :value="statusOptions.indexOf(currentStatus)"
-            @change="onStatusChange"
-          >
-            <view class="picker-box">
-              <text class="label">{{ currentStatus }}</text>
-              <text class="arrow">▼</text>
-            </view>
-          </picker>
-        </view>
-        <view class="filter-item">
-          <picker class="filter-picker" :range="classOptions" @change="onClassChange">
-            <view class="picker-box">
-              <text class="label">{{ currentClass === '全部' ? '请选择班级' : currentClass }}</text>
-              <text class="arrow">▼</text>
+          <text class="filter-label">教师</text>
+          <picker mode="selector" :range="teacherList" @change="onTeacherChange">
+            <view class="filter-value">
+              <text>{{ currentTeacher }}</text>
+              <uni-icons type="arrowdown" size="16" color="#9ca3af"></uni-icons>
             </view>
           </picker>
         </view>
       </view>
     </view>
 
-    <!-- 全选按钮区域 -->
+    <!-- 全选区域 -->
     <view class="select-all-section">
       <view class="select-all-box" @tap="toggleSelectAll">
-        <view :class="['checkbox-inner', isAllSelected ? 'checked' : '']">
-          <text v-if="isAllSelected" class="check-icon">✓</text>
+        <view class="checkbox" :class="{ checked: isAllSelected }">
+          <uni-icons v-if="isAllSelected" type="checkmarkempty" size="18" color="#fff"></uni-icons>
         </view>
         <text class="select-all-text">全选</text>
       </view>
-      <!-- 名称搜索框 -->
-      <view class="search-box">
-        <input
-          class="search-input"
-          v-model="searchName"
-          placeholder="搜索学生姓名"
-          placeholder-style="color: #9ca3af"
-        />
-      </view>
+      <text class="selected-count">已选 {{ selectedCount }} 人</text>
     </view>
 
-    <!-- 学生列表：紧凑布局，所有信息在一行 -->
-    <view class="list">
-      <view v-for="item in filteredStudentList" :key="item.id" class="student-item">
-        <!-- 复选框 -->
-        <view class="checkbox" @tap.stop="toggleCheck(item)">
-          <view :class="['checkbox-inner', item.checked ? 'checked' : '']">
-            <text v-if="item.checked" class="check-icon">✓</text>
+    <!-- 学生列表 -->
+    <view class="student-list">
+      <view
+        class="student-item"
+        v-for="item in filteredStudentList"
+        :key="item.id"
+      >
+        <view
+          class="checkbox"
+          :class="{ checked: item.checked, disabled: item.isSignin === 1 }"
+          @tap.stop="item.isSignin !== 1 && toggleCheck(item)"
+        >
+          <uni-icons v-if="item.checked" type="checkmarkempty" size="18" color="#fff"></uni-icons>
+        </view>
+        <view class="student-info">
+          <view class="info-row">
+            <text class="student-name">{{ item.studentName }}</text>
+            <view class="status-badge" :class="item.isSignin ? 'signed' : 'unsigned'">
+              {{ item.isSignin ? '已签到' : '未签到' }}
+            </view>
+          </view>
+          <view class="info-row">
+            <text class="info-text">{{ item.schoolName }} · {{ item.gradeName }} · {{ item.clazzName }}</text>
           </view>
         </view>
-        <!-- 学生信息：姓名、学校、年级、班级 -->
-        <view class="student-info">
-          <text class="name">{{ item.name }}</text>
-          <text class="detail">{{ item.school }}</text>
-          <text class="detail grade">{{ item.grade }}</text>
-          <text class="detail">{{ item.class }}</text>
-        </view>
+      </view>
+      <view class="empty-state" v-if="filteredStudentList.length === 0">
+        <uni-icons type="info" size="48" color="#d1d5db"></uni-icons>
+        <text class="empty-text">暂无学生数据</text>
       </view>
     </view>
 
-    <!-- 底部操作按钮 -->
-    <view class="bottom-actions">
-      <button class="action-btn checkin-btn" @click="handleBatchCheckin">
-        <text>签到</text>
+    <!-- 底部签到按钮 -->
+    <view class="bottom-action">
+      <button class="checkin-btn" @tap="handleBatchCheckin" :disabled="selectedCount === 0">
+        批量签到 ({{ selectedCount }})
       </button>
     </view>
 
@@ -121,597 +74,156 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { onPullDownRefresh } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import TeacherTabBar from '@/components/TeacherTabBar.vue'
+import { getStudentList } from '@/api/teacher/checkin'
+import { getTeacherComboxList } from '@/api/common/dictionary'
+import { getUserInfo } from '@/store/auth'
 
-// 获取当前日期
-const now = new Date()
-const currentYear = now.getFullYear()
-const currentMonth = String(now.getMonth() + 1).padStart(2, '0')
-const currentDay = String(now.getDate()).padStart(2, '0')
-const todayDate = `${currentYear}-${currentMonth}-${currentDay}`
+/**
+ * 教师列表
+ */
+const teacherList = ref(['全部'])
+const currentTeacher = ref(getUserInfo()?.userName || '全部')
 
-// 当前选择的筛选项
-const currentTeacher = ref('全部')
-const currentSchool = ref('全部')
-const currentGrade = ref('全部')
-const currentClass = ref('全部')
-const currentDate = ref(todayDate) // 默认当天
-const currentStatus = ref('未签到') // 默认筛未签到
-const searchName = ref('') // 名称搜索关键词
+/**
+ * 学生列表
+ */
+const studentList = ref([])
 
-// 筛选选项数据
-const teacherOptions = ['全部', '张三', '李四', '王五']
-const schoolOptions = ['全部', '实验小学', '第二小学', '第三小学']
-const gradeOptions = ['全部', '一年级', '二年级', '三年级', '四年级', '五年级', '六年级']
-const classOptions = ['全部', '1班', '2班', '3班', '4班']
-const statusOptions = ['全部', '未签到', '已签到']
+/**
+ * 筛选后的学生列表
+ */
+const filteredStudentList = computed(() => studentList.value)
 
-// 学生列表数据（添加日期、教师、签到状态字段）
-const studentList = ref([
-  {
-    id: 1,
-    name: '张同学',
-    teacher: '张三',
-    school: '实验小学',
-    grade: '一年级',
-    class: '1班',
-    date: todayDate,
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 2,
-    name: '赵同学',
-    teacher: '张三',
-    school: '实验小学',
-    grade: '二年级',
-    class: '3班',
-    date: todayDate,
-    checkInStatus: '已签到',
-    checked: false,
-  },
-  {
-    id: 3,
-    name: '刘同学',
-    teacher: '李四',
-    school: '第二小学',
-    grade: '五年级',
-    class: '2班',
-    date: todayDate,
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 4,
-    name: '易同学',
-    teacher: '王五',
-    school: '第三小学',
-    grade: '一年级',
-    class: '4班',
-    date: todayDate,
-    checkInStatus: '已签到',
-    checked: false,
-  },
-  {
-    id: 5,
-    name: '章同学',
-    teacher: '张三',
-    school: '实验小学',
-    grade: '六年级',
-    class: '1班',
-    date: todayDate,
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 6,
-    name: '天同学',
-    teacher: '李四',
-    school: '第二小学',
-    grade: '一年级',
-    class: '2班',
-    date: '2025-10-25',
-    checkInStatus: '已签到',
-    checked: false,
-  },
-  {
-    id: 7,
-    name: '王明',
-    teacher: '张三',
-    school: '实验小学',
-    grade: '三年级',
-    class: '1班',
-    date: '2025-10-25',
-    checkInStatus: '已签到',
-    checked: false,
-  },
-  {
-    id: 8,
-    name: '李华',
-    teacher: '李四',
-    school: '第二小学',
-    grade: '四年级',
-    class: '2班',
-    date: todayDate,
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 9,
-    name: '陈静',
-    teacher: '王五',
-    school: '第三小学',
-    grade: '二年级',
-    class: '3班',
-    date: todayDate,
-    checkInStatus: '已签到',
-    checked: false,
-  },
-  {
-    id: 10,
-    name: '林峰',
-    teacher: '张三',
-    school: '实验小学',
-    grade: '五年级',
-    class: '1班',
-    date: todayDate,
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 11,
-    name: '周雨',
-    teacher: '李四',
-    school: '第二小学',
-    grade: '一年级',
-    class: '4班',
-    date: '2025-10-25',
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 12,
-    name: '吴晨',
-    teacher: '张三',
-    school: '实验小学',
-    grade: '六年级',
-    class: '2班',
-    date: todayDate,
-    checkInStatus: '已签到',
-    checked: false,
-  },
-  {
-    id: 13,
-    name: '郑宇',
-    teacher: '王五',
-    school: '第三小学',
-    grade: '三年级',
-    class: '1班',
-    date: todayDate,
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 14,
-    name: '孙涛',
-    teacher: '张三',
-    school: '实验小学',
-    grade: '二年级',
-    class: '3班',
-    date: '2025-10-25',
-    checkInStatus: '已签到',
-    checked: false,
-  },
-  {
-    id: 15,
-    name: '何敏',
-    teacher: '李四',
-    school: '第二小学',
-    grade: '四年级',
-    class: '1班',
-    date: todayDate,
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 16,
-    name: '高强',
-    teacher: '王五',
-    school: '第三小学',
-    grade: '五年级',
-    class: '2班',
-    date: todayDate,
-    checkInStatus: '已签到',
-    checked: false,
-  },
-  {
-    id: 17,
-    name: '马丽',
-    teacher: '张三',
-    school: '实验小学',
-    grade: '一年级',
-    class: '4班',
-    date: todayDate,
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 18,
-    name: '朱亮',
-    teacher: '李四',
-    school: '第二小学',
-    grade: '六年级',
-    class: '3班',
-    date: '2025-10-25',
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 19,
-    name: '胡娟',
-    teacher: '张三',
-    school: '实验小学',
-    grade: '三年级',
-    class: '2班',
-    date: todayDate,
-    checkInStatus: '已签到',
-    checked: false,
-  },
-  {
-    id: 20,
-    name: '郭伟',
-    teacher: '王五',
-    school: '第三小学',
-    grade: '二年级',
-    class: '1班',
-    date: todayDate,
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 21,
-    name: '罗琪',
-    teacher: '李四',
-    school: '第二小学',
-    grade: '四年级',
-    class: '4班',
-    date: todayDate,
-    checkInStatus: '已签到',
-    checked: false,
-  },
-  {
-    id: 22,
-    name: '梁洁',
-    teacher: '张三',
-    school: '实验小学',
-    grade: '五年级',
-    class: '3班',
-    date: '2025-10-25',
-    checkInStatus: '已签到',
-    checked: false,
-  },
-  {
-    id: 23,
-    name: '宋欢',
-    teacher: '王五',
-    school: '第三小学',
-    grade: '一年级',
-    class: '2班',
-    date: todayDate,
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 24,
-    name: '唐军',
-    teacher: '张三',
-    school: '实验小学',
-    grade: '六年级',
-    class: '1班',
-    date: todayDate,
-    checkInStatus: '已签到',
-    checked: false,
-  },
-  {
-    id: 25,
-    name: '韩冰',
-    teacher: '李四',
-    school: '第二小学',
-    grade: '三年级',
-    class: '4班',
-    date: todayDate,
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 26,
-    name: '冯磊',
-    teacher: '王五',
-    school: '第三小学',
-    grade: '二年级',
-    class: '2班',
-    date: '2025-10-25',
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 27,
-    name: '于芳',
-    teacher: '张三',
-    school: '实验小学',
-    grade: '四年级',
-    class: '3班',
-    date: todayDate,
-    checkInStatus: '已签到',
-    checked: false,
-  },
-  {
-    id: 28,
-    name: '董超',
-    teacher: '李四',
-    school: '第二小学',
-    grade: '五年级',
-    class: '1班',
-    date: todayDate,
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 29,
-    name: '萧雪',
-    teacher: '张三',
-    school: '实验小学',
-    grade: '一年级',
-    class: '2班',
-    date: todayDate,
-    checkInStatus: '已签到',
-    checked: false,
-  },
-  {
-    id: 30,
-    name: '程浩',
-    teacher: '王五',
-    school: '第三小学',
-    grade: '六年级',
-    class: '4班',
-    date: '2025-10-25',
-    checkInStatus: '已签到',
-    checked: false,
-  },
-  {
-    id: 31,
-    name: '曹慧',
-    teacher: '李四',
-    school: '第二小学',
-    grade: '三年级',
-    class: '3班',
-    date: todayDate,
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 32,
-    name: '袁杰',
-    teacher: '张三',
-    school: '实验小学',
-    grade: '二年级',
-    class: '1班',
-    date: todayDate,
-    checkInStatus: '已签到',
-    checked: false,
-  },
-  {
-    id: 33,
-    name: '邓蕾',
-    teacher: '王五',
-    school: '第三小学',
-    grade: '四年级',
-    class: '2班',
-    date: todayDate,
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 34,
-    name: '许鹏',
-    teacher: '张三',
-    school: '实验小学',
-    grade: '五年级',
-    class: '4班',
-    date: '2025-10-25',
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 35,
-    name: '傅婷',
-    teacher: '李四',
-    school: '第二小学',
-    grade: '一年级',
-    class: '3班',
-    date: todayDate,
-    checkInStatus: '已签到',
-    checked: false,
-  },
-  {
-    id: 36,
-    name: '沈刚',
-    teacher: '王五',
-    school: '第三小学',
-    grade: '六年级',
-    class: '1班',
-    date: todayDate,
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 37,
-    name: '彭颖',
-    teacher: '张三',
-    school: '实验小学',
-    grade: '三年级',
-    class: '2班',
-    date: todayDate,
-    checkInStatus: '已签到',
-    checked: false,
-  },
-  {
-    id: 38,
-    name: '吕波',
-    teacher: '李四',
-    school: '第二小学',
-    grade: '二年级',
-    class: '4班',
-    date: '2025-10-25',
-    checkInStatus: '已签到',
-    checked: false,
-  },
-  {
-    id: 39,
-    name: '苏悦',
-    teacher: '张三',
-    school: '实验小学',
-    grade: '四年级',
-    class: '1班',
-    date: todayDate,
-    checkInStatus: '未签到',
-    checked: false,
-  },
-  {
-    id: 40,
-    name: '卢翔',
-    teacher: '王五',
-    school: '第三小学',
-    grade: '五年级',
-    class: '3班',
-    date: todayDate,
-    checkInStatus: '已签到',
-    checked: false,
-  },
-])
-
-// 教师筛选器变化事件
-const onTeacherChange = (e) => {
-  const index = e.detail.value
-  currentTeacher.value = teacherOptions[index]
-  console.log('选择教师:', currentTeacher.value)
-}
-
-// 学校筛选器变化事件
-const onSchoolChange = (e) => {
-  const index = e.detail.value
-  currentSchool.value = schoolOptions[index]
-  console.log('选择学校:', currentSchool.value)
-}
-
-// 年级筛选器变化事件
-const onGradeChange = (e) => {
-  const index = e.detail.value
-  currentGrade.value = gradeOptions[index]
-  console.log('选择年级:', currentGrade.value)
-}
-
-// 班级筛选器变化事件
-const onClassChange = (e) => {
-  const index = e.detail.value
-  currentClass.value = classOptions[index]
-  console.log('选择班级:', currentClass.value)
-}
-
-// 日期筛选器变化事件
-const onDateChange = (e) => {
-  currentDate.value = e.detail.value
-  console.log('选择日期:', currentDate.value)
-}
-
-// 签到状态筛选器变化事件
-const onStatusChange = (e) => {
-  const index = e.detail.value
-  currentStatus.value = statusOptions[index]
-  console.log('选择签到状态:', currentStatus.value)
-}
-
-// 根据筛选条件过滤学生列表
-const filteredStudentList = computed(() => {
-  let filtered = studentList.value
-
-  // 按教师筛选
-  if (currentTeacher.value !== '全部') {
-    filtered = filtered.filter((item) => item.teacher === currentTeacher.value)
-  }
-
-  // 按学校筛选
-  if (currentSchool.value !== '全部') {
-    filtered = filtered.filter((item) => item.school === currentSchool.value)
-  }
-
-  // 按年级筛选
-  if (currentGrade.value !== '全部') {
-    filtered = filtered.filter((item) => item.grade === currentGrade.value)
-  }
-
-  // 按班级筛选
-  if (currentClass.value !== '全部') {
-    filtered = filtered.filter((item) => item.class === currentClass.value)
-  }
-
-  // 按日期筛选
-  if (currentDate.value) {
-    filtered = filtered.filter((item) => item.date === currentDate.value)
-  }
-
-  // 按签到状态筛选
-  if (currentStatus.value !== '全部') {
-    filtered = filtered.filter((item) => item.checkInStatus === currentStatus.value)
-  }
-
-  // 按名称搜索
-  if (searchName.value.trim()) {
-    filtered = filtered.filter((item) => item.name.includes(searchName.value.trim()))
-  }
-
-  return filtered
-})
-
-// 计算是否全选（基于筛选后的列表）
+/**
+ * 是否全选
+ */
 const isAllSelected = computed(() => {
   return (
-    filteredStudentList.value.length > 0 && filteredStudentList.value.every((item) => item.checked)
+    filteredStudentList.value.length > 0 &&
+    filteredStudentList.value.every((item) => item.checked)
   )
 })
 
-// 切换学生的签到状态
+/**
+ * 已选择数量
+ */
+const selectedCount = computed(() => {
+  return filteredStudentList.value.filter((item) => item.checked).length
+})
+
+/**
+ * 加载教师列表
+ */
+const loadTeacherList = async () => {
+  try {
+    const data = await getTeacherComboxList()
+    if (data && data.length > 0) {
+      const names = data.map((item) => item.name)
+      teacherList.value = ['全部', ...names]
+
+      // 设置当前教师为登录用户
+      const userName = getUserInfo()?.userName
+      if (userName && names.includes(userName)) {
+        currentTeacher.value = userName
+      }
+    }
+  } catch (error) {
+    console.error('加载教师列表失败:', error)
+    await uni.showToast({
+      title: '教师列表加载失败',
+      icon: 'none',
+    })
+  }
+}
+
+/**
+ * 加载学生列表
+ */
+const loadStudentList = async (teacherName) => {
+  try {
+    // 根据教师名称查找对应的 teacherId
+    let teacherId = undefined
+    if (teacherName && teacherName !== '全部') {
+      const data = await getTeacherComboxList()
+      const teacher = data.find((item) => item.name === teacherName)
+      teacherId = teacher?.id
+    }
+
+    const response = await getStudentList(teacherId)
+    if (response.code === 200 && response.data) {
+      studentList.value = response.data.map((item) => ({
+        ...item,
+        checked: false,
+      }))
+    }
+  } catch (error) {
+    console.error('加载学生列表失败:', error)
+    await uni.showToast({
+      title: '数据加载失败',
+      icon: 'none',
+    })
+  }
+}
+
+onMounted(() => {
+  loadTeacherList()
+  loadStudentList(currentTeacher.value)
+})
+
+/**
+ * 下拉刷新
+ */
+onPullDownRefresh(async () => {
+  await loadStudentList(currentTeacher.value)
+  uni.stopPullDownRefresh()
+})
+
+/**
+ * 教师筛选变化
+ */
+const onTeacherChange = (e) => {
+  currentTeacher.value = teacherList.value[e.detail.value]
+  loadStudentList(currentTeacher.value)
+}
+
+/**
+ * 切换全选状态
+ */
+const toggleSelectAll = () => {
+  const newState = !isAllSelected.value
+  filteredStudentList.value.forEach((item) => {
+    item.checked = newState
+  })
+}
+
+/**
+ * 切换单个学生选中状态
+ */
 const toggleCheck = (item) => {
   item.checked = !item.checked
 }
 
-// 全选/取消全选
-const toggleSelectAll = () => {
-  const newCheckedState = !isAllSelected.value
-  filteredStudentList.value.forEach((item) => {
-    item.checked = newCheckedState
-  })
-}
-
-// 批量签到按钮点击事件
+/**
+ * 批量签到
+ */
 const handleBatchCheckin = () => {
-  const checkedStudents = filteredStudentList.value.filter((s) => s.checked)
+  const checkedStudents = filteredStudentList.value.filter((item) => item.checked)
   if (checkedStudents.length === 0) {
     uni.showToast({
-      title: '请至少选择一个学生',
+      title: '请选择学生',
       icon: 'none',
     })
     return
   }
 
-  // 使用本地存储临时保存选中的学生数据
+  // 将选中的学生数据存储到本地，传递给确认页面
   uni.setStorageSync('checkinStudents', checkedStudents)
-
-  // 跳转到签到确认页面
   uni.navigateTo({
-    url: '/pages/teacher/checkin/checkin-confirm',
+    url: '/pages/teacher/checkin/components/checkin-confirm',
   })
 }
 </script>
@@ -725,217 +237,201 @@ const handleBatchCheckin = () => {
   padding-bottom: 240rpx;
 }
 
-/* 筛选区域：支持多行布局，固定在顶部 */
+/* 筛选区域 */
 .filter-section {
-  position: fixed;
-  top: 144rpx;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  gap: 20rpx;
-  padding: 24rpx 32rpx;
-  background: #fff;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  padding: 0 48rpx;
+  margin-bottom: 24rpx;
 }
 
-/* 筛选行 */
-.filter-row {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16rpx;
+.filter-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
 }
 
 .filter-item {
-  min-width: 0;
-}
-
-.filter-picker {
-  width: 100%;
-  min-width: 0;
-}
-
-.picker-box {
-  background: #f9fafb;
-  border: 2rpx solid #e5e7eb;
-  border-radius: 12rpx;
-  padding: 20rpx 16rpx;
-  font-size: 24rpx;
-  color: #374151;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  white-space: nowrap;
 }
 
-.label {
-  overflow: hidden;
-  text-overflow: ellipsis;
+.filter-label {
+  font-size: 28rpx;
+  color: #6b7280;
+  font-weight: 500;
 }
 
-.arrow {
-  font-size: 18rpx;
-  color: #9ca3af;
-  margin-left: 8rpx;
-  flex-shrink: 0;
-}
-
-/* 全选区域，固定在筛选区域下方 */
-.select-all-section {
-  position: fixed;
-  top: 344rpx;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  padding: 24rpx 48rpx;
-  background: #fff;
-  margin-top: 2rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+.filter-value {
   display: flex;
   align-items: center;
-  gap: 24rpx;
+  gap: 12rpx;
+  font-size: 28rpx;
+  color: #1f2937;
+}
+
+/* 全选区域 */
+.select-all-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 48rpx;
+  margin-bottom: 24rpx;
 }
 
 .select-all-box {
   display: flex;
   align-items: center;
   gap: 16rpx;
-  flex-shrink: 0;
 }
 
 .select-all-text {
   font-size: 28rpx;
-  color: #374151;
+  color: #1f2937;
   font-weight: 500;
 }
 
-/* 搜索框容器 */
-.search-box {
-  flex: 1;
-  min-width: 0;
+.selected-count {
+  font-size: 24rpx;
+  color: #0ea5e9;
+  font-weight: 500;
 }
 
-/* 搜索输入框 */
-.search-input {
-  width: 100%;
-  height: 64rpx;
-  background: #f9fafb;
-  border: 2rpx solid #e5e7eb;
-  border-radius: 12rpx;
-  padding: 0 24rpx;
-  font-size: 26rpx;
-  color: #374151;
+/* 学生列表 */
+.student-list {
+  padding: 0 48rpx;
 }
 
-/* 学生列表，添加顶部间距避免被固定区域遮挡 */
-.list {
-  padding: 360rpx 48rpx 140rpx;
-  display: flex;
-  flex-direction: column;
-  gap: 20rpx;
-}
-
-/* 学生列表项：紧凑单行布局 */
 .student-item {
-  background: #fff;
-  border-radius: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-  padding: 8rpx 24rpx;
   display: flex;
   align-items: center;
-  gap: 4rpx;
+  gap: 24rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
 }
 
-/* 复选框 */
 .checkbox {
-  flex-shrink: 0;
-  padding: 10rpx;
-  cursor: pointer;
-}
-
-.checkbox-inner {
-  width: 44rpx;
-  height: 44rpx;
-  border: 3rpx solid #d1d5db;
+  width: 40rpx;
+  height: 40rpx;
+  border: 2rpx solid #d1d5db;
   border-radius: 8rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
-  background: #fff;
 }
 
-.checkbox-inner.checked {
+.checkbox.checked {
   background: #0ea5e9;
   border-color: #0ea5e9;
 }
 
-.check-icon {
-  color: #fff;
-  font-size: 30rpx;
-  font-weight: bold;
-  line-height: 1;
+.checkbox.disabled {
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-/* 学生信息区域 */
 .student-info {
   flex: 1;
   display: flex;
-  align-items: center;
-  gap: 20rpx;
-  overflow: hidden;
+  flex-direction: column;
+  gap: 12rpx;
 }
 
-/* 学生姓名 */
-.name {
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.student-name {
   font-size: 32rpx;
   font-weight: bold;
-  color: #111827;
-  flex-shrink: 0;
+  color: #1f2937;
 }
 
-/* 其他详细信息 */
-.detail {
-  font-size: 26rpx;
-  color: #6b7280;
-  flex-shrink: 0;
-}
-
-/* 年级信息突出显示 */
-.grade {
-  color: #0ea5e9;
+.status-badge {
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
   font-weight: 500;
 }
 
-/* 底部操作按钮区域 */
-.bottom-actions {
+.status-badge.signed {
+  background: #d1fae5;
+  color: #10b981;
+}
+
+.status-badge.unsigned {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.info-text {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+  gap: 24rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #9ca3af;
+}
+
+/* 底部操作区域 */
+.bottom-action {
   position: fixed;
-  bottom: 160rpx;
+  bottom: 128rpx;
   left: 0;
   right: 0;
-  padding: 20rpx 48rpx;
-  background: transparent;
-  z-index: 10;
+  padding: 24rpx 48rpx;
+  background: #fff;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.06);
 }
 
-.action-btn {
+.checkin-btn {
   width: 100%;
-  padding: 20rpx;
-  border-radius: 16rpx;
-  font-size: 28rpx;
-  font-weight: 500;
-  border: none;
+  height: 96rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12rpx;
-  box-shadow: 0 4rpx 12rpx rgba(16, 185, 129, 0.2);
+  box-shadow: 0 4rpx 16rpx rgba(14, 165, 233, 0.3);
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
 }
 
-/* 签到按钮 */
-.checkin-btn {
-  background: #10b981;
-  color: #fff;
+.checkin-btn::after {
+  border: none;
+}
+
+.checkin-btn:active {
+  opacity: 0.85;
+  transform: scale(0.98);
+}
+
+.checkin-btn:disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  box-shadow: none;
 }
 </style>

@@ -11,7 +11,7 @@ const adaptComboxResponse = (response) => {
   return list
     .map((item, index) => ({
       id: item.id ?? `dict-${index}`,
-      name: item.dicName ?? '',
+      name: item.dicName ?? item.teacherName ?? item.parentName ?? item.studentName ?? '',
     }))
     .filter((item) => item.name)
 }
@@ -20,6 +20,17 @@ const adaptComboxResponse = (response) => {
 
 /**
  * 获取教师下拉框列表
+ *
+ * {
+ *     "code": 200,
+ *     "message": "数据查询成功",
+ *     "data": [
+ *         {
+ *             "teacherName": "teacher2",
+ *             "id": 1
+ *         }
+ *     ]
+ * }
  */
 export const getTeacherComboxList = async () => {
   const response = await request({
@@ -31,6 +42,17 @@ export const getTeacherComboxList = async () => {
 
 /**
  * 获取家长下拉框列表
+ *
+ * {
+ *     "code": 200,
+ *     "message": "数据查询成功",
+ *     "data": [
+ *         {
+ *             "parentName": "李妈妈",
+ *             "id": 1
+ *         }
+ *     ]
+ * }
  */
 export const getParentComboxList = async () => {
   const response = await request({
@@ -41,7 +63,18 @@ export const getParentComboxList = async () => {
 }
 
 /**
- * 获取学生下拉框列表
+ * 获取所有学生下拉框列表
+ *
+ * {
+ *     "code": 200,
+ *     "message": "数据查询成功",
+ *     "data": [
+ *         {
+ *             "studentName": "李老大",
+ *             "id": 1
+ *         }
+ *     ]
+ * }
  */
 export const getStudentComboxList = async () => {
   const response = await request({
@@ -54,6 +87,19 @@ export const getStudentComboxList = async () => {
 /**
  * 获取数据字典下拉框列表
  * @param {number} type - 字典类型 1:年级 2:科目 3:学校 4:校区 5:教师评级分类 6:班级 7:学生今日状态
+ *
+ * {
+ *     "code": 200,
+ *     "message": "数据查询成功",
+ *     "data": [
+ *         {
+ *             "id": 1,
+ *             "dicName": "一年级",
+ *             "type": 1,
+ *             "status": 0
+ *         }
+ *     ]
+ * }
  */
 export const getDictionaryComboxList = async (type) => {
   const response = await request({
