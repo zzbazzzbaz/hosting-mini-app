@@ -1,53 +1,53 @@
 <script setup>
-import { isAuthenticated, getToken, clearAuth } from '@/store/auth'
+import { isAuthenticated, getToken, getUserInfo, clearAuth } from '@/store/auth'
 import { checkToken } from '@/api/common/auth'
 import { onLaunch, onShow, onHide } from '@dcloudio/uni-app'
 
 /**
- * 检查认证状态
- * 验证 token 是否过期，过期则跳转到登录页
+ * 检查认证状态并根据用户类型跳转
+ * 验证 token 是否过期，过期则跳转到未登录首页，未过期则根据 type 跳转到对应首页
  */
 const checkAuthStatus = async () => {
-  // eslint-disable-next-line no-undef
-  const pages = getCurrentPages()
-  if (!pages || pages.length === 0) return
-
-  const currentRoute = '/' + pages[pages.length - 1].route
-
-  if (
-    currentRoute === '/pages/common/user-login' ||
-    currentRoute === '/pages/common/home-unlogged'
-  ) {
-    return
-  }
-
+  // 如果没有 token，不做处理（停留在未登录首页）
   if (!isAuthenticated()) {
-    console.log('未登录，跳转到登录页')
-    await uni.reLaunch({ url: '/pages/common/user-login' })
+    console.log('未登录，停留在未登录首页')
     return
   }
 
+  // 验证 token 是否过期
   try {
     const response = await checkToken(getToken())
     if (!response.data.isValid) {
-      console.log('Token 已过期，清除并跳转到登录页')
+      console.log('Token 已过期，跳转到未登录首页')
       clearAuth()
-      await uni.reLaunch({ url: '/pages/common/user-login' })
+      uni.reLaunch({ url: '/pages/common/home-unlogged' })
+    } else {
+      // token 有效，根据用户类型跳转到对应首页
+      const userInfo = getUserInfo()
+      if (userInfo && userInfo.type) {
+        if (userInfo.type === 2) {
+          console.log('家长端，跳转到家长首页')
+          uni.reLaunch({ url: '/pages/parent/home/parent-home' })
+        } else if (userInfo.type === 3) {
+          console.log('教师端，跳转到教师首页')
+          uni.reLaunch({ url: '/pages/teacher/home/teacher-home' })
+        }
+      }
     }
   } catch (error) {
     console.error('Token 验证失败:', error)
     clearAuth()
-    await uni.reLaunch({ url: '/pages/common/user-login' })
+    uni.reLaunch({ url: '/pages/common/home-unlogged' })
   }
 }
 
 onLaunch(() => {
   console.log('App Launch')
+  checkAuthStatus()
 })
 
 onShow(() => {
   console.log('App Show')
-  checkAuthStatus()
 })
 
 onHide(() => {
