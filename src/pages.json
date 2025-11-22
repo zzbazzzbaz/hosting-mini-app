@@ -120,7 +120,7 @@
 			}
 		},
 		{
-			"path": "pages/teacher/personal/personal-info",
+			"path": "pages/teacher/personal/components/personal-info",
 			"style": {
 				"navigationBarTitleText": "个人信息",
 				"navigationStyle": "custom"

@@ -6,15 +6,9 @@
     <!-- 个人信息区域 -->
     <view class="profile-section">
       <view class="profile-header">
-        <view class="avatar-wrapper">
-          <view class="avatar">
-            <text class="avatar-text">{{ teacherInfo.name[0] }}</text>
-          </view>
-          <view class="online-badge"></view>
-        </view>
         <view class="user-info">
           <text class="username">{{ teacherInfo.name }}</text>
-          <text class="role">👨‍🏫 教师</text>
+          <text class="phone">{{ teacherInfo.phone }}</text>
         </view>
       </view>
 
@@ -61,26 +55,57 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import TeacherTabBar from '@/components/TeacherTabBar.vue'
+import { getMyInfo } from '@/api/teacher/personal'
 
 /**
  * 教师个人信息
  */
 const teacherInfo = ref({
-  name: '张三',
-  phone: '138****5678',
-  email: 'zhangsan@example.com',
+  name: '',
+  phone: '',
 })
 
 /**
  * 统计数据
  */
 const stats = ref({
-  totalStudents: 20, // 学生总数
-  todayChecked: 18, // 今日签到数
-  completedHomework: 186, // 累计批改作业数
+  totalStudents: 0,
+  todayChecked: 0,
+  completedHomework: 0,
+})
+
+/**
+ * 加载个人信息
+ */
+const loadMyInfo = async () => {
+  try {
+    const response = await getMyInfo()
+    if (response.code === 200 && response.data) {
+      const data = response.data
+      teacherInfo.value = {
+        name: data.info.name,
+        phone: data.info.phone,
+      }
+      stats.value = {
+        totalStudents: data.studentCount,
+        todayChecked: data.signinCount,
+        completedHomework: data.homeworkCount,
+      }
+    }
+  } catch (error) {
+    console.error('加载个人信息失败:', error)
+    await uni.showToast({
+      title: '数据加载失败',
+      icon: 'none',
+    })
+  }
+}
+
+onMounted(() => {
+  loadMyInfo()
 })
 
 /**
@@ -128,9 +153,9 @@ const handleLogout = () => {
 /* 个人信息区域 */
 .profile-section {
   margin: 32rpx 48rpx;
-  background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+  background: #fff;
   border-radius: 32rpx;
-  box-shadow: 0 8rpx 24rpx rgba(14, 165, 233, 0.3);
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
   overflow: hidden;
 }
 
@@ -138,65 +163,34 @@ const handleLogout = () => {
 .profile-header {
   padding: 48rpx;
   display: flex;
-  align-items: center;
-  gap: 32rpx;
-}
-
-.avatar-wrapper {
-  position: relative;
-}
-
-.avatar {
-  width: 128rpx;
-  height: 128rpx;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #fff, #f0f9ff);
-  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
-  display: flex;
-  align-items: center;
   justify-content: center;
-}
-
-.avatar-text {
-  font-size: 56rpx;
-  font-weight: bold;
-  color: #0ea5e9;
-}
-
-.online-badge {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 32rpx;
-  height: 32rpx;
-  background: #10b981;
-  border-radius: 50%;
-  border: 4rpx solid #fff;
+  align-items: center;
 }
 
 .user-info {
   display: flex;
   flex-direction: column;
-  gap: 8rpx;
+  align-items: center;
+  gap: 12rpx;
 }
 
 .username {
   font-size: 48rpx;
   font-weight: bold;
-  color: #fff;
+  color: #1f2937;
 }
 
-.role {
+.phone {
   font-size: 28rpx;
-  color: #bae6fd;
+  color: #6b7280;
 }
 
 /* 统计数据网格 */
 .stats-grid {
   display: flex;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10rpx);
+  background: #f9fafb;
   padding: 32rpx 48rpx;
+  border-top: 1rpx solid #f3f4f6;
 }
 
 .stat-item {
@@ -210,17 +204,17 @@ const handleLogout = () => {
 .stat-value {
   font-size: 48rpx;
   font-weight: bold;
-  color: #fff;
+  color: #0ea5e9;
 }
 
 .stat-label {
   font-size: 24rpx;
-  color: #e0f2fe;
+  color: #6b7280;
 }
 
 .stat-divider {
   width: 2rpx;
-  background: rgba(255, 255, 255, 0.3);
+  background: #e5e7eb;
   margin: 0 24rpx;
 }
 
