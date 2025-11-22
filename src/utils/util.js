@@ -19,6 +19,11 @@ export const getUserId = () => {
   return Number.isNaN(parsed) ? id : parsed
 }
 
+/**
+ * 格式化日期为 YYYY-MM-DD
+ * @param {string|Date} value - 日期值
+ * @returns {string} 格式化后的日期字符串
+ */
 export const formatDate = (value) => {
   if (!value) return ''
   const date = new Date(value)
@@ -29,8 +34,29 @@ export const formatDate = (value) => {
   return `${y}-${m}-${d}`
 }
 
+/**
+ * 格式化时间为 YYYY-MM-DD HH:mm
+ * @param {string|Date} value - 时间值
+ * @returns {string} 格式化后的时间字符串
+ */
+export const formatTime = (value) => {
+  if (!value) return ''
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+  const h = String(date.getHours()).padStart(2, '0')
+  const min = String(date.getMinutes()).padStart(2, '0')
+  return `${formatDate(value)} ${h}:${min}`
+}
+
+/**
+ * 构建完整的图片 URL
+ * @param {string} path - 图片路径
+ * @returns {string} 完整的图片 URL
+ */
 export const buildImageUrl = (path) => {
   if (!path) return ''
   if (/^https?:\/\//i.test(path)) return path
   return `${BASE_URL}${path}`
 }
+
+
