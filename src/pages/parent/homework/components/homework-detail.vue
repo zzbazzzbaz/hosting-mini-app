@@ -55,8 +55,8 @@
         </view>
       </view>
 
-      <!-- 学生作答卡片 -->
-      <view class="section-card">
+      <!-- 学生作答卡片 - 仅已完成状态显示 -->
+      <view v-if="detail.state === 1" class="section-card">
         <view class="section-header section-green">
           <text class="section-title">学生作答</text>
         </view>
@@ -75,8 +75,8 @@
         </view>
       </view>
 
-      <!-- 教师评语卡片 -->
-      <view class="section-card">
+      <!-- 教师评语卡片 - 仅已完成状态显示 -->
+      <view v-if="detail.state === 1" class="section-card">
         <view class="section-header section-purple">
           <text class="section-title">教师评语</text>
         </view>
