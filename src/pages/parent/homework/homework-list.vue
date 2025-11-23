@@ -48,31 +48,27 @@
         <text class="empty-sub">调整筛选或下拉刷新试试</text>
       </view>
 
+      <!-- 作业列表项 - 单行紧凑型 -->
       <view
         v-for="item in filteredList"
         :key="item.id"
-        :class="['homework-item', item.status === 'pending' ? 'homework-item-pending' : '']"
+        class="homework-item"
         @tap="gotoDetail(item)"
       >
-        <view class="homework-main">
+        <!-- 左侧信息：科目 学生姓名 年级 -->
+        <view class="left-info">
           <view class="subject-chip">
             <text class="subject-text">{{ item.subjectName || '未分科目' }}</text>
           </view>
+          <text class="student-name">{{ item.studentName || '未命名' }}</text>
+          <text class="grade-text">{{ item.gradeName || '年级未填' }}</text>
         </view>
-
-        <view class="homework-title">
-          <view class="title-block">
-            <text class="title">{{ item.studentName || '未命名学生' }}</text>
-            <text class="subtitle">{{ item.gradeName || '年级未填写' }}</text>
-          </view>
+        <!-- 右侧信息：完成状态 -->
+        <view class="right-info">
+          <text class="status-text" :class="item.finishDate ? 'status-done' : 'status-pending'">
+            {{ item.finishDate ? '已完成' : '未完成' }}
+          </text>
           <uni-icons type="arrowright" size="18" color="#d1d5db" />
-        </view>
-
-        <view class="homework-time">
-          <text class="time-text">布置: {{ item.homeworkDate || '-' }}</text>
-          <text class="time-text">{{
-            item.finishDate ? `完成: ${item.finishDate}` : '未完成'
-          }}</text>
         </view>
       </view>
 
@@ -363,15 +359,17 @@ onPullDownRefresh(() => {
   color: #9ca3af;
 }
 
+/* 作业列表项 - 单行紧凑型 */
 .homework-item {
   background: #fff;
-  border-radius: 20rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.04);
-  padding: 32rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  padding: 20rpx 24rpx;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   gap: 16rpx;
-  transition: all 0.3s;
+  transition: all 0.2s;
 }
 
 .homework-item:active {
@@ -379,63 +377,73 @@ onPullDownRefresh(() => {
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
 }
 
-.homework-main {
+/* 左侧信息区域 */
+.left-info {
+  flex: 1;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 16rpx;
+  overflow: hidden;
 }
 
+/* 科目标签 - 紧凑型 */
 .subject-chip {
-  padding: 10rpx 20rpx;
-  background: #e0f2fe;
-  color: #0369a1;
-  border-radius: 999rpx;
-  font-size: 24rpx;
-  font-weight: 600;
+  padding: 4rpx 12rpx;
+  background: #dbeafe;
+  color: #1e40af;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .subject-text {
   display: inline-block;
-  max-width: 320rpx;
+  max-width: 120rpx;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.homework-title {
+/* 学生姓名 */
+.student-name {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #1f2937;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* 年级文字 */
+.grade-text {
+  font-size: 22rpx;
+  color: #6b7280;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* 右侧信息区域 */
+.right-info {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12rpx;
-}
-
-.title-block {
-  display: flex;
-  flex-direction: column;
   gap: 8rpx;
-  flex: 1;
+  flex-shrink: 0;
 }
 
-.title {
-  font-size: 32rpx;
-  color: #1f2937;
-  font-weight: 700;
+/* 状态文字 */
+.status-text {
+  font-size: 22rpx;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
-.subtitle {
-  font-size: 24rpx;
-  color: #6b7280;
+.status-done {
+  color: #10b981;
 }
 
-.homework-time {
-  display: flex;
-  justify-content: space-between;
-  padding: 0 8rpx;
-}
-
-.time-text {
-  font-size: 24rpx;
-  color: #9ca3af;
+.status-pending {
+  color: #ef4444;
 }
 
 .load-more {

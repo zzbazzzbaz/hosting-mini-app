@@ -4,16 +4,9 @@
 
     <view class="profile-section">
       <view class="profile-header">
-        <view class="avatar-wrapper">
-          <view class="avatar">
-            <text class="avatar-text">{{ parentInfo.name.slice(0, 1) }}</text>
-          </view>
-          <view class="online-badge"></view>
-        </view>
-
         <view class="user-info">
           <text class="username">{{ parentInfo.name }}</text>
-          <text class="role">👨‍👩‍👧 家长</text>
+          <text class="phone" v-if="parentInfo.phone">{{ parentInfo.phone }}</text>
         </view>
       </view>
 
@@ -134,75 +127,47 @@ onMounted(() => {
   padding-bottom: 128rpx;
 }
 
+/* 个人信息区域 */
 .profile-section {
   margin: 32rpx 48rpx;
-  background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+  background: #fff;
   border-radius: 32rpx;
-  box-shadow: 0 8rpx 24rpx rgba(14, 165, 233, 0.3);
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
   overflow: hidden;
 }
 
+/* 个人信息头部 */
 .profile-header {
   padding: 48rpx;
   display: flex;
-  align-items: center;
-  gap: 32rpx;
-}
-
-.avatar-wrapper {
-  position: relative;
-}
-
-.avatar {
-  width: 128rpx;
-  height: 128rpx;
-  border-radius: 32rpx;
-  background: linear-gradient(135deg, #fff, #f8fafc);
-  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
-  display: flex;
-  align-items: center;
   justify-content: center;
-}
-
-.avatar-text {
-  font-size: 56rpx;
-  font-weight: bold;
-  color: #0ea5e9;
-}
-
-.online-badge {
-  position: absolute;
-  top: 12rpx;
-  right: 12rpx;
-  width: 28rpx;
-  height: 28rpx;
-  background: #22c55e;
-  border-radius: 50%;
-  border: 4rpx solid #fff;
+  align-items: center;
 }
 
 .user-info {
   display: flex;
   flex-direction: column;
-  gap: 8rpx;
+  align-items: center;
+  gap: 12rpx;
 }
 
 .username {
   font-size: 48rpx;
   font-weight: bold;
-  color: #fff;
+  color: #1f2937;
 }
 
-.role {
+.phone {
   font-size: 28rpx;
-  color: #bae6fd;
+  color: #6b7280;
 }
 
+/* 统计数据网格 */
 .stats-grid {
   display: flex;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10rpx);
+  background: #f9fafb;
   padding: 32rpx 48rpx;
+  border-top: 1rpx solid #f3f4f6;
 }
 
 .stat-item {
@@ -216,22 +181,22 @@ onMounted(() => {
 .stat-value {
   font-size: 48rpx;
   font-weight: bold;
-  color: #fff;
+  color: #0ea5e9;
 }
 
 .stat-label {
   font-size: 24rpx;
-  color: #e0f2fe;
+  color: #6b7280;
 }
 
 .stat-divider {
   width: 2rpx;
-  background: rgba(255, 255, 255, 0.3);
+  background: #e5e7eb;
   margin: 0 24rpx;
 }
 
 .menu-section {
-  padding: 0 48rpx;
+  padding: 24rpx 48rpx 0;
 }
 
 .menu-group {
@@ -289,23 +254,25 @@ onMounted(() => {
 }
 
 .logout-section {
-  padding: 32rpx 48rpx;
+  padding: 24rpx 48rpx 120rpx;
 }
 
 .logout-btn {
   width: 100%;
   height: 96rpx;
+  border-radius: 24rpx;
   background: #fff;
   border: 2rpx solid #ef4444;
-  border-radius: 24rpx;
   color: #ef4444;
   font-size: 32rpx;
-  font-weight: 500;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2rpx 12rpx rgba(239, 68, 68, 0.1);
-  transition: all 0.3s;
+  box-shadow: 0 4rpx 16rpx rgba(239, 68, 68, 0.2);
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
 }
 
 .logout-btn::after {
@@ -313,7 +280,7 @@ onMounted(() => {
 }
 
 .logout-btn:active {
-  background: #fef2f2;
+  opacity: 0.85;
   transform: scale(0.98);
 }
 </style>
