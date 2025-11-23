@@ -1,6 +1,6 @@
 import request, { BASE_URL } from '@/utils/request'
 import { getToken } from '@/store/auth'
-import { getUserId } from '@/utils/util'
+import { getUserId, buildImageUrl } from '@/utils/util'
 
 /**
  * 适配学生列表响应数据
@@ -46,7 +46,7 @@ export const getStudentList = async (teacherId) => {
 /**
  * 上传签到图片
  * @param {string} filePath - 本地文件路径
- * @returns {Promise} 返回上传结果
+ * @returns {Promise<{code:number,message:string,data:Object}>} 返回上传结果
  */
 export const uploadSigninPic = (filePath) => {
   const token = getToken()
@@ -54,14 +54,27 @@ export const uploadSigninPic = (filePath) => {
 
   return new Promise((resolve, reject) => {
     uni.uploadFile({
-      url: `${BASE_URL}/teacher/home/addPic`,
+      url: `${BASE_URL}/teacher/home/addPic2`,
       filePath,
       name: 'file',
       header,
       success: (res) => {
         try {
           const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data
-          resolve(data)
+          if (data.code === 200) {
+            resolve({
+              code: data.code,
+              message: data.message,
+              data: data.data
+                ? {
+                    ...data.data,
+                    url: buildImageUrl(data.data.imgpath),
+                  }
+                : null,
+            })
+          } else {
+            reject(new Error(data.message || '上传失败'))
+          }
         } catch (error) {
           reject(error)
         }
