@@ -65,7 +65,7 @@ const adaptHomeworkDetail = (response) => {
     return rawList
       .filter((item) => item)
       .map((item, index) => {
-        const path = typeof item === 'string' ? item : item.imgpath ?? ''
+        const path = typeof item === 'string' ? item : (item.imgpath ?? '')
         return {
           id: (typeof item === 'object' && item.id) || `img-${index}`,
           path,

@@ -112,9 +112,7 @@ const props = defineProps({
 
 const emit = defineEmits(['submit', 'choose-image', 'remove-image', 'target-change'])
 
-const sectionSubtitle = computed(() =>
-  props.showDate ? '确认布置对象与时间' : '确认布置对象'
-)
+const sectionSubtitle = computed(() => (props.showDate ? '确认布置对象与时间' : '确认布置对象'))
 
 const normalizedTargets = computed(() =>
   (props.targetOptions || [])

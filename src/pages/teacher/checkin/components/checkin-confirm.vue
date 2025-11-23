@@ -11,7 +11,9 @@
       <view class="student-list">
         <view class="student-item" v-for="item in students" :key="item.id">
           <text class="student-name">{{ item.studentName }}</text>
-          <text class="student-info">{{ item.schoolName }} · {{ item.gradeName }} · {{ item.clazzName }}</text>
+          <text class="student-info"
+            >{{ item.schoolName }} · {{ item.gradeName }} · {{ item.clazzName }}</text
+          >
         </view>
       </view>
     </view>
@@ -38,7 +40,11 @@
 
     <!-- 底部提交按钮 -->
     <view class="bottom-action">
-      <button class="submit-btn" @tap="handleSubmit" :disabled="submitting || imageList.length === 0">
+      <button
+        class="submit-btn"
+        @tap="handleSubmit"
+        :disabled="submitting || imageList.length === 0"
+      >
         {{ submitting ? '提交中...' : '确认签到' }}
       </button>
     </view>
@@ -326,8 +332,9 @@ const handleSubmit = async () => {
   align-items: center;
   justify-content: center;
   box-shadow: 0 4rpx 16rpx rgba(14, 165, 233, 0.3);
-  transition: opacity 0.2s,
-  transform 0.2s;
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
 }
 
 .submit-btn::after {

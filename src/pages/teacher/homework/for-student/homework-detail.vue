@@ -14,7 +14,9 @@
         </view>
         <view class="compact-meta time-row">
           <view class="time-chip">布置 {{ homework.homeworkDate || '-' }}</view>
-          <view v-if="homework.finishDate" class="time-chip done">完成 {{ homework.finishDate }}</view>
+          <view v-if="homework.finishDate" class="time-chip done"
+            >完成 {{ homework.finishDate }}</view
+          >
         </view>
       </view>
 
@@ -142,9 +144,7 @@ const currentStudentStateLabel = computed(
 
 const isCompleted = computed(() => homework.value?.isCompleted || homework.value?.state === 1)
 const displayEvaluation = computed(() => homework.value?.evaluation || DEFAULT_EVALUATION)
-const displayHomeworkImages = computed(() =>
-  (homework.value?.homeworkImages || []).slice(0, 3)
-)
+const displayHomeworkImages = computed(() => (homework.value?.homeworkImages || []).slice(0, 3))
 
 const finishPicIds = computed(() =>
   (homework.value?.finishImages || [])

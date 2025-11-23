@@ -31,11 +31,7 @@
 
     <!-- 学生列表 -->
     <view class="student-list">
-      <view
-        class="student-item"
-        v-for="item in filteredStudentList"
-        :key="item.id"
-      >
+      <view class="student-item" v-for="item in filteredStudentList" :key="item.id">
         <view
           class="checkbox"
           :class="{ checked: item.checked, disabled: item.isSignin === 1 }"
@@ -51,7 +47,9 @@
             </view>
           </view>
           <view class="info-row">
-            <text class="info-text">{{ item.schoolName }} · {{ item.gradeName }} · {{ item.clazzName }}</text>
+            <text class="info-text"
+              >{{ item.schoolName }} · {{ item.gradeName }} · {{ item.clazzName }}</text
+            >
           </view>
         </view>
       </view>
@@ -104,8 +102,7 @@ const filteredStudentList = computed(() => studentList.value)
  */
 const isAllSelected = computed(() => {
   return (
-    filteredStudentList.value.length > 0 &&
-    filteredStudentList.value.every((item) => item.checked)
+    filteredStudentList.value.length > 0 && filteredStudentList.value.every((item) => item.checked)
   )
 })
 

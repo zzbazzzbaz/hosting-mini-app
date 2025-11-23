@@ -133,8 +133,12 @@ const normalizeOptions = (list = [], allLabel) =>
       .filter((item) => item.id || item.name),
   ].filter((item) => item.name)
 
-const currentTeacherLabel = computed(() => teacherOptions.value[teacherIndex.value]?.name || '全部教师')
-const currentSchoolLabel = computed(() => schoolOptions.value[schoolIndex.value]?.name || '全部学校')
+const currentTeacherLabel = computed(
+  () => teacherOptions.value[teacherIndex.value]?.name || '全部教师'
+)
+const currentSchoolLabel = computed(
+  () => schoolOptions.value[schoolIndex.value]?.name || '全部学校'
+)
 const currentGradeLabel = computed(() => gradeOptions.value[gradeIndex.value]?.name || '全部年级')
 const currentClassLabel = computed(() => classOptions.value[classIndex.value]?.name || '全部班级')
 

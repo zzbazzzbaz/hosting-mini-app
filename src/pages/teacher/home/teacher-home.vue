@@ -52,29 +52,29 @@
 
       <!-- 作业卡片 -->
       <view class="homework-card">
-          <view class="card-icon-wrapper homework-bg">
-            <uni-icons type="compose" size="28" color="#8b5cf6"></uni-icons>
+        <view class="card-icon-wrapper homework-bg">
+          <uni-icons type="compose" size="28" color="#8b5cf6"></uni-icons>
+        </view>
+        <text class="card-title">作业统计</text>
+        <view class="card-stats-grid">
+          <view class="grid-item">
+            <text class="grid-num green">{{ stats.completedHomework }}</text>
+            <text class="grid-label">累计完成</text>
           </view>
-          <text class="card-title">作业统计</text>
-          <view class="card-stats-grid">
-            <view class="grid-item">
-              <text class="grid-num green">{{ stats.completedHomework }}</text>
-              <text class="grid-label">累计完成</text>
-            </view>
-            <view class="grid-item">
-              <text class="grid-num red">{{ stats.pendingHomework }}</text>
-              <text class="grid-label">累计未完成</text>
-            </view>
-            <view class="grid-item">
-              <text class="grid-num green">{{ stats.todayCompleted }}</text>
-              <text class="grid-label">今日完成</text>
-            </view>
-            <view class="grid-item">
-              <text class="grid-num orange">{{ stats.todayPending }}</text>
-              <text class="grid-label">今日待完成</text>
-            </view>
+          <view class="grid-item">
+            <text class="grid-num red">{{ stats.pendingHomework }}</text>
+            <text class="grid-label">累计未完成</text>
+          </view>
+          <view class="grid-item">
+            <text class="grid-num green">{{ stats.todayCompleted }}</text>
+            <text class="grid-label">今日完成</text>
+          </view>
+          <view class="grid-item">
+            <text class="grid-num orange">{{ stats.todayPending }}</text>
+            <text class="grid-label">今日待完成</text>
           </view>
         </view>
+      </view>
 
       <!-- 公告通知卡片 -->
       <view class="section-title" style="margin-top: 32rpx">

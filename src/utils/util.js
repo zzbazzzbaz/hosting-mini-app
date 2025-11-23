@@ -58,5 +58,3 @@ export const buildImageUrl = (path) => {
   if (/^https?:\/\//i.test(path)) return path
   return `${BASE_URL}${path}`
 }
-
-
