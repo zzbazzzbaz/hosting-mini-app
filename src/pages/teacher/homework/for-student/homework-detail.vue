@@ -81,7 +81,10 @@
         </view>
         <view class="section-body form-body pending-body">
           <!-- 上传完成图片 - 使用3列网格布局 -->
-          <view class="section-sub-title">完成图片</view>
+          <view class="section-sub-header">
+            <text class="section-sub-title">完成图片</text>
+            <text class="section-subtitle">最多可上传9张图片</text>
+          </view>
           <view class="upload-grid">
             <view
               v-for="(img, index) in displayFinishImages"
@@ -92,7 +95,7 @@
               <view class="remove" @tap.stop="removeFinishImage(index)">✕</view>
             </view>
             <view
-              v-if="displayFinishImages.length < 6"
+              v-if="displayFinishImages.length < 9"
               class="upload-item upload-placeholder"
               @tap.stop="chooseFinishImages"
             >
@@ -187,7 +190,7 @@ const currentStudentStateLabel = computed(
 
 const isCompleted = computed(() => homework.value?.isCompleted || homework.value?.state === 1)
 const displayEvaluation = computed(() => homework.value?.evaluation || DEFAULT_EVALUATION)
-const displayHomeworkImages = computed(() => (homework.value?.homeworkImages || []).slice(0, 3))
+const displayHomeworkImages = computed(() => (homework.value?.homeworkImages || []).slice(0, 9))
 const displayFinishImages = computed(() => finishImages.value || [])
 
 const finishPicIds = computed(() =>
@@ -270,9 +273,9 @@ const handleComplete = async () => {
 }
 
 const chooseFinishImages = () => {
-  const remain = 6 - finishImages.value.length
+  const remain = 9 - finishImages.value.length
   if (remain <= 0) {
-    uni.showToast({ title: '最多上传6张图片', icon: 'none' })
+    uni.showToast({ title: '最多上传9张图片', icon: 'none' })
     return
   }
   uni.chooseImage({
@@ -585,6 +588,20 @@ onLoad(async (options) => {
   font-weight: 600;
   color: #374151;
   margin-bottom: 4rpx;
+}
+
+/* 小节标题容器 - 左右布局 */
+.section-sub-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+/* 副标题样式 - 右对齐的灰色小字 */
+.section-subtitle {
+  font-size: 24rpx;
+  color: #6b7280;
 }
 
 .image-item {

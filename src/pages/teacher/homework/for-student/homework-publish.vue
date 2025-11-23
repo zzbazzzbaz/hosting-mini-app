@@ -37,14 +37,14 @@
         <view class="section">
           <view class="section-header">
             <text class="section-title">参考资料</text>
-            <text class="section-subtitle">上传配图或附件（可选）</text>
+            <text class="section-subtitle">最多可上传9张图片</text>
           </view>
           <view class="upload-grid">
             <view v-for="(img, index) in form.images" :key="img" class="upload-item">
               <image :src="img" mode="aspectFill" class="upload-image" />
               <view class="remove" @click="removeImage(index)">✕</view>
             </view>
-            <view class="upload-item upload-placeholder" @click="chooseImage">
+            <view v-if="form.images.length < 9" class="upload-item upload-placeholder" @click="chooseImage">
               <view class="upload-placeholder-inner">
                 <text class="upload-plus">+</text>
                 <text class="upload-text">上传图片</text>
@@ -260,15 +260,15 @@ watch(
 )
 
 const chooseImage = () => {
-  if (form.images.length >= 6) {
-    uni.showToast({ title: '最多上传6张图片', icon: 'none' })
+  if (form.images.length >= 9) {
+    uni.showToast({ title: '最多上传9张图片', icon: 'none' })
     return
   }
   uni.chooseImage({
-    count: 6 - form.images.length,
+    count: 9 - form.images.length,
     success: async (res) => {
       const paths = res.tempFilePaths || []
-      const next = [...form.images, ...paths].slice(0, 6)
+      const next = [...form.images, ...paths].slice(0, 9)
       form.images = next
       try {
         await uploadMissingImages(form.images)
