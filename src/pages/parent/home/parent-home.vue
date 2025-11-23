@@ -37,7 +37,9 @@
                 <uni-icons type="calendar" size="20" color="#2563eb" />
                 <text class="card-title">课时进度</text>
               </view>
-              <text class="hours-text">已上 {{ student.hours.used }} / 总计 {{ student.hours.total }}</text>
+              <text class="hours-text"
+                >已上 {{ student.hours.used }} / 总计 {{ student.hours.total }}</text
+              >
             </view>
             <view class="card-body">
               <view class="progress-wrapper">

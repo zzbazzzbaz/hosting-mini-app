@@ -23,7 +23,10 @@
             <text class="field-label">作业完成时间<text style="color: #ef4444">*</text></text>
             <picker mode="date" :value="form.homeworkTime" @change="onDateChange">
               <view class="picker date-picker">
-                <text class="picker-label" :style="{ color: form.homeworkTime ? '#111827' : '#9ca3af' }">
+                <text
+                  class="picker-label"
+                  :style="{ color: form.homeworkTime ? '#111827' : '#9ca3af' }"
+                >
                   {{ form.homeworkTime || '请选择日期' }}
                 </text>
                 <text class="picker-icon">▼</text>

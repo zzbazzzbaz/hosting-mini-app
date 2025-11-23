@@ -208,7 +208,13 @@ export const uploadTeacherHomeworkImage = (filePath) => {
 /**
  * 发布作业
  */
-export const addTeacherHomework = async ({ studentId, content, workpicids, subjectId, homeworkTime2 }) => {
+export const addTeacherHomework = async ({
+  studentId,
+  content,
+  workpicids,
+  subjectId,
+  homeworkTime2,
+}) => {
   const params = {
     'student.id': studentId,
     content,

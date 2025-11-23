@@ -10,7 +10,10 @@
             <text class="field-label">布置给<text style="color: #ef4444">*</text></text>
             <picker :range="childNames" @change="onChildChange">
               <view class="picker child-picker">
-                <text class="picker-label" :style="{ color: form.childName ? '#111827' : '#9ca3af' }">
+                <text
+                  class="picker-label"
+                  :style="{ color: form.childName ? '#111827' : '#9ca3af' }"
+                >
                   {{ form.childName || '请选择孩子' }}
                 </text>
                 <text class="picker-icon">▼</text>

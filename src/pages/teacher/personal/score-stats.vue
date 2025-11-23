@@ -28,7 +28,9 @@
           <view class="score-info">
             <text class="student-name">{{ item.studentName }}</text>
             <view class="info-row">
-              <text class="info-text">{{ item.schoolName }} · {{ item.gradeName }} · {{ item.clazzName }}</text>
+              <text class="info-text"
+                >{{ item.schoolName }} · {{ item.gradeName }} · {{ item.clazzName }}</text
+              >
             </view>
             <text class="parent-name">家长：{{ item.parentName }}</text>
           </view>
@@ -110,7 +112,7 @@ const loadStudentList = async () => {
     if (res.code === 200 && res.data) {
       studentList.value = [
         { id: '', name: '全部' },
-        ...res.data.map(s => ({ id: s.id, name: s.studentName }))
+        ...res.data.map((s) => ({ id: s.id, name: s.studentName })),
       ]
     }
   } catch (error) {
@@ -127,7 +129,7 @@ const loadScoreList = async () => {
     const res = await getScoreList({
       studentId: currentStudentId.value,
       page: 1,
-      pageSize: 100
+      pageSize: 100,
     })
     if (res.code === 200) {
       scoreList.value = res.data.rows || []

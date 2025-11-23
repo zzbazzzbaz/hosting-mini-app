@@ -107,7 +107,7 @@ const loadStudentList = async () => {
     if (res.code === 200 && res.data.students) {
       studentList.value = [
         { id: '', name: '全部' },
-        ...res.data.students.map(s => ({ id: s.id, name: s.name }))
+        ...res.data.students.map((s) => ({ id: s.id, name: s.name })),
       ]
     }
   } catch (error) {
@@ -124,7 +124,7 @@ const loadScoreList = async () => {
     const res = await getScoreList({
       studentId: currentStudentId.value,
       page: 1,
-      pageSize: 100
+      pageSize: 100,
     })
     if (res.code === 200) {
       scoreList.value = res.data.rows || []
