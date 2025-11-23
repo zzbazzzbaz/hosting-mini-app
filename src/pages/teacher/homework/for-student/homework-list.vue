@@ -80,9 +80,9 @@
           </view>
           <!-- 时间信息行 -->
           <view class="homework-time">
-            <text class="time-text">布置时间: {{ item.homeworkDate || '-' }}</text>
+            <text class="time-text">期望完成时间: {{ item.homeworkDate || '-' }}</text>
             <text class="time-text">{{
-              item.finishDate ? `完成时间: ${item.finishDate}` : ''
+              item.finishDate ? `实际完成时间: ${item.finishDate}` : ''
             }}</text>
           </view>
         </view>

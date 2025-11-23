@@ -3,14 +3,28 @@
     <PageHeader :title="headerTitle" :showBack="true" />
     <view class="content">
       <view class="publish-form">
-        <!-- 科目选择（必填） -->
+        <!-- 基本信息 -->
         <view class="section">
+          <!-- 科目选择（必填） -->
           <view class="field">
             <text class="field-label">科目<text style="color: #ef4444">*</text></text>
             <picker :range="subjectNames" @change="onSubjectChange">
               <view class="picker subject-picker">
                 <text class="picker-label" :style="{ color: form.subject ? '#111827' : '#9ca3af' }">
                   {{ form.subject || '请选择科目' }}
+                </text>
+                <text class="picker-icon">▼</text>
+              </view>
+            </picker>
+          </view>
+
+          <!-- 作业完成时间（必填） -->
+          <view class="field">
+            <text class="field-label">作业完成时间<text style="color: #ef4444">*</text></text>
+            <picker mode="date" :value="form.homeworkTime" @change="onDateChange">
+              <view class="picker date-picker">
+                <text class="picker-label" :style="{ color: form.homeworkTime ? '#111827' : '#9ca3af' }">
+                  {{ form.homeworkTime || '请选择日期' }}
                 </text>
                 <text class="picker-icon">▼</text>
               </view>
@@ -83,6 +97,7 @@ const imageIdMap = ref({})
 const createDefaultForm = () => ({
   subject: '', // 默认为空，显示占位文本
   subjectId: '', // 科目ID
+  homeworkTime: '', // 作业完成时间（必填）
   content: '', // 作业内容
   images: [], // 图片列表
 })
@@ -176,6 +191,12 @@ const handleSubmit = async () => {
     return
   }
 
+  // 验证作业完成时间必选
+  if (!form.homeworkTime || !form.homeworkTime.trim()) {
+    await uni.showToast({ title: '请选择作业完成时间', icon: 'none' })
+    return
+  }
+
   // 验证作业内容必填
   if (!form.content.trim()) {
     await uni.showToast({ title: '请输入作业内容', icon: 'none' })
@@ -203,6 +224,7 @@ const handleSubmit = async () => {
       content: (form.content || '').trim(),
       workpicids,
       subjectId,
+      homeworkTime2: form.homeworkTime,
     })
 
     await uni.showToast({ title: '发布成功', icon: 'success' })
@@ -251,6 +273,14 @@ const onSubjectChange = (event) => {
   const subject = normalizedSubjects.value[index] || {}
   form.subject = subject.name || ''
   form.subjectId = subject.id || ''
+}
+
+/**
+ * 处理日期选择变化
+ * 更新作业完成时间
+ */
+const onDateChange = (event) => {
+  form.homeworkTime = event.detail.value
 }
 
 watch(

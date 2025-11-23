@@ -13,9 +13,9 @@
           </view>
         </view>
         <view class="compact-meta time-row">
-          <view class="time-chip">布置 {{ homework.homeworkDate || '-' }}</view>
+          <view class="time-chip">期望完成 {{ homework.homeworkDate || '-' }}</view>
           <view v-if="homework.finishDate" class="time-chip done"
-            >完成 {{ homework.finishDate }}</view
+            >实际完成 {{ homework.finishDate }}</view
           >
         </view>
       </view>
