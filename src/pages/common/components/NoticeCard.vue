@@ -48,7 +48,7 @@ const props = defineProps({
    */
   notices: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
 
   /**
@@ -56,8 +56,8 @@ const props = defineProps({
    */
   emptyText: {
     type: String,
-    default: '暂无公告通知'
-  }
+    default: '暂无公告通知',
+  },
 })
 
 const emit = defineEmits(['notice-click'])
@@ -71,7 +71,7 @@ const handleNoticeClick = (notice) => {
     title: notice.title,
     content: notice.content || '暂无详细内容',
     showCancel: false,
-    confirmText: '知道了'
+    confirmText: '知道了',
   })
 
   // 触发父组件事件，用于统计、埋点等

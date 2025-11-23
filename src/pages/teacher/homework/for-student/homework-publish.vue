@@ -6,7 +6,7 @@
         <!-- 科目选择（必填） -->
         <view class="section">
           <view class="field">
-            <text class="field-label">科目<text style="color: #ef4444;">*</text></text>
+            <text class="field-label">科目<text style="color: #ef4444">*</text></text>
             <picker :range="subjectNames" @change="onSubjectChange">
               <view class="picker subject-picker">
                 <text class="picker-label" :style="{ color: form.subject ? '#111827' : '#9ca3af' }">
@@ -44,7 +44,11 @@
               <image :src="img" mode="aspectFill" class="upload-image" />
               <view class="remove" @click="removeImage(index)">✕</view>
             </view>
-            <view v-if="form.images.length < 9" class="upload-item upload-placeholder" @click="chooseImage">
+            <view
+              v-if="form.images.length < 9"
+              class="upload-item upload-placeholder"
+              @click="chooseImage"
+            >
               <view class="upload-placeholder-inner">
                 <text class="upload-plus">+</text>
                 <text class="upload-text">上传图片</text>

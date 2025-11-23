@@ -91,7 +91,12 @@
               :key="`up-${img.id || index}`"
               class="upload-item"
             >
-              <image :src="img.url" mode="aspectFill" class="upload-image" @click="previewImages(displayFinishImages, index)" />
+              <image
+                :src="img.url"
+                mode="aspectFill"
+                class="upload-image"
+                @click="previewImages(displayFinishImages, index)"
+              />
               <view class="remove" @tap.stop="removeFinishImage(index)">✕</view>
             </view>
             <view
