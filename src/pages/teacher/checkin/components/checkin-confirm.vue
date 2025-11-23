@@ -5,8 +5,8 @@
 
     <!-- 学生列表 - 单行紧凑型 -->
     <view class="student-section">
-      <view class="section-title">
-        <text class="title-text">签到学生 ({{ students.length }}人)</text>
+      <view class="student-section-header">
+        <text class="student-section-title">签到学生 ({{ students.length }}人)</text>
       </view>
       <view class="student-list">
         <view class="student-item" v-for="item in students" :key="item.id">
@@ -20,20 +20,20 @@
 
     <!-- 图片上传区域 -->
     <view class="upload-section">
-      <view class="section-title">
-        <text class="title-text">签到照片</text>
-        <text class="title-tip">（最多9张）</text>
+      <view class="section-header">
+        <text class="section-title">签到照片</text>
+        <text class="section-subtitle">最多可上传9张图片</text>
       </view>
-      <view class="image-grid">
-        <view class="image-item" v-for="(img, index) in imageList" :key="index">
-          <image class="image" :src="img.url" mode="aspectFill" @tap="previewImage(index)" />
-          <view class="delete-btn" @tap.stop="deleteImage(index)">
-            <uni-icons type="close" size="16" color="#fff"></uni-icons>
-          </view>
+      <view class="upload-grid">
+        <view v-for="(img, index) in imageList" :key="index" class="upload-item">
+          <image :src="img.url" mode="aspectFill" class="upload-image" @tap="previewImage(index)" />
+          <view class="remove" @tap.stop="deleteImage(index)">✕</view>
         </view>
-        <view class="upload-btn" v-if="imageList.length < 9" @tap="chooseImage">
-          <uni-icons type="camera" size="32" color="#9ca3af"></uni-icons>
-          <text class="upload-text">添加照片</text>
+        <view v-if="imageList.length < 9" class="upload-item upload-placeholder" @tap="chooseImage">
+          <view class="upload-placeholder-inner">
+            <text class="upload-plus">+</text>
+            <text class="upload-text">上传图片</text>
+          </view>
         </view>
       </view>
     </view>
@@ -184,23 +184,18 @@ const handleSubmit = async () => {
   margin-bottom: 32rpx;
 }
 
-/* 区块标题 */
-.section-title {
+/* 学生区块标题 */
+.student-section-header {
   display: flex;
   align-items: center;
   gap: 8rpx;
   margin-bottom: 24rpx;
 }
 
-.title-text {
+.student-section-title {
   font-size: 32rpx;
   font-weight: bold;
   color: #1f2937;
-}
-
-.title-tip {
-  font-size: 24rpx;
-  color: #9ca3af;
 }
 
 /* 学生列表 - 单行紧凑型 */
@@ -238,76 +233,99 @@ const handleSubmit = async () => {
 /* 上传区域 */
 .upload-section {
   padding: 0 48rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx 24rpx;
+  margin: 0 48rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.04);
+}
+
+/* 区块标题容器 - 左右布局 */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #111827;
+}
+
+.section-subtitle {
+  font-size: 24rpx;
+  color: #6b7280;
 }
 
 /* 图片网格 */
-.image-grid {
+.upload-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16rpx;
 }
 
-.image-item {
+.upload-item {
   position: relative;
   width: 100%;
+  height: 0;
   padding-bottom: 100%;
-  border-radius: 16rpx;
+  border-radius: 12rpx;
   overflow: hidden;
+  background: #f9fafb;
+  border: 2rpx dashed #d1d5db;
 }
 
-.image {
+.upload-image {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  object-fit: cover;
 }
 
-.delete-btn {
-  position: absolute;
-  top: 8rpx;
-  right: 8rpx;
-  width: 48rpx;
-  height: 48rpx;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.upload-btn {
-  width: 100%;
-  padding-bottom: 100%;
+.upload-placeholder {
   position: relative;
-  background: #f9fafb;
-  border: 2rpx dashed #d1d5db;
-  border-radius: 16rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  border-style: dashed;
 }
 
-.upload-btn::before {
-  content: '';
+.upload-placeholder-inner {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 8rpx;
+  padding: 0 12rpx;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.upload-plus {
+  font-size: 48rpx;
+  line-height: 1;
 }
 
 .upload-text {
   font-size: 24rpx;
-  color: #9ca3af;
-  margin-top: 8rpx;
+}
+
+.remove {
   position: absolute;
-  bottom: 30%;
+  top: 8rpx;
+  right: 8rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
 }
 
 /* 底部操作区域 */
