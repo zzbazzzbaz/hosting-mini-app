@@ -83,8 +83,8 @@ import { setCheckinStudents } from '@/store/checkin'
 /**
  * 教师列表
  */
-const teacherList = ref(['全部'])
-const currentTeacher = ref(getUserInfo()?.userName || '全部')
+const teacherList = ref([])
+const currentTeacher = ref(getUserInfo()?.userName || '')
 
 /**
  * 学生列表
@@ -120,7 +120,7 @@ const loadTeacherList = async () => {
     const data = await getTeacherComboxList()
     if (data && data.length > 0) {
       const names = data.map((item) => item.name)
-      teacherList.value = ['全部', ...names]
+      teacherList.value = names
 
       // 设置当前教师为登录用户
       const userName = getUserInfo()?.userName
@@ -144,7 +144,7 @@ const loadStudentList = async (teacherName) => {
   try {
     // 根据教师名称查找对应的 teacherId
     let teacherId = undefined
-    if (teacherName && teacherName !== '全部') {
+    if (teacherName) {
       const data = await getTeacherComboxList()
       const teacher = data.find((item) => item.name === teacherName)
       teacherId = teacher?.id
