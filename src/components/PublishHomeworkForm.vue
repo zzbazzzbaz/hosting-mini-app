@@ -3,7 +3,7 @@
     <view class="section">
       <view class="section-header">
         <text class="section-title">基础信息</text>
-        <text class="section-subtitle">确认布置对象与时间</text>
+        <text class="section-subtitle">{{ sectionSubtitle }}</text>
       </view>
       <view class="field">
         <text class="field-label">布置对象</text>
@@ -21,7 +21,7 @@
         </picker>
         <text v-else class="field-value">{{ targetName }}</text>
       </view>
-      <view class="field">
+      <view v-if="showDate" class="field">
         <text class="field-label">布置日期</text>
         <picker mode="date" :value="form.date" @change="onDateChange">
           <view class="picker">
@@ -104,9 +104,17 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  showDate: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const emit = defineEmits(['submit', 'choose-image', 'remove-image', 'target-change'])
+
+const sectionSubtitle = computed(() =>
+  props.showDate ? '确认布置对象与时间' : '确认布置对象'
+)
 
 const normalizedTargets = computed(() =>
   (props.targetOptions || [])

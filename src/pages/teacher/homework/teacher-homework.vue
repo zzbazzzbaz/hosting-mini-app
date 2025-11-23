@@ -7,32 +7,49 @@
     <view class="filter-section">
       <!-- 第一行：教师、学校 -->
       <view class="filter-row">
-        <picker class="filter-picker" :range="teacherOptions" @change="onTeacherChange">
+        <picker
+          class="filter-picker"
+          :range="teacherOptions"
+          range-key="name"
+          @change="onTeacherChange"
+        >
           <view class="picker-box">
-            <text class="label">{{
-              currentTeacher === '全部' ? '请选择教师' : currentTeacher
-            }}</text>
+            <text class="label">{{ currentTeacherLabel }}</text>
             <text class="arrow">▼</text>
           </view>
         </picker>
-        <picker class="filter-picker" :range="schoolOptions" @change="onSchoolChange">
+        <picker
+          class="filter-picker"
+          :range="schoolOptions"
+          range-key="name"
+          @change="onSchoolChange"
+        >
           <view class="picker-box">
-            <text class="label">{{ currentSchool === '全部' ? '请选择学校' : currentSchool }}</text>
+            <text class="label">{{ currentSchoolLabel }}</text>
             <text class="arrow">▼</text>
           </view>
         </picker>
       </view>
-      <!-- 第二行：年级、班级 -->
       <view class="filter-row">
-        <picker class="filter-picker" :range="gradeOptions" @change="onGradeChange">
+        <picker
+          class="filter-picker"
+          :range="gradeOptions"
+          range-key="name"
+          @change="onGradeChange"
+        >
           <view class="picker-box">
-            <text class="label">{{ currentGrade === '全部' ? '请选择年级' : currentGrade }}</text>
+            <text class="label">{{ currentGradeLabel }}</text>
             <text class="arrow">▼</text>
           </view>
         </picker>
-        <picker class="filter-picker" :range="classOptions" @change="onClassChange">
+        <picker
+          class="filter-picker"
+          :range="classOptions"
+          range-key="name"
+          @change="onClassChange"
+        >
           <view class="picker-box">
-            <text class="label">{{ currentClass === '全部' ? '请选择班级' : currentClass }}</text>
+            <text class="label">{{ currentClassLabel }}</text>
             <text class="arrow">▼</text>
           </view>
         </picker>
@@ -56,20 +73,22 @@
         class="item"
         @click="goDetail(item)"
       >
-        <!-- 左侧学生信息 -->
         <view class="student-info">
-          <text class="name">{{ item.name }}</text>
+          <text class="name">{{ item.studentName || '未命名学生' }}</text>
           <view class="detail-row">
-            <text class="detail">{{ item.school }}</text>
-            <text class="detail grade">{{ item.grade }}</text>
-            <text class="detail">{{ item.class }}</text>
+            <text class="detail">{{ item.schoolName || '学校未填' }}</text>
+            <text class="detail grade">{{ item.gradeName || '年级未填' }}</text>
+            <text class="detail">{{ item.clazzName || '班级未填' }}</text>
           </view>
         </view>
-        <!-- 右侧作业统计 -->
         <view class="homework-stats">
-          <text class="num completed">已完成: {{ item.completed }}</text>
-          <text class="num pending">未完成: {{ item.pending }}</text>
+          <text class="num completed">已完成: {{ item.finishCount }}</text>
+          <text class="num pending">未完成: {{ item.noFinishCount }}</text>
         </view>
+      </view>
+      <view v-if="!filteredHomeworkList.length" class="empty-state">
+        <text class="empty-icon">📘</text>
+        <text class="empty-text">暂无作业数据，调整筛选试试</text>
       </view>
     </view>
     <!-- 使用TeacherTabBar组件 -->
@@ -77,132 +96,146 @@
   </view>
 </template>
 <script setup>
-import { ref, computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { onPullDownRefresh } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import TeacherTabBar from '@/components/TeacherTabBar.vue'
+import { getHomeworkStudentList } from '@/api/teacher/homework'
+import {
+  getClassComboxList,
+  getGradeComboxList,
+  getSchoolComboxList,
+  getTeacherComboxList,
+} from '@/api/common/dictionary'
+import { getUserInfo } from '@/store/auth'
 
-// 当前选择的筛选项
-const currentTeacher = ref('全部')
-const currentSchool = ref('全部')
-const currentGrade = ref('全部')
-const currentClass = ref('全部')
-const searchName = ref('') // 名称搜索关键词
+const teacherOptions = ref([{ id: '', name: '全部教师' }])
+const schoolOptions = ref([{ id: '', name: '全部学校' }])
+const gradeOptions = ref([{ id: '', name: '全部年级' }])
+const classOptions = ref([{ id: '', name: '全部班级' }])
 
-// 筛选选项数据
-const teacherOptions = ['全部', '张三', '李四', '王五']
-const schoolOptions = ['全部', '实验小学', '第二小学', '第三小学']
-const gradeOptions = ['全部', '一年级', '二年级', '三年级', '四年级', '五年级', '六年级']
-const classOptions = ['全部', '1班', '2班', '3班', '4班']
+const teacherIndex = ref(0)
+const schoolIndex = ref(0)
+const gradeIndex = ref(0)
+const classIndex = ref(0)
+const searchName = ref('')
 
-// 作业列表数据
-const homeworkList = ref([
-  {
-    id: 1,
-    name: '喜洋洋',
-    teacher: '张三',
-    school: '实验小学',
-    grade: '一年级',
-    class: '1班',
-    completed: 10,
-    pending: 2,
-  },
-  {
-    id: 2,
-    name: '美羊羊',
-    teacher: '张三',
-    school: '实验小学',
-    grade: '一年级',
-    class: '2班',
-    completed: 8,
-    pending: 4,
-  },
-  {
-    id: 3,
-    name: '懒羊羊',
-    teacher: '李四',
-    school: '第二小学',
-    grade: '二年级',
-    class: '3班',
-    completed: 12,
-    pending: 0,
-  },
-  {
-    id: 4,
-    name: '沸羊羊',
-    teacher: '王五',
-    school: '第三小学',
-    grade: '三年级',
-    class: '1班',
-    completed: 6,
-    pending: 5,
-  },
-])
+const homeworkList = ref([])
 
-// 教师筛选器变化事件
-const onTeacherChange = (e) => {
-  const index = e.detail.value
-  currentTeacher.value = teacherOptions[index]
-  console.log('选择教师:', currentTeacher.value)
-}
+const normalizeOptions = (list = [], allLabel) =>
+  [
+    { id: '', name: allLabel },
+    ...list
+      .map((item) => ({
+        id: item.id ?? item.value ?? '',
+        name: item.name ?? item.label ?? item.text ?? '',
+      }))
+      .filter((item) => item.id || item.name),
+  ].filter((item) => item.name)
 
-// 学校筛选器变化事件
-const onSchoolChange = (e) => {
-  const index = e.detail.value
-  currentSchool.value = schoolOptions[index]
-  console.log('选择学校:', currentSchool.value)
-}
+const currentTeacherLabel = computed(() => teacherOptions.value[teacherIndex.value]?.name || '全部教师')
+const currentSchoolLabel = computed(() => schoolOptions.value[schoolIndex.value]?.name || '全部学校')
+const currentGradeLabel = computed(() => gradeOptions.value[gradeIndex.value]?.name || '全部年级')
+const currentClassLabel = computed(() => classOptions.value[classIndex.value]?.name || '全部班级')
 
-// 年级筛选器变化事件
-const onGradeChange = (e) => {
-  const index = e.detail.value
-  currentGrade.value = gradeOptions[index]
-  console.log('选择年级:', currentGrade.value)
-}
+const selectedTeacherId = computed(() => teacherOptions.value[teacherIndex.value]?.id || '')
+const selectedSchoolId = computed(() => schoolOptions.value[schoolIndex.value]?.id || '')
+const selectedGradeId = computed(() => gradeOptions.value[gradeIndex.value]?.id || '')
+const selectedClassId = computed(() => classOptions.value[classIndex.value]?.id || '')
 
-// 班级筛选器变化事件
-const onClassChange = (e) => {
-  const index = e.detail.value
-  currentClass.value = classOptions[index]
-  console.log('选择班级:', currentClass.value)
-}
-
-// 根据筛选条件过滤作业列表
 const filteredHomeworkList = computed(() => {
-  let filtered = homeworkList.value
-
-  // 按教师筛选
-  if (currentTeacher.value !== '全部') {
-    filtered = filtered.filter((item) => item.teacher === currentTeacher.value)
-  }
-
-  // 按学校筛选
-  if (currentSchool.value !== '全部') {
-    filtered = filtered.filter((item) => item.school === currentSchool.value)
-  }
-
-  // 按年级筛选
-  if (currentGrade.value !== '全部') {
-    filtered = filtered.filter((item) => item.grade === currentGrade.value)
-  }
-
-  // 按班级筛选
-  if (currentClass.value !== '全部') {
-    filtered = filtered.filter((item) => item.class === currentClass.value)
-  }
-
-  // 按名称搜索
-  if (searchName.value.trim()) {
-    filtered = filtered.filter((item) => item.name.includes(searchName.value.trim()))
-  }
-
-  return filtered
+  const keyword = searchName.value.trim()
+  if (!keyword) return homeworkList.value
+  return homeworkList.value.filter(
+    (item) =>
+      item.studentName?.includes(keyword) ||
+      item.schoolName?.includes(keyword) ||
+      item.clazzName?.includes(keyword)
+  )
 })
 
-// 跳转到作业详情页面
+const fetchOptions = async () => {
+  try {
+    const [teachers, schools, grades, classes] = await Promise.all([
+      getTeacherComboxList(),
+      getSchoolComboxList(),
+      getGradeComboxList(),
+      getClassComboxList(),
+    ])
+    teacherOptions.value = normalizeOptions(teachers || [], '全部教师')
+    schoolOptions.value = normalizeOptions(schools || [], '全部学校')
+    gradeOptions.value = normalizeOptions(grades || [], '全部年级')
+    classOptions.value = normalizeOptions(classes || [], '全部班级')
+
+    const userName = getUserInfo()?.userName
+    if (userName) {
+      const idx = teacherOptions.value.findIndex((item) => item.name === userName)
+      teacherIndex.value = idx >= 0 ? idx : 0
+    }
+  } catch (error) {
+    console.error('加载筛选项失败', error)
+    await uni.showToast({ title: '筛选项加载失败', icon: 'none' })
+  }
+}
+
+const fetchHomeworkStudents = async () => {
+  try {
+    const res = await getHomeworkStudentList({
+      teacherId: selectedTeacherId.value || undefined,
+      schoolId: selectedSchoolId.value || undefined,
+      gradeId: selectedGradeId.value || undefined,
+      clazzId: selectedClassId.value || undefined,
+    })
+    homeworkList.value = res?.data || []
+  } catch (error) {
+    console.error('获取作业学生列表失败', error)
+    await uni.showToast({ title: '加载失败', icon: 'none' })
+  }
+}
+
+onMounted(async () => {
+  await fetchOptions()
+  await fetchHomeworkStudents()
+})
+
+onPullDownRefresh(async () => {
+  await fetchHomeworkStudents()
+  uni.stopPullDownRefresh()
+})
+
+const onTeacherChange = (e) => {
+  teacherIndex.value = Number(e.detail.value)
+  fetchHomeworkStudents()
+}
+
+const onSchoolChange = (e) => {
+  schoolIndex.value = Number(e.detail.value)
+  fetchHomeworkStudents()
+}
+
+const onGradeChange = (e) => {
+  gradeIndex.value = Number(e.detail.value)
+  fetchHomeworkStudents()
+}
+
+const onClassChange = (e) => {
+  classIndex.value = Number(e.detail.value)
+  fetchHomeworkStudents()
+}
+
 const goDetail = (item) => {
   if (!item?.id) return
+  const query = [
+    `studentId=${item.id}`,
+    `studentName=${encodeURIComponent(item.studentName || '')}`,
+    `schoolName=${encodeURIComponent(item.schoolName || '')}`,
+    `gradeName=${encodeURIComponent(item.gradeName || '')}`,
+    `clazzName=${encodeURIComponent(item.clazzName || '')}`,
+    `finishCount=${item.finishCount ?? 0}`,
+    `noFinishCount=${item.noFinishCount ?? 0}`,
+  ].join('&')
   uni.navigateTo({
-    url: `/pages/teacher/homework/for-student/homework-list?id=${item.id}`,
+    url: `/pages/teacher/homework/for-student/homework-list?${query}`,
   })
 }
 </script>
@@ -360,5 +393,22 @@ const goDetail = (item) => {
 /* 未完成作业 - 红色 */
 .pending {
   color: #ef4444;
+}
+
+.empty-state {
+  padding: 60rpx 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  color: #9ca3af;
+}
+
+.empty-icon {
+  font-size: 52rpx;
+}
+
+.empty-text {
+  font-size: 26rpx;
 }
 </style>

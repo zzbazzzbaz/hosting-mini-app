@@ -3,94 +3,103 @@
     <PageHeader title="作业详情" :showBack="true" />
 
     <view v-if="homework" class="content">
-      <view class="summary-card">
-        <view class="summary-top">
-          <view class="subject-icon">{{ homework.icon }}</view>
-          <view class="subject-info">
-            <text class="subject-name">{{ homework.subject }}</text>
-            <text class="subject-title">{{ homework.title }}</text>
-            <text class="subject-meta"
-              >布置：{{ homework.publishDate }} · 截止：{{ homework.deadline }}</text
-            >
-          </view>
+      <view class="summary-card compact">
+        <view class="summary-top compact-row">
+          <view class="subject-chip">{{ homework.subjectName || '未分科目' }}</view>
           <view
-            :class="[
-              'status-badge',
-              homework.status === 'completed' ? 'status-completed' : 'status-pending',
-            ]"
+            :class="['status-badge', homework.state === 1 ? 'status-completed' : 'status-pending']"
           >
-            <text>{{ homework.status === 'completed' ? '已完成' : '未完成' }}</text>
+            <text>{{ homework.state === 1 ? '已完成' : '未完成' }}</text>
           </view>
         </view>
-
-        <view class="summary-bottom">
-          <view class="student">
-            <text class="student-name">{{ homework.student.name }}</text>
-            <text class="student-detail"
-              >{{ homework.student.school }} · {{ homework.student.grade }} ·
-              {{ homework.student.class }}</text
-            >
-          </view>
-          <view class="stats">
-            <text class="stat submitted">提交 {{ homework.metrics.submitted }}</text>
-            <text class="divider">|</text>
-            <text class="stat pending">未交 {{ homework.metrics.pending }}</text>
-          </view>
+        <view class="compact-meta time-row">
+          <view class="time-chip">布置 {{ homework.homeworkDate || '-' }}</view>
+          <view v-if="homework.finishDate" class="time-chip done">完成 {{ homework.finishDate }}</view>
         </view>
       </view>
 
       <view class="section-card">
         <view class="section-header section-blue">
-          <text class="section-title">作业要求</text>
+          <text class="section-title">作业内容</text>
         </view>
         <view class="section-body">
-          <text class="section-text">{{ homework.requirement }}</text>
-          <view v-if="homework.requirementImages.length" class="image-grid small">
+          <text class="content-text">{{ homework.content || '暂无作业内容' }}</text>
+          <view v-if="displayHomeworkImages.length" class="image-grid">
             <view
-              v-for="(img, index) in homework.requirementImages"
-              :key="`req-${index}`"
+              v-for="(img, index) in displayHomeworkImages"
+              :key="`hw-${img.id || index}`"
               class="image-item"
-              @click="previewRequirement(index)"
+              @click="previewImages(homework.homeworkImages, index)"
             >
-              <image :src="img" mode="aspectFill" />
+              <image :src="img.url" mode="aspectFill" />
             </view>
           </view>
+          <view v-else class="empty-section">暂无作业图片</view>
         </view>
       </view>
 
-      <view class="section-card">
+      <view class="section-card" v-if="homework.isCompleted">
         <view class="section-header section-green">
-          <text class="section-title">学生作答</text>
-          <text class="section-sub">提交时间 {{ homework.submitTime }}</text>
+          <text class="section-title">完成情况</text>
         </view>
         <view class="section-body">
-          <view class="image-grid">
+          <view v-if="homework.finishImages.length" class="image-grid">
             <view
-              v-for="(img, index) in displaySubmissionImages"
-              :key="`sub-${index}`"
+              v-for="(img, index) in homework.finishImages"
+              :key="`fin-${img.id || index}`"
               class="image-item"
-              @click="previewSubmission(index)"
+              @click="previewImages(homework.finishImages, index)"
             >
-              <image :src="img" mode="aspectFill" />
-              <view v-if="index === 5 && homework.submissionImages.length > 6" class="overlay">
-                <text class="overlay-text">+{{ homework.submissionImages.length - 6 }}</text>
-              </view>
+              <image :src="img.url" mode="aspectFill" />
             </view>
+          </view>
+          <view v-else class="empty-section">暂无提交图片</view>
+          <view class="evaluation">
+            <text class="evaluation-label">教师评价</text>
+            <text class="evaluation-text">{{ displayEvaluation }}</text>
+            <text v-if="homework.studentState" class="evaluation-text"
+              >学生状态：{{ homework.studentState }}</text
+            >
           </view>
         </view>
       </view>
 
-      <view class="section-card">
+      <view class="section-card" v-else>
         <view class="section-header section-orange">
-          <text class="section-title">批改反馈</text>
+          <text class="section-title">等待完成</text>
+          <text class="section-sub">提交完成后可填写评价</text>
         </view>
         <view class="section-body">
-          <text class="section-text">{{ homework.comment.text }}</text>
-          <view class="comment-footer">
-            <text>批改老师：{{ homework.comment.teacher }}</text>
-            <text class="dot">•</text>
-            <text>{{ homework.comment.time }}</text>
+          <view class="empty-section">学生尚未提交作业</view>
+          <view class="evaluation">
+            <text class="evaluation-label">预设评语</text>
+            <text class="evaluation-text">{{ displayEvaluation }}</text>
           </view>
+        </view>
+        <view class="section-body form-body">
+          <textarea
+            v-model="completionForm.evaluation"
+            class="input-area"
+            placeholder="填写批改意见或完成备注"
+            rows="4"
+          />
+          <view class="field">
+            <text class="field-label">学生状态</text>
+            <picker
+              class="status-picker"
+              :range="studentStateLabels"
+              @change="onStudentStateChange"
+              :value="studentStateIndex"
+            >
+              <view class="picker-box">
+                <text>{{ currentStudentStateLabel }}</text>
+                <text class="arrow">▼</text>
+              </view>
+            </picker>
+          </view>
+          <button class="complete-btn" :disabled="submitting" @tap="handleComplete">
+            {{ submitting ? '提交中...' : '作业完成' }}
+          </button>
         </view>
       </view>
     </view>
@@ -105,114 +114,138 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import TeacherTabBar from '@/components/TeacherTabBar.vue'
+import { addHomeworkEvaluation, getTeacherHomeworkDetail } from '@/api/teacher/homework'
+import { getStudentStatusComboxList } from '@/api/common/dictionary'
 
-const assignments = [
-  {
-    id: 1,
-    subject: '数学',
-    icon: '🔢',
-    title: '完成课后练习题1-10',
-    publishDate: '2025-10-25 14:30',
-    deadline: '2025-10-26 18:00',
-    status: 'pending',
-    student: {
-      name: '喜洋洋',
-      school: '实验小学',
-      grade: '一年级',
-      class: '1班',
-    },
-    metrics: {
-      submitted: 8,
-      pending: 4,
-    },
-    requirement:
-      '完成课本第3章练习题，重点关注乘法运算。\n1. 练习题3-1~3-6\n2. 应用题3-7~3-9\n3. 思考题请写出解题过程。',
-    requirementImages: ['/static/test/1.jpg', '/static/test/2.jpg'],
-    submissionImages: ['/static/test/3.jpg', '/static/test/4.jpg', '/static/test/5.jpg'],
-    submitTime: '2025-10-26 17:20',
-    comment: {
-      text: '整体完成较好，注意第3-8题的列式步骤，下次再接再厉。',
-      teacher: '张老师',
-      time: '2025-10-26 21:05',
-    },
-  },
-  {
-    id: 2,
-    subject: '语文',
-    icon: '📖',
-    title: '背诵古诗《望庐山瀑布》',
-    publishDate: '2025-10-24 16:00',
-    deadline: '2025-10-25 21:00',
-    status: 'completed',
-    student: {
-      name: '美羊羊',
-      school: '实验小学',
-      grade: '一年级',
-      class: '2班',
-    },
-    metrics: {
-      submitted: 12,
-      pending: 0,
-    },
-    requirement: '熟读并背诵《望庐山瀑布》，录音发送至班级群。\n写出古诗中的生僻字并注音。',
-    requirementImages: ['/static/test/6.jpg'],
-    submissionImages: ['/static/test/7.jpg'],
-    submitTime: '2025-10-25 20:10',
-    comment: {
-      text: '背诵流利，字迹工整，继续保持！',
-      teacher: '李老师',
-      time: '2025-10-25 22:18',
-    },
-  },
-]
+const DEFAULT_EVALUATION =
+  '学生晚托纪律很好，没有交头接耳，自己专注做作业，能够按要求独立完成作业。理解能力强，计算准确率高，书写比较美观，继续加油！'
 
+const homeworkId = ref('')
 const homework = ref(null)
+const submitting = ref(false)
 
-onLoad((options) => {
-  const id = Number(options?.id)
-  homework.value = assignments.find((item) => item.id === id) || assignments[0]
+const studentInfo = ref({
+  name: '',
+  school: '',
+  grade: '',
+  class: '',
 })
 
-const displaySubmissionImages = computed(() => {
-  if (!homework.value) return []
-  return homework.value.submissionImages.slice(0, 6)
+const completionForm = reactive({
+  evaluation: '',
+  studentState: '',
 })
 
-const previewImages = async (images, index) => {
-  if (!images.length) return
+const studentStates = ref([{ id: '', name: '不选择状态' }])
+const studentStateIndex = ref(0)
 
-  const tasks = images.map(
-    (src) =>
-      new Promise((resolve) => {
-        uni.getImageInfo({
-          src,
-          success: (res) => resolve(res.path),
-          fail: () => resolve(src),
-        })
-      })
-  )
+const studentStateLabels = computed(() => studentStates.value.map((item) => item.name || ''))
+const currentStudentStateLabel = computed(
+  () => studentStateLabels.value[studentStateIndex.value] || '不选择状态'
+)
 
-  const urls = await Promise.all(tasks)
+const isCompleted = computed(() => homework.value?.isCompleted || homework.value?.state === 1)
+const displayEvaluation = computed(() => homework.value?.evaluation || DEFAULT_EVALUATION)
+const displayHomeworkImages = computed(() =>
+  (homework.value?.homeworkImages || []).slice(0, 3)
+)
 
+const finishPicIds = computed(() =>
+  (homework.value?.finishImages || [])
+    .map((item) => item.id)
+    .filter((id) => id || id === 0)
+    .join(',')
+)
+
+const loadStudentStates = async () => {
+  try {
+    const res = await getStudentStatusComboxList()
+    studentStates.value = [
+      { id: '', name: '不选择状态' },
+      ...(res || []).map((item) => ({
+        id: item.id ?? item.value ?? '',
+        name: item.name ?? item.label ?? item.text ?? '',
+      })),
+    ].filter((item) => item.name)
+  } catch (error) {
+    console.error('获取学生状态失败', error)
+  }
+}
+
+const syncStudentStateIndex = () => {
+  const idx = studentStates.value.findIndex((item) => item.id == completionForm.studentState)
+  studentStateIndex.value = idx >= 0 ? idx : 0
+}
+
+const loadDetail = async (id) => {
+  try {
+    const res = await getTeacherHomeworkDetail(id)
+    homework.value = res?.data || null
+    completionForm.evaluation = res?.data?.evaluation || DEFAULT_EVALUATION
+    completionForm.studentState = res?.data?.studentState ?? ''
+    syncStudentStateIndex()
+  } catch (error) {
+    console.error('获取作业详情失败', error)
+    await uni.showToast({ title: '加载失败', icon: 'none' })
+  }
+}
+
+const previewImages = async (list, index = 0) => {
+  const urls = (list || []).map((img) => img.url || img.path).filter(Boolean)
+  if (!urls.length) return
   uni.previewImage({
     current: urls[index] || urls[0],
     urls,
   })
 }
 
-const previewRequirement = (index) => {
-  if (!homework.value) return
-  previewImages(homework.value.requirementImages, index)
+const onStudentStateChange = (e) => {
+  studentStateIndex.value = Number(e.detail.value)
+  completionForm.studentState = studentStates.value[studentStateIndex.value]?.id ?? ''
 }
 
-const previewSubmission = (index) => {
-  if (!homework.value) return
-  previewImages(homework.value.submissionImages, index)
+const handleComplete = async () => {
+  if (!homework.value?.id) return
+  if (isCompleted.value) {
+    await uni.showToast({ title: '该作业已完成', icon: 'none' })
+    return
+  }
+  submitting.value = true
+  try {
+    await addHomeworkEvaluation({
+      homeworkId: homework.value.id,
+      evaluation: completionForm.evaluation || DEFAULT_EVALUATION,
+      studentState: completionForm.studentState || undefined,
+      finishpicids: finishPicIds.value || undefined,
+    })
+    await uni.showToast({ title: '作业已完成', icon: 'success' })
+    await loadDetail(homework.value.id)
+  } catch (error) {
+    console.error('提交作业完成状态失败', error)
+    await uni.showToast({ title: '提交失败', icon: 'none' })
+  } finally {
+    submitting.value = false
+  }
 }
+
+onLoad(async (options) => {
+  homeworkId.value = options.id || options.homeworkId || ''
+  studentInfo.value = {
+    name: options.studentName ? decodeURIComponent(options.studentName) : '',
+    school: options.schoolName ? decodeURIComponent(options.schoolName) : '',
+    grade: options.gradeName ? decodeURIComponent(options.gradeName) : '',
+    class: options.clazzName ? decodeURIComponent(options.clazzName) : '',
+  }
+
+  await loadStudentStates()
+  if (homeworkId.value) {
+    await loadDetail(homeworkId.value)
+  }
+})
 </script>
 
 <style scoped>
@@ -233,232 +266,264 @@ const previewSubmission = (index) => {
   background: #fff;
   border-radius: 28rpx;
   padding: 32rpx;
+  box-shadow: 0 8rpx 22rpx rgba(14, 165, 233, 0.18);
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
-  box-shadow: 0 8rpx 22rpx rgba(14, 165, 233, 0.18);
+  gap: 16rpx;
+}
+
+.summary-card.compact {
+  gap: 12rpx;
 }
 
 .summary-top {
   display: flex;
   align-items: center;
-  gap: 24rpx;
+  flex-wrap: wrap;
+  gap: 12rpx;
 }
 
-.subject-icon {
-  width: 96rpx;
-  height: 96rpx;
-  border-radius: 24rpx;
-  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 44rpx;
-  color: #fff;
-  box-shadow: 0 8rpx 16rpx rgba(14, 165, 233, 0.2);
-}
-
-.subject-info {
-  flex: 1;
+.compact-meta {
   display: flex;
   flex-direction: column;
-  gap: 10rpx;
+  gap: 6rpx;
 }
 
-.subject-name {
-  font-size: 36rpx;
-  font-weight: 700;
-  color: #0f172a;
+.time-row {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12rpx;
 }
 
-.subject-title {
-  font-size: 30rpx;
-  color: #334155;
-}
-
-.subject-meta {
-  font-size: 24rpx;
-  color: #64748b;
-}
-
-.status-badge {
-  padding: 12rpx 28rpx;
+.subject-chip {
+  padding: 10rpx 20rpx;
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+  color: #fff;
   border-radius: 999rpx;
   font-size: 26rpx;
   font-weight: 600;
 }
 
+.status-badge {
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #fff;
+}
+
 .status-completed {
-  background: #dcfce7;
-  color: #15803d;
+  background: #10b981;
 }
 
 .status-pending {
-  background: #fee2e2;
-  color: #dc2626;
+  background: #f97316;
 }
 
-.summary-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 24rpx;
-  padding-top: 16rpx;
-  border-top: 1rpx solid #e2e8f0;
+.time-chip {
+  padding: 8rpx 16rpx;
+  background: #f3f4f6;
+  color: #374151;
+  border-radius: 999rpx;
+  font-size: 24rpx;
 }
 
-.student {
+.time-chip.done {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.student-row {
   display: flex;
   flex-direction: column;
   gap: 6rpx;
 }
 
 .student-name {
-  font-size: 32rpx;
-  font-weight: 700;
-  color: #0f172a;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #111827;
 }
 
-.student-detail {
-  font-size: 24rpx;
-  color: #64748b;
-}
-
-.stats {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-  font-size: 24rpx;
-  color: #475569;
-}
-
-.stats .submitted {
-  color: #0ea5e9;
-}
-
-.stats .pending {
-  color: #f97316;
-}
-
-.stats .divider {
-  color: #cbd5f5;
+.student-meta {
+  font-size: 26rpx;
+  color: #6b7280;
 }
 
 .section-card {
   background: #fff;
-  border-radius: 28rpx;
+  border-radius: 24rpx;
   overflow: hidden;
-  box-shadow: 0 6rpx 18rpx rgba(14, 165, 233, 0.12);
+  box-shadow: 0 6rpx 18rpx rgba(0, 0, 0, 0.06);
 }
 
 .section-header {
-  padding: 24rpx 32rpx;
+  padding: 20rpx 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.section-sub {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.section-body {
+  padding: 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.content-text {
+  font-size: 28rpx;
+  color: #0f172a;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.section-blue {
+  background: linear-gradient(135deg, #60a5fa, #2563eb);
+}
+
+.section-green {
+  background: linear-gradient(135deg, #34d399, #059669);
+}
+
+.section-orange {
+  background: linear-gradient(135deg, #fb923c, #f97316);
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
+}
+
+.image-item {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+  overflow: hidden;
+  border-radius: 12rpx;
+}
+
+.image-item image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12rpx;
+}
+
+.empty-section {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 26rpx;
+}
+
+.evaluation {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  color: #374151;
+}
+
+.evaluation-label {
+  font-weight: 600;
+  font-size: 26rpx;
+}
+
+.evaluation-text {
+  font-size: 26rpx;
+  color: #4b5563;
+}
+
+.form-body {
+  gap: 24rpx;
+}
+
+.input-area {
+  width: 100%;
+  min-height: 160rpx;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  padding: 16rpx;
+  font-size: 26rpx;
+  color: #111827;
+  box-sizing: border-box;
+}
+
+.field {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.section-title {
-  font-size: 30rpx;
-  font-weight: 700;
-  color: #fff;
-}
-
-.section-sub {
-  font-size: 24rpx;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.section-blue {
-  background: linear-gradient(135deg, #3b82f6, #60a5fa);
-}
-
-.section-green {
-  background: linear-gradient(135deg, #10b981, #22c55e);
-}
-
-.section-orange {
-  background: linear-gradient(135deg, #f97316, #fb923c);
-}
-
-.section-body {
-  padding: 28rpx 32rpx 36rpx;
-  display: flex;
-  flex-direction: column;
-  gap: 20rpx;
-}
-
-.section-text {
+.field-label {
   font-size: 26rpx;
-  color: #475569;
-  line-height: 1.6;
-  white-space: pre-line;
+  color: #374151;
 }
 
-.image-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20rpx;
+.status-picker {
+  flex: 1;
+  margin-left: 16rpx;
 }
 
-.image-grid.small .image-item {
-  height: 160rpx;
+.picker-box {
+  background: #f9fafb;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  padding: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #374151;
 }
 
-.image-item {
-  position: relative;
-  height: 200rpx;
-  border-radius: 20rpx;
-  overflow: hidden;
-  background: #f1f5f9;
+.arrow {
+  font-size: 22rpx;
+  color: #9ca3af;
+  margin-left: 12rpx;
 }
 
-.image-item image {
+.complete-btn {
   width: 100%;
-  height: 100%;
-}
-
-.overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.55);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.overlay-text {
-  font-size: 40rpx;
-  font-weight: 700;
+  background: linear-gradient(135deg, #34d399, #10b981);
   color: #fff;
+  border: none;
+  border-radius: 16rpx;
+  padding: 16rpx;
+  font-size: 28rpx;
 }
 
-.comment-footer {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-  font-size: 24rpx;
-  color: #94a3b8;
-}
-
-.dot {
-  color: #cbd5f5;
+.complete-btn:disabled {
+  opacity: 0.7;
 }
 
 .empty-state {
-  margin: 200rpx auto 0;
+  padding: 120rpx 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24rpx;
-  color: #94a3b8;
+  gap: 16rpx;
+  color: #9ca3af;
 }
 
 .empty-icon {
-  font-size: 72rpx;
+  font-size: 52rpx;
 }
 
 .empty-text {
-  font-size: 28rpx;
+  font-size: 26rpx;
 }
 </style>

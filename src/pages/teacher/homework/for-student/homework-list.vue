@@ -6,11 +6,11 @@
     <!-- 学生信息卡片 -->
     <view class="student-card">
       <view class="student-basic">
-        <text class="name">{{ studentInfo.name }}</text>
+        <text class="name">{{ studentInfo.name || '学生姓名' }}</text>
         <view class="detail-row">
-          <text class="detail">{{ studentInfo.school }}</text>
-          <text class="detail grade">{{ studentInfo.grade }}</text>
-          <text class="detail">{{ studentInfo.class }}</text>
+          <text class="detail">{{ studentInfo.school || '学校未填' }}</text>
+          <text class="detail grade">{{ studentInfo.grade || '年级未填' }}</text>
+          <text class="detail">{{ studentInfo.class || '班级未填' }}</text>
         </view>
       </view>
       <view class="student-stats">
@@ -28,13 +28,18 @@
     <view class="filter-section">
       <!-- 第一行：科目和状态 -->
       <view class="filter-row">
-        <picker class="filter-picker" :range="subjectOptions" @change="onSubjectChange">
+        <picker
+          class="filter-picker"
+          :range="subjectOptions"
+          range-key="name"
+          @change="onSubjectChange"
+        >
           <view class="picker-box">
             <text class="label">{{ currentSubject }}</text>
             <text class="arrow">▼</text>
           </view>
         </picker>
-        <picker class="filter-picker" :range="statusOptions" @change="onStatusChange">
+        <picker class="filter-picker" :range="statusLabels" @change="onStatusChange">
           <view class="picker-box">
             <text class="label">{{ currentStatus }}</text>
             <text class="arrow">▼</text>
@@ -43,9 +48,9 @@
       </view>
       <!-- 第二行：日期 -->
       <view class="filter-row">
-        <picker class="filter-picker" mode="date" :value="currentDate" @change="onDateChange">
+        <picker class="filter-picker" mode="date" :value="filters.date" @change="onDateChange">
           <view class="picker-box">
-            <text class="label">{{ currentDate }}</text>
+            <text class="label">{{ filters.date || '作业日期' }}</text>
             <text class="arrow">▼</text>
           </view>
         </picker>
@@ -63,8 +68,8 @@
         >
           <!-- 第一行：科目 | 作业标题 | 状态 -->
           <view class="homework-main">
-            <text class="subject">{{ item.subject }}</text>
-            <text class="title">{{ item.title }}</text>
+            <text class="subject">{{ item.subjectName || '未分科目' }}</text>
+            <text class="title">{{ item.studentName || studentInfo.name || '学生' }}</text>
             <view
               :class="[
                 'status-badge',
@@ -74,10 +79,11 @@
               <text>{{ item.status === 'completed' ? '已完成' : '未完成' }}</text>
             </view>
           </view>
-          <!-- 第二行：发布时间 | 需要完成时间 -->
           <view class="homework-time">
-            <text class="time-text">发布: {{ item.publishTime }}</text>
-            <text class="time-text">截止: {{ item.deadline }}</text>
+            <text class="time-text">布置: {{ item.homeworkDate || '-' }}</text>
+            <text class="time-text">{{
+              item.finishDate ? `完成: ${item.finishDate}` : '未完成'
+            }}</text>
           </view>
         </view>
       </template>
@@ -92,157 +98,147 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { computed, reactive, ref } from 'vue'
+import { onLoad, onPullDownRefresh } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
+import { getTeacherHomeworkList } from '@/api/teacher/homework'
+import { getSubjectComboxList } from '@/api/common/dictionary'
+
+const studentId = ref('')
 
 // 学生信息
 const studentInfo = ref({
-  name: '张同学',
-  school: '实验小学',
-  grade: '一年级',
-  class: '1班',
-  completed: 10,
-  pending: 2,
+  name: '',
+  school: '',
+  grade: '',
+  class: '',
+  completed: 0,
+  pending: 0,
 })
 
-// 当前选择的筛选项
-const currentSubject = ref('请选择科目')
-const currentStatus = ref('请选择状态')
+const filters = reactive({
+  subjectIndex: 0,
+  statusIndex: 0,
+  date: '',
+})
 
-// 获取当前年月和日期
-const now = new Date()
-const currentYear = now.getFullYear()
-const currentMonthNum = now.getMonth() + 1
-const currentDay = now.getDate()
+const subjects = ref([{ id: '', name: '全部科目' }])
+const statuses = [
+  { label: '全部状态', value: '' },
+  { label: '未完成', value: 0 },
+  { label: '已完成', value: 1 },
+]
 
-// 时间筛选 - 默认为当天日期
-const currentDate = ref(
-  `${currentYear}-${String(currentMonthNum).padStart(2, '0')}-${String(currentDay).padStart(2, '0')}`
-)
+const homeworkList = ref([])
+const loading = ref(false)
 
-// 筛选选项
-const subjectOptions = ['请选择科目', '语文', '数学', '英语', '科学', '美术', '音乐', '体育']
-const statusOptions = ['请选择状态', '已完成', '未完成']
+const subjectOptions = computed(() => subjects.value)
+const subjectIds = computed(() => subjectOptions.value.map((item) => item.id))
+const subjectNames = computed(() => subjectOptions.value.map((item) => item.name || ''))
+const statusLabels = statuses.map((item) => item.label)
 
-// 作业列表数据
-const homeworkList = ref([
-  {
-    id: 1,
-    subject: '数学',
-    title: '完成课后练习题1-10',
-    date: '2025-10-26',
-    publishTime: '10-25 14:30',
-    deadline: '10-26 18:00',
-    status: 'pending',
-  },
-  {
-    id: 2,
-    subject: '语文',
-    title: '背诵古诗 字符很多怎么办',
-    date: '2025-10-26',
-    publishTime: '10-25 15:00',
-    deadline: '10-26 20:00',
-    status: 'completed',
-  },
-  {
-    id: 3,
-    subject: '英语',
-    title: '抄写单词表Unit 3 wwwwwwwwwwwwwwwwwww',
-    date: '2025-10-26',
-    publishTime: '10-26 08:00',
-    deadline: '10-26 17:00',
-    status: 'pending',
-  },
-  {
-    id: 4,
-    subject: '数学',
-    title: '预习下一章节内容',
-    date: '2025-10-25',
-    publishTime: '10-24 14:00',
-    deadline: '10-25 19:00',
-    status: 'completed',
-  },
-  {
-    id: 5,
-    subject: '科学',
-    title: '观察植物生长并记录',
-    date: '2025-10-25',
-    publishTime: '10-24 10:00',
-    deadline: '10-25 18:00',
-    status: 'completed',
-  },
-  {
-    id: 6,
-    subject: '语文',
-    title: '阅读课外书并写读后感',
-    date: '2025-10-24',
-    publishTime: '10-23 15:30',
-    deadline: '10-24 21:00',
-    status: 'pending',
-  },
-])
+const currentSubject = computed(() => subjectNames.value[filters.subjectIndex] || '全部科目')
+const currentStatus = computed(() => statusLabels[filters.statusIndex] || '全部状态')
 
-// 科目筛选器变化事件
+const currentSubjectId = computed(() => subjectIds.value[filters.subjectIndex] || '')
+const currentState = computed(() => statuses[filters.statusIndex]?.value ?? '')
+
+const filteredHomeworkList = computed(() => {
+  if (!filters.date) return homeworkList.value
+  return homeworkList.value.filter((item) => item.homeworkDate === filters.date)
+})
+
+const normalizeOptions = (list = []) =>
+  [{ id: '', name: '全部科目' }, ...list]
+    .map((item) => ({
+      id: item.id ?? item.value ?? '',
+      name: item.name ?? item.label ?? item.text ?? '',
+    }))
+    .filter((item) => item.id || item.name)
+
+const fetchSubjects = async () => {
+  try {
+    const res = await getSubjectComboxList()
+    subjects.value = normalizeOptions(res || [])
+    filters.subjectIndex = 0
+  } catch (error) {
+    console.error('获取科目列表失败', error)
+    await uni.showToast({ title: '科目加载失败', icon: 'none' })
+  }
+}
+
+const fetchHomeworkList = async () => {
+  if (!studentId.value) return
+  loading.value = true
+  try {
+    const res = await getTeacherHomeworkList({
+      studentId: studentId.value,
+      subjectId: currentSubjectId.value || undefined,
+      state: currentState.value === '' ? undefined : currentState.value,
+      page: 1,
+      pageSize: 100,
+    })
+    homeworkList.value = res?.data?.list || []
+  } catch (error) {
+    console.error('获取作业列表失败', error)
+    await uni.showToast({ title: '加载失败', icon: 'none' })
+  } finally {
+    loading.value = false
+  }
+}
+
+onPullDownRefresh(async () => {
+  await fetchHomeworkList()
+  uni.stopPullDownRefresh()
+})
+
 const onSubjectChange = (e) => {
   const index = e.detail.value
-  currentSubject.value = subjectOptions[index]
+  filters.subjectIndex = Number(index)
+  fetchHomeworkList()
 }
 
-// 状态筛选器变化事件
 const onStatusChange = (e) => {
   const index = e.detail.value
-  currentStatus.value = statusOptions[index]
+  filters.statusIndex = Number(index)
+  fetchHomeworkList()
 }
 
-// 日期筛选器变化事件
 const onDateChange = (e) => {
-  currentDate.value = e.detail.value
+  filters.date = e.detail.value
 }
-
-// 根据筛选条件过滤作业列表
-const filteredHomeworkList = computed(() => {
-  let filtered = homeworkList.value
-
-  // 按科目筛选
-  if (currentSubject.value !== '请选择科目') {
-    filtered = filtered.filter((item) => item.subject === currentSubject.value)
-  }
-
-  // 按状态筛选
-  if (currentStatus.value !== '请选择状态') {
-    const statusValue = currentStatus.value === '已完成' ? 'completed' : 'pending'
-    filtered = filtered.filter((item) => item.status === statusValue)
-  }
-
-  // 按日期筛选
-  if (currentDate.value) {
-    filtered = filtered.filter((item) => item.date === currentDate.value)
-  }
-
-  return filtered
-})
 
 const openHomeworkDetail = (item) => {
   if (!item?.id) return
   uni.navigateTo({
-    url: `/pages/teacher/homework/for-student/homework-detail?id=${item.id}`,
+    url: `/pages/teacher/homework/for-student/homework-detail?id=${item.id}&studentName=${encodeURIComponent(
+      studentInfo.value.name || ''
+    )}&schoolName=${encodeURIComponent(studentInfo.value.school || '')}&gradeName=${encodeURIComponent(
+      studentInfo.value.grade || ''
+    )}&clazzName=${encodeURIComponent(studentInfo.value.class || '')}`,
   })
 }
 
-// 发布作业按钮点击事件
 const onPublishHomework = () => {
-  // 跳转到发布作业页面
   uni.navigateTo({
-    url: `/pages/teacher/homework/for-student/homework-publish?name=${encodeURIComponent(studentInfo.value.name || '')}`,
+    url: `/pages/teacher/homework/for-student/homework-publish?studentId=${studentId.value}&studentName=${encodeURIComponent(
+      studentInfo.value.name || ''
+    )}&subject=${encodeURIComponent(currentSubject.value || '')}`,
   })
 }
 
-// 页面加载时获取学生ID（从URL参数）
 onLoad((options) => {
-  if (options.id) {
-    // TODO: 根据ID从后端获取学生信息和作业列表
+  studentId.value = options.studentId || options.id || ''
+  studentInfo.value = {
+    name: options.studentName ? decodeURIComponent(options.studentName) : '',
+    school: options.schoolName ? decodeURIComponent(options.schoolName) : '',
+    grade: options.gradeName ? decodeURIComponent(options.gradeName) : '',
+    class: options.clazzName ? decodeURIComponent(options.clazzName) : '',
+    completed: Number(options.finishCount ?? 0),
+    pending: Number(options.noFinishCount ?? 0),
   }
+  fetchSubjects()
+  fetchHomeworkList()
 })
 </script>
 
