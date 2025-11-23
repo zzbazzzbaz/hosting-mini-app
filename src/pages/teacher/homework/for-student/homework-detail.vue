@@ -67,14 +67,6 @@
       <view class="section-card" v-else>
         <view class="section-header section-orange">
           <text class="section-title">等待完成</text>
-          <text class="section-sub">提交完成后可填写评价</text>
-        </view>
-        <view class="section-body">
-          <view class="empty-section">学生尚未提交作业</view>
-          <view class="evaluation">
-            <text class="evaluation-label">预设评语</text>
-            <text class="evaluation-text">{{ displayEvaluation }}</text>
-          </view>
         </view>
         <view class="section-body form-body">
           <textarea
@@ -445,7 +437,11 @@ onLoad(async (options) => {
 
 .evaluation-text {
   font-size: 26rpx;
-  color: #4b5563;
+  color: #111827;
+}
+
+.evaluation-text.muted {
+  color: #9ca3af;
 }
 
 .form-body {
