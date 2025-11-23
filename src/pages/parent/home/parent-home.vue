@@ -24,28 +24,60 @@
       </view>
 
       <view v-if="students.length" class="student-list">
-        <view class="student-card" v-for="student in students" :key="student.id">
-          <view class="student-header">
-            <text class="student-name">{{ student.name }}</text>
-            <text class="chip">余 {{ student.hours.remaining }} 课时</text>
+        <view v-for="student in students" :key="student.id" class="student-group">
+          <!-- 学生姓名标题 -->
+          <view class="student-name-header">
+            <text class="student-name-text">{{ student.name }}</text>
           </view>
 
-          <view class="student-body">
-            <view class="row">
-              <text class="muted">已上 {{ student.hours.used }}</text>
-              <text class="muted">总计 {{ student.hours.total }}</text>
+          <!-- 课时进度卡片 -->
+          <view class="progress-card hours-card">
+            <view class="card-header">
+              <view class="card-title-wrap">
+                <uni-icons type="calendar" size="20" color="#2563eb" />
+                <text class="card-title">课时进度</text>
+              </view>
+              <text class="hours-text">已上 {{ student.hours.used }} / 总计 {{ student.hours.total }}</text>
             </view>
-            <view class="progress slim">
-              <view
-                class="progress-fill blue"
-                :style="{ width: `${getStudentHourRate(student)}%` }"
-              ></view>
+            <view class="card-body">
+              <view class="progress-wrapper">
+                <view class="progress slim">
+                  <view
+                    class="progress-fill blue"
+                    :style="{ width: `${getStudentHourRate(student)}%` }"
+                  ></view>
+                </view>
+                <text class="progress-percent">{{ getStudentHourRate(student) }}%</text>
+              </view>
             </view>
-            <view class="row between">
-              <text class="muted">作业完成 {{ getHomeworkRate(student) }}%</text>
-              <view class="homework-tags">
-                <text class="tag success">完成 {{ student.homework.finished }}</text>
-                <text class="tag warn">未完 {{ student.homework.pending }}</text>
+          </view>
+
+          <!-- 作业进度卡片 -->
+          <view class="progress-card homework-card">
+            <view class="card-header">
+              <view class="card-title-wrap">
+                <uni-icons type="compose" size="20" color="#059669" />
+                <text class="card-title">作业进度</text>
+              </view>
+            </view>
+            <view class="card-body">
+              <view class="homework-stats">
+                <view class="stat-item">
+                  <text class="stat-label">已完成</text>
+                  <text class="stat-value success">{{ student.homework.finished }}</text>
+                </view>
+                <view class="stat-divider"></view>
+                <view class="stat-item">
+                  <text class="stat-label">未完成</text>
+                  <text class="stat-value warn">{{ student.homework.pending }}</text>
+                </view>
+                <view class="stat-divider"></view>
+                <view class="stat-item">
+                  <text class="stat-label">总计</text>
+                  <text class="stat-value total">{{
+                    student.homework.finished + student.homework.pending
+                  }}</text>
+                </view>
               </view>
             </view>
           </view>
@@ -384,77 +416,147 @@ onMounted(() => {
 .student-list {
   display: flex;
   flex-direction: column;
-  gap: 20rpx;
+  gap: 32rpx;
 }
 
-.student-card {
+/* 学生分组容器 */
+.student-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+/* 学生姓名标题 */
+.student-name-header {
+  display: flex;
+  align-items: center;
+  padding: 0 8rpx;
+}
+
+.student-name-text {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #0f172a;
+  position: relative;
+  padding-left: 16rpx;
+}
+
+.student-name-text::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6rpx;
+  height: 28rpx;
+  background: linear-gradient(135deg, #2563eb, #0ea5e9);
+  border-radius: 3rpx;
+}
+
+/* 进度卡片 */
+.progress-card {
   background: #fff;
   border-radius: 24rpx;
   padding: 28rpx;
   box-shadow: 0 6rpx 16rpx rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
 }
 
-.student-header {
+.card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12rpx;
 }
 
-.student-name {
-  font-size: 34rpx;
-  font-weight: 700;
-  color: #0f172a;
+.card-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
 }
 
-.chip {
-  background: #eef2ff;
-  color: #4338ca;
-  padding: 8rpx 16rpx;
-  border-radius: 999rpx;
+.card-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #374151;
+}
+
+.hours-text {
   font-size: 24rpx;
+  color: #6b7280;
+  white-space: nowrap;
 }
 
-.student-body {
+.progress-rate {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #059669;
+}
+
+.card-body {
   display: flex;
   flex-direction: column;
   gap: 12rpx;
 }
 
-.row {
+/* 进度条包装 */
+.progress-wrapper {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 12rpx;
 }
 
-.row.between {
-  margin-top: 6rpx;
-}
-
-.muted {
+.progress-percent {
   font-size: 26rpx;
-  color: #6b7280;
+  font-weight: 600;
+  color: #2563eb;
+  min-width: 60rpx;
+  text-align: right;
 }
 
-.homework-tags {
+/* 作业统计 */
+.homework-stats {
   display: flex;
-  gap: 10rpx;
+  align-items: center;
+  justify-content: space-around;
+  padding: 12rpx 0;
 }
 
-.tag {
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  flex: 1;
+}
+
+.stat-label {
   font-size: 24rpx;
-  padding: 6rpx 12rpx;
-  border-radius: 999rpx;
+  color: #9ca3af;
 }
 
-.tag.success {
-  background: #ecfdf3;
-  color: #15803d;
+.stat-value {
+  font-size: 36rpx;
+  font-weight: 700;
 }
 
-.tag.warn {
-  background: #fff7ed;
-  color: #c2410c;
+.stat-value.success {
+  color: #059669;
+}
+
+.stat-value.warn {
+  color: #ea580c;
+}
+
+.stat-value.total {
+  color: #2563eb;
+}
+
+.stat-divider {
+  width: 2rpx;
+  height: 48rpx;
+  background: #e5e7eb;
 }
 
 .empty-state {
