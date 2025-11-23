@@ -74,34 +74,45 @@
         </view>
       </view>
 
+      <!-- 未完成状态 - 批改作业表单 -->
       <view class="section-card" v-else>
+        <view class="section-header section-orange">
+          <text class="section-title">批改作业</text>
+        </view>
         <view class="section-body form-body pending-body">
-          <text class="pending-title">{{ displayEvaluation }}</text>
-          <view class="gallery-grid">
+          <!-- 上传完成图片 - 使用3列网格布局 -->
+          <view class="section-sub-title">完成图片</view>
+          <view class="upload-grid">
             <view
               v-for="(img, index) in displayFinishImages"
               :key="`up-${img.id || index}`"
-              class="gallery-item"
-              @click.stop="previewImages(displayFinishImages, index)"
+              class="upload-item"
             >
-              <image :src="img.url" mode="aspectFill" />
-              <view class="remove-img" @tap.stop="removeFinishImage(index)">✕</view>
+              <image :src="img.url" mode="aspectFill" class="upload-image" @click="previewImages(displayFinishImages, index)" />
+              <view class="remove" @tap.stop="removeFinishImage(index)">✕</view>
             </view>
             <view
               v-if="displayFinishImages.length < 6"
-              class="gallery-item add-item"
+              class="upload-item upload-placeholder"
               @tap.stop="chooseFinishImages"
             >
-              <text class="gallery-plus">+</text>
-              <text class="gallery-text">上传完成图片</text>
+              <view class="upload-placeholder-inner">
+                <text class="upload-plus">+</text>
+                <text class="upload-text">上传图片</text>
+              </view>
             </view>
           </view>
+
+          <!-- 批改意见输入框 -->
+          <view class="section-sub-title">批改意见</view>
           <textarea
             v-model="completionForm.evaluation"
             class="input-area"
             placeholder="填写批改意见或完成备注"
             rows="4"
           />
+
+          <!-- 学生状态选择 -->
           <view class="field">
             <text class="field-label">学生状态</text>
             <picker
@@ -116,6 +127,8 @@
               </view>
             </picker>
           </view>
+
+          <!-- 提交按钮 -->
           <button class="complete-btn" :disabled="submitting" @tap="handleComplete">
             {{ submitting ? '提交中...' : '作业完成' }}
           </button>
@@ -493,14 +506,85 @@ onLoad(async (options) => {
   gap: 16rpx;
 }
 
+/* 上传图片网格 - 3列布局 */
 .upload-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12rpx;
+  gap: 16rpx;
 }
 
-.upload-grid.fill {
-  grid-template-columns: repeat(3, 1fr);
+/* 上传项容器 */
+.upload-item {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 100%;
+  border-radius: 12rpx;
+  overflow: hidden;
+  background: #f9fafb;
+  border: 2rpx dashed #d1d5db;
+}
+
+/* 已上传的图片 */
+.upload-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 上传占位符 */
+.upload-placeholder {
+  position: relative;
+  border-style: dashed;
+}
+
+.upload-placeholder-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 0 12rpx;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.upload-plus {
+  font-size: 48rpx;
+  line-height: 1;
+}
+
+.upload-text {
+  font-size: 24rpx;
+}
+
+/* 删除图片按钮 */
+.remove {
+  position: absolute;
+  top: 8rpx;
+  right: 8rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+}
+
+/* 小节标题 */
+.section-sub-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 4rpx;
 }
 
 .image-item {
@@ -519,47 +603,6 @@ onLoad(async (options) => {
   height: 100%;
   object-fit: cover;
   border-radius: 12rpx;
-}
-
-.upload-placeholder {
-  border: 2rpx dashed #cbd5e1;
-  background: #f8fafc;
-  color: #94a3b8;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8rpx;
-}
-
-.upload-placeholder.large {
-  height: 400rpx;
-  width: 100%;
-  border-radius: 12rpx;
-}
-
-.upload-plus {
-  font-size: 48rpx;
-  line-height: 1;
-}
-
-.upload-text {
-  font-size: 24rpx;
-}
-
-.remove-img {
-  position: absolute;
-  top: 8rpx;
-  right: 8rpx;
-  width: 36rpx;
-  height: 36rpx;
-  border-radius: 999rpx;
-  background: rgba(0, 0, 0, 0.65);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22rpx;
 }
 
 .upload-area {
@@ -589,51 +632,6 @@ onLoad(async (options) => {
   font-weight: 600;
   color: #0f172a;
   line-height: 1.6;
-}
-
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20rpx;
-}
-
-.gallery-item {
-  position: relative;
-  width: 100%;
-  padding-top: 100%;
-  border-radius: 12rpx;
-  overflow: hidden;
-  background: #f3f4f6;
-  border: 2rpx solid #e5e7eb;
-}
-
-.gallery-item image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.add-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  color: #9ca3af;
-  border: 2rpx dashed #d1d5db;
-}
-
-.gallery-plus {
-  font-size: 64rpx;
-  line-height: 1;
-}
-
-.gallery-text {
-  font-size: 26rpx;
-  margin-top: 8rpx;
-  color: #9ca3af;
 }
 
 .input-area {
