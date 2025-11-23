@@ -81,29 +81,7 @@
         <uni-icons type="sound" size="24" color="#1f2937"></uni-icons>
         <text class="title">公告通知</text>
       </view>
-      <view class="notice-card">
-        <view
-          class="notice-item"
-          v-for="(notice, index) in notices"
-          :key="index"
-          @click="viewNotice(notice)"
-        >
-          <view class="notice-left">
-            <view class="notice-icon" :class="notice.type">
-              <uni-icons :type="notice.icon" size="20" :color="notice.color"></uni-icons>
-            </view>
-            <view class="notice-content">
-              <text class="notice-title">{{ notice.title }}</text>
-              <text class="notice-time">{{ notice.time }}</text>
-            </view>
-          </view>
-          <uni-icons type="forward" size="16" color="#d1d5db"></uni-icons>
-        </view>
-        <view class="notice-empty" v-if="notices.length === 0">
-          <uni-icons type="info" size="48" color="#d1d5db"></uni-icons>
-          <text class="empty-text">暂无公告通知</text>
-        </view>
-      </view>
+      <NoticeCard :notices="notices" />
     </view>
     <!-- 使用TeacherTabBar组件 -->
     <TeacherTabBar activeTab="home" />
@@ -112,6 +90,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import TeacherTabBar from '@/components/TeacherTabBar.vue'
+import NoticeCard from '@/pages/common/components/NoticeCard.vue'
 import { getTeacherHomeData } from '@/api/teacher/home'
 
 /**
@@ -188,16 +167,6 @@ const loadHomeData = async () => {
       icon: 'none',
     })
   }
-}
-
-// 查看公告详情
-const viewNotice = (notice) => {
-  uni.showModal({
-    title: notice.title,
-    content: notice.content || '暂无详细内容',
-    showCancel: false,
-    confirmText: '确认',
-  })
 }
 
 /**
@@ -458,89 +427,5 @@ onUnmounted(() => {
   font-size: 32rpx;
   font-weight: bold;
   color: #1f2937;
-}
-
-/* 公告通知卡片 */
-.notice-card {
-  background: #fff;
-  border-radius: 32rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
-  padding: 32rpx;
-  margin-bottom: 48rpx; /* 增加与底部导航的间距 */
-}
-
-.notice-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24rpx 0;
-  border-bottom: 1rpx solid #f3f4f6;
-  transition: all 0.3s;
-}
-
-.notice-item:last-child {
-  border-bottom: none;
-}
-
-.notice-item:active {
-  background: #f9fafb;
-  border-radius: 16rpx;
-}
-
-.notice-left {
-  display: flex;
-  align-items: center;
-  gap: 24rpx;
-  flex: 1;
-}
-
-.notice-icon {
-  width: 72rpx;
-  height: 72rpx;
-  border-radius: 16rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.notice-icon.important {
-  background: #fee2e2;
-}
-
-.notice-icon.normal {
-  background: #dbeafe;
-}
-
-.notice-content {
-  display: flex;
-  flex-direction: column;
-  gap: 8rpx;
-  flex: 1;
-}
-
-.notice-title {
-  font-size: 28rpx;
-  color: #1f2937;
-  font-weight: 500;
-}
-
-.notice-time {
-  font-size: 24rpx;
-  color: #9ca3af;
-}
-
-/* 空状态 */
-.notice-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 80rpx 0;
-  gap: 24rpx;
-}
-
-.empty-text {
-  font-size: 28rpx;
-  color: #9ca3af;
 }
 </style>

@@ -60,30 +60,7 @@
         <uni-icons type="sound" size="24" color="#1f2937" />
         <text class="title">公告通知</text>
       </view>
-      <view class="notice-card">
-        <view
-          class="notice-item"
-          v-for="notice in notices"
-          :key="notice.id"
-          @click="viewNotice(notice)"
-        >
-          <view class="notice-left">
-            <view class="notice-icon" :class="{ muted: notice.status !== 0 }">
-              <uni-icons type="chatbubble" size="20" color="#0ea5e9" />
-            </view>
-            <view class="notice-content">
-              <text class="notice-title">{{ notice.title }}</text>
-              <text class="notice-preview">{{ notice.content || '点击查看详情' }}</text>
-              <text class="notice-time">{{ notice.time || '刚刚' }}</text>
-            </view>
-          </view>
-          <uni-icons type="forward" size="16" color="#d1d5db" />
-        </view>
-        <view class="notice-empty" v-if="notices.length === 0">
-          <uni-icons type="info" size="48" color="#d1d5db" />
-          <text class="empty-text">暂无公告通知</text>
-        </view>
-      </view>
+      <NoticeCard :notices="notices" />
     </view>
 
     <ParentTabBar activeTab="home" />
@@ -93,6 +70,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import ParentTabBar from '@/components/ParentTabBar.vue'
+import NoticeCard from '@/pages/common/components/NoticeCard.vue'
 import { getParentHomeOverview } from '@/api/parent/home'
 
 const loading = ref(false)
@@ -182,15 +160,6 @@ const fetchHomeData = async () => {
   } finally {
     loading.value = false
   }
-}
-
-const viewNotice = (notice) => {
-  uni.showModal({
-    title: notice.title,
-    content: notice.content || '暂无公告详情',
-    showCancel: false,
-    confirmText: '知道了',
-  })
 }
 
 onMounted(() => {
@@ -502,77 +471,5 @@ onMounted(() => {
 .empty-text {
   font-size: 28rpx;
   color: #9ca3af;
-}
-
-.notice-card {
-  background: #fff;
-  border-radius: 28rpx;
-  box-shadow: 0 6rpx 16rpx rgba(0, 0, 0, 0.06);
-  padding: 24rpx;
-}
-
-.notice-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20rpx 16rpx;
-  border-radius: 20rpx;
-  transition: background 0.2s;
-}
-
-.notice-item:active {
-  background: #f3f4f6;
-}
-
-.notice-left {
-  display: flex;
-  align-items: flex-start;
-  gap: 16rpx;
-}
-
-.notice-icon {
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 18rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #e0f2fe;
-}
-
-.notice-icon.muted {
-  background: #f3f4f6;
-}
-
-.notice-content {
-  display: flex;
-  flex-direction: column;
-  gap: 6rpx;
-}
-
-.notice-title {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #0f172a;
-}
-
-.notice-preview {
-  font-size: 26rpx;
-  color: #4b5563;
-  line-height: 1.4;
-}
-
-.notice-time {
-  font-size: 24rpx;
-  color: #9ca3af;
-}
-
-.notice-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16rpx;
-  padding: 44rpx 0;
 }
 </style>
