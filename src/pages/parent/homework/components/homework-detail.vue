@@ -2,126 +2,89 @@
   <view class="page">
     <PageHeader title="作业详情" :showBack="true" />
 
-    <view class="content">
-      <view v-if="loading" class="card placeholder">
-        <text class="placeholder-text">正在加载作业...</text>
+    <view v-if="loading" class="content">
+      <view class="empty-state">
+        <text class="empty-text">正在加载作业...</text>
       </view>
+    </view>
 
-      <view v-else-if="!detail" class="card placeholder">
-        <text class="placeholder-text">未找到作业信息</text>
+    <view v-else-if="!detail" class="content">
+      <view class="empty-state">
+        <text class="empty-icon">📄</text>
+        <text class="empty-text">未找到作业信息</text>
       </view>
+    </view>
 
-      <view v-else>
-        <view class="hero">
-          <view class="hero-left">
-            <view class="subject-badge">{{ subjectShort }}</view>
-            <view class="subject-info">
-              <text class="subject-title">{{ detail.subjectName || '未分科目' }}</text>
-              <text class="subject-sub">{{ detail.studentName || '未指定学生' }}</text>
-            </view>
-          </view>
-          <view :class="['status-chip', statusBadge.className]">
-            <text class="status-icon">{{ statusBadge.icon }}</text>
-            <text class="status-text">{{ statusBadge.text }}</text>
+    <view v-else class="content">
+      <!-- 摘要卡片 -->
+      <view class="summary-card compact">
+        <view class="summary-top compact-row">
+          <view class="subject-chip">{{ detail.subjectName || '未分科目' }}</view>
+          <view
+            :class="['status-badge', detail.state === 1 ? 'status-completed' : 'status-pending']"
+          >
+            <text>{{ detail.state === 1 ? '已完成' : '未完成' }}</text>
           </view>
         </view>
-
-        <view class="info-grid card">
-          <view class="info-item">
-            <text class="info-label">布置日期</text>
-            <text class="info-value">{{ detail.homeworkDate || '-' }}</text>
-          </view>
-          <view class="info-item">
-            <text class="info-label">完成时间</text>
-            <text class="info-value">{{ detail.finishDate || '未完成' }}</text>
-          </view>
-          <view class="info-item">
-            <text class="info-label">学生状态</text>
-            <text class="info-value">{{ detail.studentState || '暂无' }}</text>
-          </view>
-          <view class="info-item">
-            <text class="info-label">科目</text>
-            <text class="info-value">{{ detail.subjectName || '-' }}</text>
-          </view>
+        <view class="compact-meta time-row">
+          <view class="time-chip">期望完成 {{ detail.homeworkDate || '-' }}</view>
+          <view v-if="detail.finishDate" class="time-chip done"
+            >实际完成 {{ detail.finishDate }}</view
+          >
         </view>
+      </view>
 
-        <view class="section card">
-          <view class="section-header">
-            <view class="section-title-wrap">
-              <text class="section-dot dot-blue"></text>
-              <text class="section-title">作业内容</text>
-            </view>
-            <text class="section-sub">{{ detail.homeworkDate || '' }}</text>
-          </view>
-          <text class="body-text">{{ detail.content || '暂无作业描述' }}</text>
+      <!-- 作业内容卡片 -->
+      <view class="section-card">
+        <view class="section-header section-blue">
+          <text class="section-title">作业内容</text>
+        </view>
+        <view class="section-body">
+          <text class="content-text">{{ detail.content || '暂无作业内容' }}</text>
           <view v-if="requirementImages.length" class="image-grid">
             <view
               v-for="(img, index) in requirementImages"
               :key="`req-${index}`"
-              class="image-item bordered"
+              class="image-item"
               @click="previewRequirementImage(index)"
             >
-              <image :src="img" mode="aspectFill" class="image" />
+              <image :src="img" mode="aspectFill" />
             </view>
           </view>
-          <view v-else class="empty-inline">未上传参考图</view>
+          <view v-else class="empty-section">暂无作业图片</view>
         </view>
+      </view>
 
-        <view class="section card">
-          <view class="section-header">
-            <view class="section-title-wrap">
-              <text class="section-dot dot-green"></text>
-              <text class="section-title">学生作答</text>
-            </view>
-            <text class="section-sub">{{ submitTimeText }}</text>
-          </view>
+      <!-- 学生作答卡片 -->
+      <view class="section-card">
+        <view class="section-header section-green">
+          <text class="section-title">学生作答</text>
+        </view>
+        <view class="section-body">
           <view v-if="homeworkImages.length" class="image-grid">
             <view
+              v-for="(img, index) in homeworkImages"
+              :key="`hw-${index}`"
               class="image-item"
-              v-for="(img, index) in displayImages"
-              :key="index"
               @click="previewHomeworkImage(index)"
             >
-              <image :src="img" class="image" mode="aspectFill" />
-              <view v-if="index === 6 && hasMoreImages" class="more-mask">
-                <text class="more-text">+{{ remainingCount }}</text>
-              </view>
+              <image :src="img" mode="aspectFill" />
             </view>
           </view>
-          <view v-else class="empty-inline">学生尚未上传作答图片</view>
-          <view v-if="hasMoreImages" class="view-all" @click="previewHomeworkImage(0)">
-            <text class="view-all-icon">🖼️</text>
-            <text>查看全部 {{ homeworkImages.length }} 张</text>
-          </view>
+          <view v-else class="empty-section">学生尚未提交作答</view>
         </view>
+      </view>
 
-        <view class="section card">
-          <view class="section-header">
-            <view class="section-title-wrap">
-              <text class="section-dot dot-purple"></text>
-              <text class="section-title">教师评语</text>
-            </view>
-            <text class="section-sub">{{ detail.finishDate || '完成后显示时间' }}</text>
-          </view>
-          <view class="comment-box">
-            <text class="body-text">{{ detail.evaluation || '老师暂未填写评语' }}</text>
-          </view>
+      <!-- 教师评语卡片 -->
+      <view class="section-card">
+        <view class="section-header section-purple">
+          <text class="section-title">教师评语</text>
         </view>
-
-        <view class="section card">
-          <view class="section-header">
-            <view class="section-title-wrap">
-              <text class="section-dot dot-orange"></text>
-              <text class="section-title">课堂状态</text>
-            </view>
-            <text class="section-sub">由老师记录</text>
-          </view>
-          <view class="status-row">
-            <view class="status-icon">😊</view>
-            <view class="status-detail">
-              <text class="status-title">{{ detail.studentState || '暂无状态记录' }}</text>
-              <text class="status-desc">课堂表现、精神状态等可在此查看</text>
-            </view>
+        <view class="section-body">
+          <text class="content-text">{{ detail.evaluation || '老师暂未填写评语' }}</text>
+          <view v-if="detail.studentState" class="student-state-row">
+            <text class="state-label">学生状态：</text>
+            <text class="state-value">{{ detail.studentState }}</text>
           </view>
         </view>
       </view>
@@ -132,39 +95,23 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import ParentTabBar from '@/components/ParentTabBar.vue'
 import { getHomeworkDetail } from '@/api/parent/homework'
 
+// 响应式数据
 const detail = ref(null)
 const loading = ref(false)
 const homeworkImages = ref([])
 const requirementImages = ref([])
 
-const subjectShort = computed(() => {
-  const text = detail.value?.subjectName || '作业'
-  return text.slice(0, 1)
-})
-
-const displayImages = computed(() => homeworkImages.value.slice(0, 7))
-const hasMoreImages = computed(() => homeworkImages.value.length > 7)
-const remainingCount = computed(() => Math.max(0, homeworkImages.value.length - 7))
-
-const statusBadge = computed(() => {
-  const state = Number(detail.value?.state ?? 0)
-  if (state === 1) {
-    return { text: '已完成', className: 'completed', icon: '✓' }
-  }
-  return { text: '未完成', className: 'pending', icon: '⌛' }
-})
-
-const submitTimeText = computed(() => {
-  if (detail.value?.finishDate) return `提交时间：${detail.value.finishDate}`
-  return '尚未提交'
-})
-
+/**
+ * 预览图片列表
+ * @param {Array} images - 图片URL数组
+ * @param {Number} current - 当前索引
+ */
 const previewImages = (images, current) => {
   if (!images.length) return
   uni.previewImage({
@@ -177,15 +124,23 @@ const previewImages = (images, current) => {
   })
 }
 
+// 预览学生作答图片
 const previewHomeworkImage = (index) => previewImages(homeworkImages.value, index)
+// 预览作业要求图片
 const previewRequirementImage = (index) => previewImages(requirementImages.value, index)
 
+/**
+ * 加载作业详情
+ * @param {String} homeworkId - 作业ID
+ */
 const fetchDetail = async (homeworkId) => {
   loading.value = true
   try {
     const res = await getHomeworkDetail(homeworkId)
     detail.value = res?.data || null
+    // 解析作业要求图片（homeworkImages字段）
     requirementImages.value = (res?.data?.homeworkImages || []).map((item) => item.url || item.path)
+    // 解析学生完成图片（finishImages字段）
     homeworkImages.value = (res?.data?.finishImages || []).map((item) => item.url || item.path)
   } catch (error) {
     console.error('加载作业详情失败', error)
@@ -198,6 +153,7 @@ const fetchDetail = async (homeworkId) => {
   }
 }
 
+// 页面加载时获取作业详情
 onLoad((options) => {
   const homeworkId = options?.homeworkId || options?.id
   if (!homeworkId) {
@@ -214,296 +170,211 @@ onLoad((options) => {
 <style scoped>
 .page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #eef7ff 0%, #e0f2fe 100%);
-  padding-top: 144rpx;
-  padding-bottom: 128rpx;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  padding: 144rpx 0 120rpx;
 }
 
 .content {
-  padding: 40rpx 40rpx 24rpx;
+  padding: 0 48rpx 48rpx;
   display: flex;
   flex-direction: column;
   gap: 24rpx;
 }
 
-.card {
-  background: #ffffff;
-  border-radius: 24rpx;
-  box-shadow: 0 8rpx 20rpx rgba(14, 165, 233, 0.08);
-  padding: 28rpx;
-}
-
-.placeholder {
-  text-align: center;
-  color: #6b7280;
-}
-
-.placeholder-text {
-  font-size: 28rpx;
-}
-
-.hero {
-  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+/* 摘要卡片 */
+.summary-card {
+  background: #fff;
   border-radius: 28rpx;
   padding: 32rpx;
+  box-shadow: 0 8rpx 22rpx rgba(14, 165, 233, 0.18);
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 10rpx 26rpx rgba(37, 99, 235, 0.28);
+  flex-direction: column;
+  gap: 16rpx;
 }
 
-.hero-left {
-  display: flex;
-  align-items: center;
+.summary-card.compact {
   gap: 20rpx;
 }
 
-.subject-badge {
-  width: 88rpx;
-  height: 88rpx;
-  border-radius: 20rpx;
-  background: rgba(255, 255, 255, 0.18);
-  color: #fff;
+.summary-top {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 42rpx;
-  font-weight: 700;
+  flex-wrap: wrap;
+  gap: 12rpx;
 }
 
-.subject-info {
-  display: flex;
-  flex-direction: column;
-  gap: 8rpx;
-  color: #e0ecff;
-}
-
-.subject-title {
-  font-size: 36rpx;
-  font-weight: 800;
+.subject-chip {
+  padding: 10rpx 20rpx;
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
   color: #fff;
-}
-
-.subject-sub {
-  font-size: 26rpx;
-}
-
-.status-chip {
-  padding: 14rpx 22rpx;
   border-radius: 999rpx;
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-  font-weight: 700;
-  color: #0f172a;
-  background: #f8fafc;
-}
-
-.status-chip.completed {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.status-chip.pending {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.status-icon {
-  font-size: 30rpx;
-}
-
-.status-text {
   font-size: 26rpx;
+  font-weight: 600;
 }
 
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 18rpx;
+.status-badge {
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #fff;
 }
 
-.info-item {
-  background: #f8fafc;
-  border-radius: 16rpx;
-  padding: 18rpx 20rpx;
+.status-completed {
+  background: #10b981;
+}
+
+.status-pending {
+  background: #f97316;
+}
+
+.compact-meta {
   display: flex;
   flex-direction: column;
   gap: 6rpx;
 }
 
-.info-label {
+.time-row {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.time-chip {
+  padding: 8rpx 16rpx;
+  background: #f3f4f6;
+  color: #374151;
+  border-radius: 999rpx;
   font-size: 24rpx;
-  color: #64748b;
 }
 
-.info-value {
-  font-size: 28rpx;
-  color: #0f172a;
-  font-weight: 600;
+.time-chip.done {
+  background: #dcfce7;
+  color: #166534;
 }
 
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: 18rpx;
+/* 卡片样式 */
+.section-card {
+  background: #fff;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 6rpx 18rpx rgba(0, 0, 0, 0.06);
 }
 
 .section-header {
+  padding: 20rpx 24rpx;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-}
-
-.section-title-wrap {
-  display: flex;
-  align-items: center;
-  gap: 10rpx;
-}
-
-.section-dot {
-  width: 12rpx;
-  height: 12rpx;
-  border-radius: 50%;
-}
-
-.dot-blue {
-  background: #2563eb;
-}
-
-.dot-green {
-  background: #10b981;
-}
-
-.dot-purple {
-  background: #a855f7;
-}
-
-.dot-orange {
-  background: #f59e0b;
+  color: #fff;
 }
 
 .section-title {
-  font-size: 30rpx;
+  font-size: 28rpx;
   font-weight: 700;
-  color: #0f172a;
 }
 
 .section-sub {
   font-size: 24rpx;
-  color: #94a3b8;
+  color: rgba(255, 255, 255, 0.8);
 }
 
-.body-text {
+.section-body {
+  padding: 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.content-text {
   font-size: 28rpx;
   color: #0f172a;
   line-height: 1.6;
-  white-space: pre-line;
+  white-space: pre-wrap;
 }
 
+/* 颜色主题 */
+.section-blue {
+  background: linear-gradient(135deg, #60a5fa, #2563eb);
+}
+
+.section-green {
+  background: linear-gradient(135deg, #34d399, #059669);
+}
+
+.section-purple {
+  background: linear-gradient(135deg, #c084fc, #a855f7);
+}
+
+/* 学生状态行 */
+.student-state-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8rpx;
+  margin-top: 8rpx;
+  padding-top: 16rpx;
+  border-top: 2rpx solid #e5e7eb;
+}
+
+.state-label {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.state-value {
+  font-size: 26rpx;
+  color: #0ea5e9;
+  font-weight: 500;
+}
+
+/* 图片网格 - 3列布局 */
 .image-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12rpx;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
 }
 
 .image-item {
   position: relative;
   width: 100%;
-  padding-bottom: 100%;
-  border-radius: 16rpx;
+  padding-top: 100%;
   overflow: hidden;
-  background: #f1f5f9;
-  box-shadow: inset 0 0 0 2rpx #e2e8f0;
+  border-radius: 12rpx;
+  background: #f9fafb;
 }
 
-.image-item.bordered {
-  box-shadow: inset 0 0 0 2rpx #bfdbfe;
-}
-
-.image {
+.image-item image {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  object-fit: cover;
 }
 
-.more-mask {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(15, 23, 42, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.more-text {
-  font-size: 44rpx;
-  color: #fff;
-  font-weight: 700;
-}
-
-.view-all {
-  display: inline-flex;
-  align-items: center;
-  gap: 10rpx;
-  color: #2563eb;
+/* 空状态 */
+.empty-section {
+  text-align: center;
+  color: #9ca3af;
   font-size: 26rpx;
-  font-weight: 600;
+  padding: 24rpx 0;
 }
 
-.view-all-icon {
-  font-size: 32rpx;
-}
-
-.comment-box {
-  background: linear-gradient(135deg, #fdf4ff, #eef2ff);
-  border-radius: 18rpx;
-  padding: 18rpx;
-  border: 2rpx solid #e9d5ff;
-}
-
-.status-row {
-  display: flex;
-  gap: 16rpx;
-  align-items: center;
-}
-
-.status-icon {
-  width: 72rpx;
-  height: 72rpx;
-  border-radius: 18rpx;
-  background: linear-gradient(135deg, #10b981, #22d3ee);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 40rpx;
-  color: #fff;
-}
-
-.status-detail {
+.empty-state {
+  padding: 120rpx 0;
   display: flex;
   flex-direction: column;
-  gap: 6rpx;
+  align-items: center;
+  gap: 16rpx;
+  color: #9ca3af;
 }
 
-.status-title {
-  font-size: 30rpx;
-  font-weight: 700;
-  color: #0f172a;
+.empty-icon {
+  font-size: 52rpx;
 }
 
-.status-desc {
-  font-size: 24rpx;
-  color: #94a3b8;
-}
-
-.empty-inline {
+.empty-text {
   font-size: 26rpx;
-  color: #94a3b8;
 }
 </style>
