@@ -29,9 +29,10 @@
       <text class="selected-count">已选 {{ selectedCount }} 人</text>
     </view>
 
-    <!-- 学生列表 -->
+    <!-- 学生列表 - 单行紧凑型 -->
     <view class="student-list">
       <view class="student-item" v-for="item in filteredStudentList" :key="item.id">
+        <!-- 复选框 -->
         <view
           class="checkbox"
           :class="{ checked: item.checked, disabled: item.isSignin === 1 }"
@@ -39,18 +40,16 @@
         >
           <uni-icons v-if="item.checked" type="checkmarkempty" size="18" color="#fff"></uni-icons>
         </view>
+        <!-- 学生信息：姓名 学校 年级 班级 -->
         <view class="student-info">
-          <view class="info-row">
-            <text class="student-name">{{ item.studentName }}</text>
-            <view class="status-badge" :class="item.isSignin ? 'signed' : 'unsigned'">
-              {{ item.isSignin ? '已签到' : '未签到' }}
-            </view>
-          </view>
-          <view class="info-row">
-            <text class="info-text"
-              >{{ item.schoolName }} · {{ item.gradeName }} · {{ item.clazzName }}</text
-            >
-          </view>
+          <text class="student-name">{{ item.studentName }}</text>
+          <text class="info-text">{{ item.schoolName }}</text>
+          <text class="info-text">{{ item.gradeName }}</text>
+          <text class="info-text">{{ item.clazzName }}</text>
+        </view>
+        <!-- 签到状态 -->
+        <view class="status-badge" :class="item.isSignin ? 'signed' : 'unsigned'">
+          {{ item.isSignin ? '已签到' : '未签到' }}
         </view>
       </view>
       <view class="empty-state" v-if="filteredStudentList.length === 0">
@@ -295,7 +294,7 @@ const handleBatchCheckin = () => {
   font-weight: 500;
 }
 
-/* 学生列表 */
+/* 学生列表 - 单行紧凑型 */
 .student-list {
   padding: 0 48rpx;
 }
@@ -303,23 +302,24 @@ const handleBatchCheckin = () => {
 .student-item {
   display: flex;
   align-items: center;
-  gap: 24rpx;
+  gap: 16rpx;
   background: #fff;
-  border-radius: 24rpx;
-  padding: 32rpx;
-  margin-bottom: 16rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 12rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
 }
 
 .checkbox {
-  width: 40rpx;
-  height: 40rpx;
+  width: 36rpx;
+  height: 36rpx;
   border: 2rpx solid #d1d5db;
   border-radius: 8rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .checkbox.checked {
@@ -334,45 +334,50 @@ const handleBatchCheckin = () => {
   cursor: not-allowed;
 }
 
+/* 学生信息区域 - 横向排列 */
 .student-info {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  gap: 12rpx;
-}
-
-.info-row {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 16rpx;
+  overflow: hidden;
 }
 
+/* 学生姓名 */
 .student-name {
-  font-size: 32rpx;
-  font-weight: bold;
+  font-size: 26rpx;
+  font-weight: 600;
   color: #1f2937;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
+/* 详细信息文字 */
+.info-text {
+  font-size: 22rpx;
+  color: #6b7280;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* 签到状态标签 - 紧凑型 */
 .status-badge {
-  padding: 8rpx 16rpx;
-  border-radius: 8rpx;
-  font-size: 24rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
   font-weight: 500;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .status-badge.signed {
-  background: #d1fae5;
-  color: #10b981;
+  background: #dcfce7;
+  color: #15803d;
 }
 
 .status-badge.unsigned {
   background: #fee2e2;
-  color: #ef4444;
-}
-
-.info-text {
-  font-size: 24rpx;
-  color: #6b7280;
+  color: #dc2626;
 }
 
 /* 空状态 */

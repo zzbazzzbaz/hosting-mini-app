@@ -3,7 +3,7 @@
     <!-- 使用PageHeader组件 -->
     <PageHeader title="签到确认" :showBack="true" />
 
-    <!-- 学生列表 -->
+    <!-- 学生列表 - 单行紧凑型 -->
     <view class="student-section">
       <view class="section-title">
         <text class="title-text">签到学生 ({{ students.length }}人)</text>
@@ -11,9 +11,9 @@
       <view class="student-list">
         <view class="student-item" v-for="item in students" :key="item.id">
           <text class="student-name">{{ item.studentName }}</text>
-          <text class="student-info"
-            >{{ item.schoolName }} · {{ item.gradeName }} · {{ item.clazzName }}</text
-          >
+          <text class="student-info">{{ item.schoolName }}</text>
+          <text class="student-info">{{ item.gradeName }}</text>
+          <text class="student-info">{{ item.clazzName }}</text>
         </view>
       </view>
     </view>
@@ -203,35 +203,36 @@ const handleSubmit = async () => {
   color: #9ca3af;
 }
 
-/* 学生列表 */
+/* 学生列表 - 单行紧凑型 */
 .student-list {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
 }
 
 .student-item {
   display: flex;
-  flex-direction: column;
-  gap: 8rpx;
-  padding: 16rpx 0;
-  border-bottom: 1rpx solid #f3f4f6;
-}
-
-.student-item:last-child {
-  border-bottom: none;
+  align-items: center;
+  gap: 16rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
 }
 
 .student-name {
-  font-size: 28rpx;
-  font-weight: bold;
+  font-size: 26rpx;
+  font-weight: 600;
   color: #1f2937;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .student-info {
-  font-size: 24rpx;
+  font-size: 22rpx;
   color: #6b7280;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 /* 上传区域 */
