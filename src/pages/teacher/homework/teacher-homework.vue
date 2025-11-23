@@ -109,7 +109,7 @@ import {
 } from '@/api/common/dictionary'
 import { getUserInfo } from '@/store/auth'
 
-const teacherOptions = ref([{ id: '', name: '全部教师' }])
+const teacherOptions = ref([])
 const schoolOptions = ref([{ id: '', name: '全部学校' }])
 const gradeOptions = ref([{ id: '', name: '全部年级' }])
 const classOptions = ref([{ id: '', name: '全部班级' }])
@@ -122,6 +122,12 @@ const searchName = ref('')
 
 const homeworkList = ref([])
 
+/**
+ * 标准化选项列表（带"全部"选项）
+ * @param {Array} list - 原始选项列表
+ * @param {string} allLabel - "全部"选项的标签文本
+ * @returns {Array} 标准化后的选项列表
+ */
 const normalizeOptions = (list = [], allLabel) =>
   [
     { id: '', name: allLabel },
@@ -133,8 +139,24 @@ const normalizeOptions = (list = [], allLabel) =>
       .filter((item) => item.id || item.name),
   ].filter((item) => item.name)
 
+/**
+ * 标准化教师选项列表（不含"全部"选项）
+ * @param {Array} list - 原始教师列表
+ * @returns {Array} 标准化后的教师选项列表
+ */
+const normalizeTeacherOptions = (list = []) =>
+  list
+    .map((item) => ({
+      id: item.id ?? item.value ?? '',
+      name: item.name ?? item.label ?? item.text ?? '',
+    }))
+    .filter((item) => (item.id || item.name) && item.name)
+
+/**
+ * 计算当前选中的标签文本
+ */
 const currentTeacherLabel = computed(
-  () => teacherOptions.value[teacherIndex.value]?.name || '全部教师'
+  () => teacherOptions.value[teacherIndex.value]?.name || '请选择教师'
 )
 const currentSchoolLabel = computed(
   () => schoolOptions.value[schoolIndex.value]?.name || '全部学校'
@@ -160,7 +182,7 @@ const filteredHomeworkList = computed(() => {
 
 /**
  * 获取筛选选项并设置默认值
- * 默认选中当前登录教师
+ * 默认选中当前登录教师（教师列表不含"全部"选项）
  */
 const fetchOptions = async () => {
   try {
@@ -170,7 +192,8 @@ const fetchOptions = async () => {
       getGradeComboxList(),
       getClassComboxList(),
     ])
-    teacherOptions.value = normalizeOptions(teachers || [], '全部教师')
+    // 教师列表不包含"全部"选项
+    teacherOptions.value = normalizeTeacherOptions(teachers || [])
     schoolOptions.value = normalizeOptions(schools || [], '全部学校')
     gradeOptions.value = normalizeOptions(grades || [], '全部年级')
     classOptions.value = normalizeOptions(classes || [], '全部班级')
@@ -179,18 +202,22 @@ const fetchOptions = async () => {
     const userInfo = getUserInfo()
     const userName = userInfo?.userName || userInfo?.name
 
-    if (userName) {
+    if (userName && teacherOptions.value.length > 0) {
       const idx = teacherOptions.value.findIndex((item) => item.name === userName)
       if (idx >= 0) {
         teacherIndex.value = idx
         console.log(`默认选中当前教师: ${userName}`)
       } else {
-        console.warn(`未找到当前教师: ${userName}，保持默认选择`)
+        // 未找到匹配教师，默认选中第一个教师
+        console.warn(`未找到当前教师: ${userName}，默认选中第一个教师`)
         teacherIndex.value = 0
       }
-    } else {
-      console.warn('未获取到当前用户名，保持默认选择')
+    } else if (teacherOptions.value.length > 0) {
+      // 没有用户信息，默认选中第一个教师
+      console.warn('未获取到当前用户名，默认选中第一个教师')
       teacherIndex.value = 0
+    } else {
+      console.error('教师列表为空')
     }
   } catch (error) {
     console.error('加载筛选项失败', error)
