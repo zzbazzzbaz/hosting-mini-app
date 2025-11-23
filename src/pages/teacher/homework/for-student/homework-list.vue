@@ -66,10 +66,9 @@
           class="homework-item"
           @tap="openHomeworkDetail(item)"
         >
-          <!-- 第一行：科目 | 作业标题 | 状态 -->
+          <!-- 主信息行：科目 | 状态 -->
           <view class="homework-main">
             <text class="subject">{{ item.subjectName || '未分科目' }}</text>
-            <text class="title">{{ item.studentName || studentInfo.name || '学生' }}</text>
             <view
               :class="[
                 'status-badge',
@@ -79,10 +78,11 @@
               <text>{{ item.status === 'completed' ? '已完成' : '未完成' }}</text>
             </view>
           </view>
+          <!-- 时间信息行 -->
           <view class="homework-time">
-            <text class="time-text">布置: {{ item.homeworkDate || '-' }}</text>
+            <text class="time-text">布置时间: {{ item.homeworkDate || '-' }}</text>
             <text class="time-text">{{
-              item.finishDate ? `完成: ${item.finishDate}` : '未完成'
+              item.finishDate ? `完成时间: ${item.finishDate}` : ''
             }}</text>
           </view>
         </view>
@@ -387,73 +387,60 @@ onLoad((options) => {
   flex-shrink: 0;
 }
 
-/* 作业列表 */
+/* 作业列表 - 紧凑型 */
 .homework-list {
-  padding: 24rpx 48rpx;
+  padding: 16rpx 48rpx;
   display: flex;
   flex-direction: column;
-  gap: 20rpx;
+  gap: 12rpx;
 }
 
-/* 作业列表项 */
+/* 作业列表项 - 紧凑型 */
 .homework-item {
   background: #fff;
-  border-radius: 20rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.04);
-  padding: 32rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  padding: 20rpx 24rpx;
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
+  gap: 8rpx;
 }
 
-/* 作业主要信息行 */
+/* 作业主要信息行 - 紧凑型 */
 .homework-main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16rpx;
+  gap: 12rpx;
 }
 
-/* 科目（左对齐）*/
+/* 科目标签 - 紧凑型 */
 .subject {
-  font-size: 28rpx;
-  font-weight: bold;
+  font-size: 26rpx;
+  font-weight: 600;
   color: #1f2937;
   flex-shrink: 0;
-  min-width: 80rpx;
 }
 
-/* 作业标题（居中，占据剩余空间）*/
-.title {
-  flex: 1;
-  font-size: 30rpx;
-  color: #374151;
-  text-align: center;
-  font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* 时间信息行 */
+/* 时间信息行 - 紧凑型 */
 .homework-time {
   display: flex;
   justify-content: space-between;
-  padding: 0 8rpx;
+  padding: 0;
 }
 
-/* 时间文字（小字）*/
+/* 时间文字 - 紧凑型 */
 .time-text {
-  font-size: 24rpx;
+  font-size: 22rpx;
   color: #9ca3af;
 }
 
-/* 状态标签（右对齐）*/
+/* 状态标签 - 紧凑型 */
 .status-badge {
   display: inline-block;
-  padding: 8rpx 20rpx;
-  border-radius: 24rpx;
-  font-size: 24rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
   font-weight: 500;
   flex-shrink: 0;
   white-space: nowrap;
