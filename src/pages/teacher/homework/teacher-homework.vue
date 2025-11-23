@@ -54,18 +54,9 @@
           </view>
         </picker>
       </view>
-      <!-- 第三行：姓名搜索框 -->
-      <view class="search-row">
-        <input
-          class="search-input"
-          v-model="searchName"
-          placeholder="搜索学生姓名"
-          placeholder-style="color: #9ca3af"
-        />
-      </view>
     </view>
 
-    <!-- 作业列表 -->
+    <!-- 作业列表 - 单行紧凑型 -->
     <view class="list">
       <view
         v-for="item in filteredHomeworkList"
@@ -73,17 +64,17 @@
         class="item"
         @click="goDetail(item)"
       >
-        <view class="student-info">
-          <text class="name">{{ item.studentName || '未命名学生' }}</text>
-          <view class="detail-row">
-            <text class="detail">{{ item.schoolName || '学校未填' }}</text>
-            <text class="detail grade">{{ item.gradeName || '年级未填' }}</text>
-            <text class="detail">{{ item.clazzName || '班级未填' }}</text>
-          </view>
+        <!-- 左侧：姓名 学校 年级 班级 -->
+        <view class="left-info">
+          <text class="name">{{ item.studentName || '未命名' }}</text>
+          <text class="detail">{{ item.schoolName || '学校未填' }}</text>
+          <text class="detail">{{ item.gradeName || '年级未填' }}</text>
+          <text class="detail">{{ item.clazzName || '班级未填' }}</text>
         </view>
-        <view class="homework-stats">
-          <text class="num completed">已完成: {{ item.finishCount }}</text>
-          <text class="num pending">未完成: {{ item.noFinishCount }}</text>
+        <!-- 右侧：已完成/未完成统计 -->
+        <view class="right-stats">
+          <text class="stat completed">已完成: {{ item.finishCount }}</text>
+          <text class="stat pending">未完成: {{ item.noFinishCount }}</text>
         </view>
       </view>
       <view v-if="!filteredHomeworkList.length" class="empty-state">
@@ -118,7 +109,6 @@ const teacherIndex = ref(0)
 const schoolIndex = ref(0)
 const gradeIndex = ref(0)
 const classIndex = ref(0)
-const searchName = ref('')
 
 const homeworkList = ref([])
 
@@ -169,16 +159,11 @@ const selectedSchoolId = computed(() => schoolOptions.value[schoolIndex.value]?.
 const selectedGradeId = computed(() => gradeOptions.value[gradeIndex.value]?.id || '')
 const selectedClassId = computed(() => classOptions.value[classIndex.value]?.id || '')
 
-const filteredHomeworkList = computed(() => {
-  const keyword = searchName.value.trim()
-  if (!keyword) return homeworkList.value
-  return homeworkList.value.filter(
-    (item) =>
-      item.studentName?.includes(keyword) ||
-      item.schoolName?.includes(keyword) ||
-      item.clazzName?.includes(keyword)
-  )
-})
+/**
+ * 过滤后的作业列表
+ * 直接返回从API获取的列表
+ */
+const filteredHomeworkList = computed(() => homeworkList.value)
 
 /**
  * 获取筛选选项并设置默认值
@@ -356,89 +341,65 @@ const goDetail = (item) => {
   flex-shrink: 0;
 }
 
-/* 搜索行 */
-.search-row {
-  display: flex;
-  width: 100%;
-}
-
-/* 搜索输入框 */
-.search-input {
-  flex: 1;
-  height: 64rpx;
-  background: #f9fafb;
-  border: 2rpx solid #e5e7eb;
-  border-radius: 12rpx;
-  padding: 0 24rpx;
-  font-size: 26rpx;
-  color: #374151;
-}
-
-/* 作业列表，添加顶部间距避免被固定的筛选区域遮挡 */
+/* 作业列表 - 单行紧凑型，添加顶部间距避免被固定的筛选区域遮挡 */
 .list {
-  padding: 360rpx 48rpx 32rpx;
-  display: flex;
-  flex-direction: column;
-  gap: 4rpx;
-}
-
-/* 列表项 */
-.item {
-  background: #fff;
-  border-radius: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-  padding: 32rpx;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* 左侧学生信息区域 */
-.student-info {
-  flex: 1;
+  padding: 280rpx 48rpx 32rpx;
   display: flex;
   flex-direction: column;
   gap: 12rpx;
 }
 
-/* 学生姓名 - 加粗显示 */
-.name {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #111827;
+/* 列表项 - 单行布局 */
+.item {
+  background: #fff;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  padding: 20rpx 24rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16rpx;
 }
 
-/* 详细信息行 */
-.detail-row {
+/* 左侧信息区域 */
+.left-info {
+  flex: 1;
   display: flex;
   align-items: center;
-  gap: 20rpx;
+  gap: 16rpx;
+  overflow: hidden;
 }
 
-/* 详细信息 */
+/* 学生姓名 */
+.name {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #1f2937;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* 详细信息文字 */
 .detail {
-  font-size: 26rpx;
+  font-size: 22rpx;
   color: #6b7280;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
-/* 年级信息 - 突出显示 */
-.detail.grade {
-  color: #0ea5e9;
-  font-weight: 500;
-}
-
-/* 右侧作业统计区域 */
-.homework-stats {
+/* 右侧统计区域 */
+.right-stats {
   display: flex;
-  flex-direction: column;
-  gap: 8rpx;
-  text-align: right;
+  align-items: center;
+  gap: 16rpx;
+  flex-shrink: 0;
 }
 
-/* 作业数量文本 */
-.num {
-  font-size: 26rpx;
+/* 统计数字 */
+.stat {
+  font-size: 22rpx;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 /* 已完成作业 - 绿色 */
