@@ -45,12 +45,12 @@
           <text class="section-title">完成情况</text>
         </view>
         <view class="section-body">
-          <view v-if="homework.finishImages.length" class="image-grid">
+          <view v-if="displayFinishImages.length" class="image-grid">
             <view
-              v-for="(img, index) in homework.finishImages"
+              v-for="(img, index) in displayFinishImages"
               :key="`fin-${img.id || index}`"
               class="image-item"
-              @click="previewImages(homework.finishImages, index)"
+              @click="previewImages(displayFinishImages, index)"
             >
               <image :src="img.url" mode="aspectFill" />
             </view>
@@ -67,10 +67,27 @@
       </view>
 
       <view class="section-card" v-else>
-        <view class="section-header section-orange">
-          <text class="section-title">等待完成</text>
-        </view>
-        <view class="section-body form-body">
+        <view class="section-body form-body pending-body">
+          <text class="pending-title">{{ displayEvaluation }}</text>
+          <view class="gallery-grid">
+            <view
+              v-for="(img, index) in displayFinishImages"
+              :key="`up-${img.id || index}`"
+              class="gallery-item"
+              @click.stop="previewImages(displayFinishImages, index)"
+            >
+              <image :src="img.url" mode="aspectFill" />
+              <view class="remove-img" @tap.stop="removeFinishImage(index)">✕</view>
+            </view>
+            <view
+              v-if="displayFinishImages.length < 6"
+              class="gallery-item add-item"
+              @tap.stop="chooseFinishImages"
+            >
+              <text class="gallery-plus">+</text>
+              <text class="gallery-text">上传完成图片</text>
+            </view>
+          </view>
           <textarea
             v-model="completionForm.evaluation"
             class="input-area"
@@ -112,7 +129,11 @@ import { computed, reactive, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import TeacherTabBar from '@/components/TeacherTabBar.vue'
-import { addHomeworkEvaluation, getTeacherHomeworkDetail } from '@/api/teacher/homework'
+import {
+  addHomeworkEvaluation,
+  getTeacherHomeworkDetail,
+  uploadTeacherHomeworkImage,
+} from '@/api/teacher/homework'
 import { getStudentStatusComboxList } from '@/api/common/dictionary'
 
 const DEFAULT_EVALUATION =
@@ -136,6 +157,7 @@ const completionForm = reactive({
 
 const studentStates = ref([{ id: '', name: '不选择状态' }])
 const studentStateIndex = ref(0)
+const finishImages = ref([])
 
 const studentStateLabels = computed(() => studentStates.value.map((item) => item.name || ''))
 const currentStudentStateLabel = computed(
@@ -145,9 +167,10 @@ const currentStudentStateLabel = computed(
 const isCompleted = computed(() => homework.value?.isCompleted || homework.value?.state === 1)
 const displayEvaluation = computed(() => homework.value?.evaluation || DEFAULT_EVALUATION)
 const displayHomeworkImages = computed(() => (homework.value?.homeworkImages || []).slice(0, 3))
+const displayFinishImages = computed(() => finishImages.value || [])
 
 const finishPicIds = computed(() =>
-  (homework.value?.finishImages || [])
+  (finishImages.value || [])
     .map((item) => item.id)
     .filter((id) => id || id === 0)
     .join(',')
@@ -179,6 +202,7 @@ const loadDetail = async (id) => {
     homework.value = res?.data || null
     completionForm.evaluation = res?.data?.evaluation || DEFAULT_EVALUATION
     completionForm.studentState = res?.data?.studentState ?? ''
+    finishImages.value = res?.data?.finishImages || []
     syncStudentStateIndex()
   } catch (error) {
     console.error('获取作业详情失败', error)
@@ -222,6 +246,48 @@ const handleComplete = async () => {
   } finally {
     submitting.value = false
   }
+}
+
+const chooseFinishImages = () => {
+  const remain = 6 - finishImages.value.length
+  if (remain <= 0) {
+    uni.showToast({ title: '最多上传6张图片', icon: 'none' })
+    return
+  }
+  uni.chooseImage({
+    count: remain,
+    success: async (res) => {
+      const paths = res.tempFilePaths || []
+      if (!paths.length) return
+      uni.showLoading({ title: '上传中', mask: true })
+      try {
+        for (const path of paths) {
+          const uploadRes = await uploadTeacherHomeworkImage(path)
+          if (uploadRes?.data?.id) {
+            finishImages.value = [
+              ...finishImages.value,
+              {
+                id: uploadRes.data.id,
+                url: uploadRes.data.url || uploadRes.data.imgpath,
+                path: uploadRes.data.imgpath,
+              },
+            ]
+          }
+        }
+      } catch (error) {
+        console.error('上传完成图片失败', error)
+        await uni.showToast({ title: '上传失败', icon: 'none' })
+      } finally {
+        uni.hideLoading()
+      }
+    },
+  })
+}
+
+const removeFinishImage = (index) => {
+  const next = [...finishImages.value]
+  next.splice(index, 1)
+  finishImages.value = next
 }
 
 onLoad(async (options) => {
@@ -399,6 +465,16 @@ onLoad(async (options) => {
   gap: 16rpx;
 }
 
+.upload-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12rpx;
+}
+
+.upload-grid.fill {
+  grid-template-columns: repeat(3, 1fr);
+}
+
 .image-item {
   position: relative;
   width: 100%;
@@ -415,6 +491,55 @@ onLoad(async (options) => {
   height: 100%;
   object-fit: cover;
   border-radius: 12rpx;
+}
+
+.upload-placeholder {
+  border: 2rpx dashed #cbd5e1;
+  background: #f8fafc;
+  color: #94a3b8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+}
+
+.upload-placeholder.large {
+  height: 400rpx;
+  width: 100%;
+  border-radius: 12rpx;
+}
+
+.upload-plus {
+  font-size: 48rpx;
+  line-height: 1;
+}
+
+.upload-text {
+  font-size: 24rpx;
+}
+
+.remove-img {
+  position: absolute;
+  top: 8rpx;
+  right: 8rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 999rpx;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+}
+
+.upload-area {
+  width: 100%;
+  border: 2rpx dashed #f59e0b;
+  border-radius: 12rpx;
+  background: #fffaf0;
+  padding: 12rpx;
 }
 
 .empty-section {
@@ -446,6 +571,62 @@ onLoad(async (options) => {
 
 .form-body {
   gap: 24rpx;
+}
+
+.pending-body {
+  gap: 32rpx;
+}
+
+.pending-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.6;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20rpx;
+}
+
+.gallery-item {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+  border-radius: 12rpx;
+  overflow: hidden;
+  background: #f3f4f6;
+  border: 2rpx solid #e5e7eb;
+}
+
+.gallery-item image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.add-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: #9ca3af;
+  border: 2rpx dashed #d1d5db;
+}
+
+.gallery-plus {
+  font-size: 64rpx;
+  line-height: 1;
+}
+
+.gallery-text {
+  font-size: 26rpx;
+  margin-top: 8rpx;
+  color: #9ca3af;
 }
 
 .input-area {

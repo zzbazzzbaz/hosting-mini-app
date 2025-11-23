@@ -96,7 +96,7 @@ import { getChildrenByParentId, getParentHomeworkList } from '@/api/parent/homew
 import { getSubjectComboxList } from '@/api/common/dictionary'
 
 const children = ref([{ id: '', name: '全部学生' }])
-const subjects = ref([{ id: '', name: '全部科目' }])
+const subjects = ref([{ id: '', name: '请选择科目' }])
 const statuses = [
   { label: '全部状态', value: '' },
   { label: '未完成', value: 0 },
@@ -120,7 +120,7 @@ const childNames = computed(() => children.value.map((item) => item.name || ''))
 const subjectNames = computed(() => subjects.value.map((item) => item.name || ''))
 const statusLabels = statuses.map((item) => item.label)
 const currentChildName = computed(() => childNames.value[filters.childIndex] || '全部学生')
-const currentSubjectName = computed(() => subjectNames.value[filters.subjectIndex] || '全部科目')
+const currentSubjectName = computed(() => subjectNames.value[filters.subjectIndex] || '请选择科目')
 const currentStatusLabel = computed(() => statusLabels[filters.statusIndex] || '全部状态')
 
 const currentChildId = computed(() => children.value[filters.childIndex]?.id || '')
@@ -154,7 +154,7 @@ const fetchChildren = async () => {
 const fetchSubjects = async () => {
   try {
     const res = await getSubjectComboxList()
-    subjects.value = [{ id: '', name: '全部科目' }, ...normalizeOptions(res || [])]
+    subjects.value = [{ id: '', name: '请选择科目' }, ...normalizeOptions(res || [])]
     filters.subjectIndex = 0
   } catch (error) {
     console.error('获取科目列表失败', error)

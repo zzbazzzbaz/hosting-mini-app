@@ -158,6 +158,10 @@ const filteredHomeworkList = computed(() => {
   )
 })
 
+/**
+ * 获取筛选选项并设置默认值
+ * 默认选中当前登录教师
+ */
 const fetchOptions = async () => {
   try {
     const [teachers, schools, grades, classes] = await Promise.all([
@@ -171,10 +175,22 @@ const fetchOptions = async () => {
     gradeOptions.value = normalizeOptions(grades || [], '全部年级')
     classOptions.value = normalizeOptions(classes || [], '全部班级')
 
-    const userName = getUserInfo()?.userName
+    // 获取当前登录用户信息，默认选中当前教师
+    const userInfo = getUserInfo()
+    const userName = userInfo?.userName || userInfo?.name
+
     if (userName) {
       const idx = teacherOptions.value.findIndex((item) => item.name === userName)
-      teacherIndex.value = idx >= 0 ? idx : 0
+      if (idx >= 0) {
+        teacherIndex.value = idx
+        console.log(`默认选中当前教师: ${userName}`)
+      } else {
+        console.warn(`未找到当前教师: ${userName}，保持默认选择`)
+        teacherIndex.value = 0
+      }
+    } else {
+      console.warn('未获取到当前用户名，保持默认选择')
+      teacherIndex.value = 0
     }
   } catch (error) {
     console.error('加载筛选项失败', error)
@@ -182,6 +198,10 @@ const fetchOptions = async () => {
   }
 }
 
+/**
+ * 获取作业学生列表
+ * 根据当前选中的筛选条件获取数据
+ */
 const fetchHomeworkStudents = async () => {
   try {
     const res = await getHomeworkStudentList({
@@ -197,9 +217,14 @@ const fetchHomeworkStudents = async () => {
   }
 }
 
+/**
+ * 页面加载时的初始化逻辑
+ * 1. 先加载筛选选项并设置默认教师
+ * 2. 再根据默认教师获取作业数据
+ */
 onMounted(async () => {
-  await fetchOptions()
-  await fetchHomeworkStudents()
+  await fetchOptions() // 加载筛选选项并设置默认教师
+  await fetchHomeworkStudents() // 获取当前教师的作业数据
 })
 
 onPullDownRefresh(async () => {

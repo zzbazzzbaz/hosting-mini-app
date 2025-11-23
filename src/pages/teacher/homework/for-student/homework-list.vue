@@ -122,7 +122,7 @@ const filters = reactive({
   date: '',
 })
 
-const subjects = ref([{ id: '', name: '全部科目' }])
+const subjects = ref([{ id: '', name: '请选择科目' }])
 const statuses = [
   { label: '全部状态', value: '' },
   { label: '未完成', value: 0 },
@@ -137,7 +137,7 @@ const subjectIds = computed(() => subjectOptions.value.map((item) => item.id))
 const subjectNames = computed(() => subjectOptions.value.map((item) => item.name || ''))
 const statusLabels = statuses.map((item) => item.label)
 
-const currentSubject = computed(() => subjectNames.value[filters.subjectIndex] || '全部科目')
+const currentSubject = computed(() => subjectNames.value[filters.subjectIndex] || '请选择科目')
 const currentStatus = computed(() => statusLabels[filters.statusIndex] || '全部状态')
 
 const currentSubjectId = computed(() => subjectIds.value[filters.subjectIndex] || '')
@@ -149,7 +149,7 @@ const filteredHomeworkList = computed(() => {
 })
 
 const normalizeOptions = (list = []) =>
-  [{ id: '', name: '全部科目' }, ...list]
+  [{ id: '', name: '请选择科目' }, ...list]
     .map((item) => ({
       id: item.id ?? item.value ?? '',
       name: item.name ?? item.label ?? item.text ?? '',
