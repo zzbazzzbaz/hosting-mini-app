@@ -40,6 +40,7 @@
         </view>
       </view>
 
+      <!-- 完成情况卡片 - 显示完成图片 -->
       <view class="section-card" v-if="homework.isCompleted">
         <view class="section-header section-green">
           <text class="section-title">完成情况</text>
@@ -56,12 +57,19 @@
             </view>
           </view>
           <view v-else class="empty-section">暂无提交图片</view>
-          <view class="evaluation">
-            <text class="evaluation-label">教师评价</text>
-            <text class="evaluation-text">{{ displayEvaluation }}</text>
-            <text v-if="homework.studentState" class="evaluation-text"
-              >学生状态：{{ homework.studentState }}</text
-            >
+        </view>
+      </view>
+
+      <!-- 教师评语卡片 - 独立显示 -->
+      <view class="section-card" v-if="homework.isCompleted">
+        <view class="section-header section-blue">
+          <text class="section-title">教师评语</text>
+        </view>
+        <view class="section-body">
+          <text class="content-text">{{ displayEvaluation }}</text>
+          <view v-if="homework.studentState" class="student-state-row">
+            <text class="state-label">学生状态：</text>
+            <text class="state-value">{{ homework.studentState }}</text>
           </view>
         </view>
       </view>
@@ -459,6 +467,26 @@ onLoad(async (options) => {
   background: linear-gradient(135deg, #fb923c, #f97316);
 }
 
+/* 学生状态行样式 - 与其他内容保持一致 */
+.student-state-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8rpx;
+  margin-top: 8rpx;
+}
+
+.student-state-row .state-label {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.student-state-row .state-value {
+  font-size: 26rpx;
+  color: #0ea5e9;
+  font-weight: 500;
+}
+
 .image-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -546,27 +574,6 @@ onLoad(async (options) => {
   text-align: center;
   color: #9ca3af;
   font-size: 26rpx;
-}
-
-.evaluation {
-  display: flex;
-  flex-direction: column;
-  gap: 8rpx;
-  color: #374151;
-}
-
-.evaluation-label {
-  font-weight: 600;
-  font-size: 26rpx;
-}
-
-.evaluation-text {
-  font-size: 26rpx;
-  color: #111827;
-}
-
-.evaluation-text.muted {
-  color: #9ca3af;
 }
 
 .form-body {
