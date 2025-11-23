@@ -71,6 +71,13 @@
 			}
 		},
 		{
+			"path": "pages/parent/personal/score-stats",
+			"style": {
+				"navigationBarTitleText": "成绩统计",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/teacher/home/teacher-home",
 			"style": {
 				"navigationBarTitleText": "教师工作台",
@@ -125,6 +132,13 @@
 			"path": "pages/teacher/personal/components/personal-info",
 			"style": {
 				"navigationBarTitleText": "个人信息",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/teacher/personal/score-stats",
+			"style": {
+				"navigationBarTitleText": "成绩统计",
 				"navigationStyle": "custom"
 			}
 		},

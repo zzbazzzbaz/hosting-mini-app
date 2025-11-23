@@ -33,6 +33,16 @@
 
     <view class="menu-section">
       <view class="menu-group">
+        <view class="menu-item" @tap="handleScoreStats">
+          <view class="menu-left">
+            <view class="menu-icon-box icon-green">
+              <uni-icons type="bars" size="22" color="#10b981"></uni-icons>
+            </view>
+            <text class="menu-title">成绩统计</text>
+          </view>
+          <uni-icons type="forward" size="18" color="#d1d5db"></uni-icons>
+        </view>
+
         <view class="menu-item" @tap="handlePersonalInfo">
           <view class="menu-left">
             <view class="menu-icon-box icon-blue">
@@ -107,6 +117,15 @@ const loadMyInfo = async () => {
 onMounted(() => {
   loadMyInfo()
 })
+
+/**
+ * 查看成绩统计
+ */
+const handleScoreStats = () => {
+  uni.navigateTo({
+    url: '/pages/teacher/personal/score-stats',
+  })
+}
 
 /**
  * 查看个人信息
@@ -263,6 +282,10 @@ const handleLogout = () => {
 
 .icon-blue {
   background: #dbeafe;
+}
+
+.icon-green {
+  background: #d1fae5;
 }
 
 .menu-title {

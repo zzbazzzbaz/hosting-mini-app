@@ -30,12 +30,12 @@
 
     <view class="menu-section">
       <view class="menu-group">
-        <view class="menu-item" @tap="handleChildInfo">
+        <view class="menu-item" @tap="handleScoreStats">
           <view class="menu-left">
             <view class="menu-icon-box icon-blue">
-              <uni-icons type="personadd" size="22" color="#3b82f6"></uni-icons>
+              <uni-icons type="bars" size="22" color="#3b82f6"></uni-icons>
             </view>
-            <text class="menu-title">孩子信息</text>
+            <text class="menu-title">成绩统计</text>
           </view>
           <uni-icons type="forward" size="18" color="#d1d5db"></uni-icons>
         </view>
@@ -91,8 +91,8 @@ const loadMyInfo = async () => {
   }
 }
 
-const handleChildInfo = () => {
-  uni.navigateTo({ url: '/pages/parent/personal/components/child-info' })
+const handleScoreStats = () => {
+  uni.navigateTo({ url: '/pages/parent/personal/score-stats' })
 }
 
 const handleProfile = () => {
