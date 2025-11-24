@@ -82,15 +82,12 @@
         </view>
       </view>
     </view>
-
-    <TeacherTabBar activeTab="publish" />
   </view>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
-import TeacherTabBar from '@/components/TeacherTabBar.vue'
 import { getScoreList } from '@/api/teacher/score'
 import { getHomeworkStudentList } from '@/api/teacher/homework'
 

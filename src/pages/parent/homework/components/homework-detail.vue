@@ -89,8 +89,6 @@
         </view>
       </view>
     </view>
-
-    <ParentTabBar activeTab="homework" />
   </view>
 </template>
 
@@ -98,7 +96,6 @@
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
-import ParentTabBar from '@/components/ParentTabBar.vue'
 import { getHomeworkDetail } from '@/api/parent/homework'
 
 // 响应式数据

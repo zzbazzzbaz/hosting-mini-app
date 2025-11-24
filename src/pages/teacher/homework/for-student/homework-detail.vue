@@ -148,8 +148,6 @@
       <text class="empty-icon">📄</text>
       <text class="empty-text">未找到对应的作业信息</text>
     </view>
-
-    <TeacherTabBar activeTab="homework" />
   </view>
 </template>
 
@@ -157,7 +155,6 @@
 import { computed, reactive, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
-import TeacherTabBar from '@/components/TeacherTabBar.vue'
 import {
   addHomeworkEvaluation,
   getTeacherHomeworkDetail,

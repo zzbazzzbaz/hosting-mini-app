@@ -77,15 +77,12 @@
         </view>
       </view>
     </view>
-
-    <ParentTabBar activeTab="publish" />
   </view>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
-import ParentTabBar from '@/components/ParentTabBar.vue'
 import { getScoreList } from '@/api/parent/score'
 import { getParentHomeOverview } from '@/api/parent/home'
 
