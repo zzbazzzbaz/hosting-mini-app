@@ -83,17 +83,8 @@
         <!-- 其他选项 -->
         <view class="options-row">
           <text class="option-link">忘记密码?</text>
-          <text class="option-link">联系管理员</text>
         </view>
       </view>
-    </view>
-
-    <!-- 底部提示 -->
-    <view class="footer-text">
-      <text class="footer-normal">登录即表示您同意我们的</text>
-      <text class="footer-link">服务条款</text>
-      <text class="footer-normal">和</text>
-      <text class="footer-link">隐私政策</text>
     </view>
   </view>
 </template>
@@ -190,6 +181,12 @@ const handleLogin = async () => {
     }, 500)
   } catch (error) {
     console.error('登录失败:', error)
+    // 显示登录失败提示
+    await uni.showToast({
+      title: error.message || '登录失败，请稍后重试',
+      icon: 'none',
+      duration: 2000,
+    })
   } finally {
     isLoading.value = false
   }
@@ -375,21 +372,5 @@ const handleLogin = async () => {
 .option-link {
   color: #0ea5e9;
   transition: color 0.2s;
-}
-
-/* 底部提示文字 */
-.footer-text {
-  text-align: center;
-  font-size: 24rpx;
-  color: #9ca3af;
-  margin-top: 48rpx;
-}
-
-.footer-normal {
-  color: #9ca3af;
-}
-
-.footer-link {
-  color: #0ea5e9;
 }
 </style>
