@@ -72,10 +72,10 @@
         </view>
       </view>
 
-      <view class="load-more">
-        <button class="load-more-btn" :disabled="loading || noMore" @tap="loadMore">
-          {{ noMore ? '没有更多了' : loading ? '加载中...' : '加载更多' }}
-        </button>
+      <!-- 底部加载状态提示 -->
+      <view v-if="homeworkList.length > 0" class="load-status">
+        <text v-if="loading" class="status-text">加载中...</text>
+        <text v-else-if="noMore" class="status-text">没有更多了</text>
       </view>
     </view>
 
@@ -85,7 +85,7 @@
 
 <script setup>
 import { computed, reactive, ref } from 'vue'
-import { onLoad, onPullDownRefresh } from '@dcloudio/uni-app'
+import { onLoad, onPullDownRefresh, onReachBottom } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import ParentTabBar from '@/components/ParentTabBar.vue'
 import { getChildrenByParentId, getParentHomeworkList } from '@/api/parent/homework'
@@ -249,6 +249,11 @@ onLoad(() => {
 
 onPullDownRefresh(() => {
   fetchHomework(true)
+})
+
+// 滚动到底部自动加载更多
+onReachBottom(() => {
+  loadMore()
 })
 </script>
 
@@ -446,21 +451,14 @@ onPullDownRefresh(() => {
   color: #ef4444;
 }
 
-.load-more {
+/* 底部加载状态 */
+.load-status {
   text-align: center;
   padding: 32rpx 0;
 }
 
-.load-more-btn {
-  padding: 20rpx 56rpx;
-  font-size: 28rpx;
-  color: #0ea5e9;
-  font-weight: 500;
-  background-color: transparent;
-  border: none;
-}
-
-.load-more-btn:active {
-  opacity: 0.7;
+.status-text {
+  font-size: 24rpx;
+  color: #9ca3af;
 }
 </style>

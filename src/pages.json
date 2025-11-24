@@ -25,7 +25,9 @@
 			"path": "pages/parent/homework/homework-list",
 			"style": {
 				"navigationBarTitleText": "作业信息",
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true,
+				"onReachBottomDistance": 50
 			}
 		},
 		{
