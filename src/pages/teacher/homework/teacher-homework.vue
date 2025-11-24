@@ -81,6 +81,11 @@
         <text class="empty-icon">📘</text>
         <text class="empty-text">暂无作业数据，调整筛选试试</text>
       </view>
+      <!-- 底部加载状态提示 -->
+      <view v-if="filteredHomeworkList.length > 0" class="load-status">
+        <text v-if="loading" class="status-text">加载中...</text>
+        <text v-else-if="noMore" class="status-text">没有更多数据了</text>
+      </view>
     </view>
     <!-- 使用TeacherTabBar组件 -->
     <TeacherTabBar activeTab="homework" />
@@ -88,7 +93,7 @@
 </template>
 <script setup>
 import { computed, onMounted, ref } from 'vue'
-import { onPullDownRefresh } from '@dcloudio/uni-app'
+import { onPullDownRefresh, onReachBottom } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import TeacherTabBar from '@/components/TeacherTabBar.vue'
 import { getHomeworkStudentList } from '@/api/teacher/homework'
@@ -111,6 +116,10 @@ const gradeIndex = ref(0)
 const classIndex = ref(0)
 
 const homeworkList = ref([])
+const loading = ref(false)
+const noMore = ref(false)
+const page = ref(1)
+const pageSize = 10
 
 /**
  * 标准化选项列表（带"全部"选项）
@@ -214,18 +223,35 @@ const fetchOptions = async () => {
  * 获取作业学生列表
  * 根据当前选中的筛选条件获取数据
  */
-const fetchHomeworkStudents = async () => {
+const fetchHomeworkStudents = async (reset = false) => {
+  if (loading.value) return
+  if (reset) {
+    page.value = 1
+    noMore.value = false
+    homeworkList.value = []
+  }
+  loading.value = true
   try {
     const res = await getHomeworkStudentList({
       teacherId: selectedTeacherId.value || undefined,
       schoolId: selectedSchoolId.value || undefined,
       gradeId: selectedGradeId.value || undefined,
       clazzId: selectedClassId.value || undefined,
+      page: page.value,
+      pageSize,
     })
-    homeworkList.value = res?.data || []
+    const list = res?.data || []
+    homeworkList.value = reset ? list : [...homeworkList.value, ...list]
+    if (!list.length || list.length < pageSize) {
+      noMore.value = true
+    } else {
+      page.value += 1
+    }
   } catch (error) {
     console.error('获取作业学生列表失败', error)
     await uni.showToast({ title: '加载失败', icon: 'none' })
+  } finally {
+    loading.value = false
   }
 }
 
@@ -236,32 +262,37 @@ const fetchHomeworkStudents = async () => {
  */
 onMounted(async () => {
   await fetchOptions() // 加载筛选选项并设置默认教师
-  await fetchHomeworkStudents() // 获取当前教师的作业数据
+  await fetchHomeworkStudents(true) // 获取当前教师的作业数据
 })
 
 onPullDownRefresh(async () => {
-  await fetchHomeworkStudents()
+  await fetchHomeworkStudents(true)
   uni.stopPullDownRefresh()
+})
+
+onReachBottom(() => {
+  if (loading.value || noMore.value) return
+  fetchHomeworkStudents()
 })
 
 const onTeacherChange = (e) => {
   teacherIndex.value = Number(e.detail.value)
-  fetchHomeworkStudents()
+  fetchHomeworkStudents(true)
 }
 
 const onSchoolChange = (e) => {
   schoolIndex.value = Number(e.detail.value)
-  fetchHomeworkStudents()
+  fetchHomeworkStudents(true)
 }
 
 const onGradeChange = (e) => {
   gradeIndex.value = Number(e.detail.value)
-  fetchHomeworkStudents()
+  fetchHomeworkStudents(true)
 }
 
 const onClassChange = (e) => {
   classIndex.value = Number(e.detail.value)
-  fetchHomeworkStudents()
+  fetchHomeworkStudents(true)
 }
 
 const goDetail = (item) => {
@@ -427,5 +458,15 @@ const goDetail = (item) => {
 
 .empty-text {
   font-size: 26rpx;
+}
+
+.load-status {
+  text-align: center;
+  padding: 32rpx 0;
+}
+
+.status-text {
+  font-size: 24rpx;
+  color: #94a3b8;
 }
 </style>

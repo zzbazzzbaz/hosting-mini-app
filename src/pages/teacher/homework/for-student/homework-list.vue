@@ -93,13 +93,18 @@
         <text class="empty-icon">📝</text>
         <text class="empty-text">今日暂无作业</text>
       </view>
+      <!-- 底部加载状态提示 -->
+      <view v-if="filteredHomeworkList.length > 0" class="load-status">
+        <text v-if="loading" class="status-text">加载中...</text>
+        <text v-else-if="noMore" class="status-text">没有更多数据了</text>
+      </view>
     </view>
   </view>
 </template>
 
 <script setup>
 import { computed, reactive, ref } from 'vue'
-import { onLoad, onPullDownRefresh } from '@dcloudio/uni-app'
+import { onLoad, onPullDownRefresh, onReachBottom } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import { getTeacherHomeworkList } from '@/api/teacher/homework'
 import { getSubjectComboxList } from '@/api/common/dictionary'
@@ -131,6 +136,9 @@ const statuses = [
 
 const homeworkList = ref([])
 const loading = ref(false)
+const noMore = ref(false)
+const page = ref(1)
+const pageSize = 10
 
 const subjectOptions = computed(() => subjects.value)
 const subjectIds = computed(() => subjectOptions.value.map((item) => item.id))
@@ -143,10 +151,7 @@ const currentStatus = computed(() => statusLabels[filters.statusIndex] || '全�
 const currentSubjectId = computed(() => subjectIds.value[filters.subjectIndex] || '')
 const currentState = computed(() => statuses[filters.statusIndex]?.value ?? '')
 
-const filteredHomeworkList = computed(() => {
-  if (!filters.date) return homeworkList.value
-  return homeworkList.value.filter((item) => item.homeworkDate === filters.date)
-})
+const filteredHomeworkList = computed(() => homeworkList.value)
 
 const normalizeOptions = (list = []) =>
   [{ id: '', name: '请选择科目' }, ...list]
@@ -167,18 +172,30 @@ const fetchSubjects = async () => {
   }
 }
 
-const fetchHomeworkList = async () => {
-  if (!studentId.value) return
+const fetchHomeworkList = async (reset = false) => {
+  if (!studentId.value || loading.value) return
+  if (reset) {
+    page.value = 1
+    noMore.value = false
+    homeworkList.value = []
+  }
   loading.value = true
   try {
     const res = await getTeacherHomeworkList({
       studentId: studentId.value,
       subjectId: currentSubjectId.value || undefined,
       state: currentState.value === '' ? undefined : currentState.value,
-      page: 1,
-      pageSize: 100,
+      homeworkDate: filters.date || undefined,
+      page: page.value,
+      pageSize,
     })
-    homeworkList.value = res?.data?.list || []
+    const list = res?.data?.list || []
+    homeworkList.value = reset ? list : [...homeworkList.value, ...list]
+    if (!list.length || list.length < pageSize) {
+      noMore.value = true
+    } else {
+      page.value += 1
+    }
   } catch (error) {
     console.error('获取作业列表失败', error)
     await uni.showToast({ title: '加载失败', icon: 'none' })
@@ -188,24 +205,30 @@ const fetchHomeworkList = async () => {
 }
 
 onPullDownRefresh(async () => {
-  await fetchHomeworkList()
+  await fetchHomeworkList(true)
   uni.stopPullDownRefresh()
+})
+
+onReachBottom(() => {
+  if (loading.value || noMore.value) return
+  fetchHomeworkList()
 })
 
 const onSubjectChange = (e) => {
   const index = e.detail.value
   filters.subjectIndex = Number(index)
-  fetchHomeworkList()
+  fetchHomeworkList(true)
 }
 
 const onStatusChange = (e) => {
   const index = e.detail.value
   filters.statusIndex = Number(index)
-  fetchHomeworkList()
+  fetchHomeworkList(true)
 }
 
 const onDateChange = (e) => {
   filters.date = e.detail.value
+  fetchHomeworkList(true)
 }
 
 const openHomeworkDetail = (item) => {
@@ -238,7 +261,7 @@ onLoad((options) => {
     pending: Number(options.noFinishCount ?? 0),
   }
   fetchSubjects()
-  fetchHomeworkList()
+  fetchHomeworkList(true)
 })
 </script>
 
@@ -479,5 +502,15 @@ onLoad((options) => {
   font-size: 28rpx;
   color: #9ca3af;
   font-weight: 500;
+}
+
+.load-status {
+  text-align: center;
+  padding: 32rpx 0;
+}
+
+.status-text {
+  font-size: 24rpx;
+  color: #94a3b8;
 }
 </style>

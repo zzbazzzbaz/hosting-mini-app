@@ -28,15 +28,20 @@ const adaptStudentListResponse = (response) => {
 
 /**
  * 获取学生列表
- * @param {number} teacherId - 教师ID
+ * @param {Object} params - 查询参数
+ * @param {number} params.teacherId - 教师ID
+ * @param {number} params.page - 页码
+ * @param {number} params.pageSize - 每页数量
  * @returns {Promise} 返回学生列表数据
  */
-export const getStudentList = async (teacherId) => {
+export const getStudentList = async (params = {}) => {
   const response = await request({
     url: '/teacher/home/getStudentList',
     method: 'GET',
     params: {
-      teacherId: teacherId ?? getUserId(),
+      teacherId: params.teacherId ?? getUserId(),
+      page: params.page,
+      pageSize: params.pageSize,
     },
   })
 

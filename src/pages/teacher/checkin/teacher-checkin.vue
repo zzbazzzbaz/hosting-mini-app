@@ -56,6 +56,11 @@
         <uni-icons type="info" size="48" color="#d1d5db"></uni-icons>
         <text class="empty-text">暂无学生数据</text>
       </view>
+      <!-- 底部加载状态提示 -->
+      <view v-if="filteredStudentList.length > 0" class="load-status">
+        <text v-if="loading" class="status-text">加载中...</text>
+        <text v-else-if="noMore" class="status-text">没有更多数据了</text>
+      </view>
     </view>
 
     <!-- 底部签到按钮 -->
@@ -72,7 +77,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { onPullDownRefresh } from '@dcloudio/uni-app'
+import { onPullDownRefresh, onReachBottom } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import TeacherTabBar from '@/components/TeacherTabBar.vue'
 import { getStudentList } from '@/api/teacher/checkin'
@@ -90,6 +95,10 @@ const currentTeacher = ref(getUserInfo()?.userName || '')
  * 学生列表
  */
 const studentList = ref([])
+const loading = ref(false)
+const noMore = ref(false)
+const page = ref(1)
+const pageSize = 10
 
 /**
  * 筛选后的学生列表
@@ -140,7 +149,14 @@ const loadTeacherList = async () => {
 /**
  * 加载学生列表
  */
-const loadStudentList = async (teacherName) => {
+const loadStudentList = async (teacherName, reset = false) => {
+  if (loading.value) return
+  if (reset) {
+    page.value = 1
+    noMore.value = false
+    studentList.value = []
+  }
+  loading.value = true
   try {
     // 根据教师名称查找对应的 teacherId
     let teacherId = undefined
@@ -150,12 +166,22 @@ const loadStudentList = async (teacherName) => {
       teacherId = teacher?.id
     }
 
-    const response = await getStudentList(teacherId)
+    const response = await getStudentList({
+      teacherId,
+      page: page.value,
+      pageSize,
+    })
     if (response.code === 200 && response.data) {
-      studentList.value = response.data.map((item) => ({
+      const list = response.data.map((item) => ({
         ...item,
         checked: false,
       }))
+      studentList.value = reset ? list : [...studentList.value, ...list]
+      if (!list.length || list.length < pageSize) {
+        noMore.value = true
+      } else {
+        page.value += 1
+      }
     }
   } catch (error) {
     console.error('加载学生列表失败:', error)
@@ -163,20 +189,30 @@ const loadStudentList = async (teacherName) => {
       title: '数据加载失败',
       icon: 'none',
     })
+  } finally {
+    loading.value = false
   }
 }
 
 onMounted(() => {
   loadTeacherList()
-  loadStudentList(currentTeacher.value)
+  loadStudentList(currentTeacher.value, true)
 })
 
 /**
  * 下拉刷新
  */
 onPullDownRefresh(async () => {
-  await loadStudentList(currentTeacher.value)
+  await loadStudentList(currentTeacher.value, true)
   uni.stopPullDownRefresh()
+})
+
+/**
+ * 滑动到底部加载更多
+ */
+onReachBottom(() => {
+  if (loading.value || noMore.value) return
+  loadStudentList(currentTeacher.value)
 })
 
 /**
@@ -184,7 +220,7 @@ onPullDownRefresh(async () => {
  */
 const onTeacherChange = (e) => {
   currentTeacher.value = teacherList.value[e.detail.value]
-  loadStudentList(currentTeacher.value)
+  loadStudentList(currentTeacher.value, true)
 }
 
 /**
@@ -393,6 +429,17 @@ const handleBatchCheckin = () => {
 .empty-text {
   font-size: 28rpx;
   color: #9ca3af;
+}
+
+/* 加载状态 */
+.load-status {
+  text-align: center;
+  padding: 32rpx 0;
+}
+
+.status-text {
+  font-size: 24rpx;
+  color: #94a3b8;
 }
 
 /* 底部操作区域 */

@@ -93,7 +93,8 @@
 				"navigationBarTitleText": "签到信息",
 				"navigationStyle": "custom",
 				"enablePullDownRefresh": true,
-				"backgroundTextStyle": "dark"
+				"backgroundTextStyle": "dark",
+				"onReachBottomDistance": 50
 			}
 		},
 		{
@@ -107,14 +108,16 @@
 			"path": "pages/teacher/homework/teacher-homework",
 			"style": {
 				"navigationBarTitleText": "作业详情列表",
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"onReachBottomDistance": 50
 			}
 		},
 		{
 			"path": "pages/teacher/homework/for-student/homework-list",
 			"style": {
 				"navigationBarTitleText": "学生作业",
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"onReachBottomDistance": 50
 			}
 		},
 		{
