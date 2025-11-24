@@ -1,6 +1,6 @@
 <template>
   <view class="page">
-    <PageHeader title="成绩统计" />
+    <PageHeader title="成绩统计" :showBack="true" />
 
     <!-- 筛选区域 -->
     <view class="filter-section">

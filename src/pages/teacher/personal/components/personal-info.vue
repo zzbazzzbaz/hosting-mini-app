@@ -34,6 +34,64 @@
         </view>
       </view>
     </view>
+
+    <!-- 修改密码弹窗 -->
+    <view v-if="showPasswordModal" class="modal-overlay" @tap="closePasswordModal">
+      <view class="modal-content" @tap.stop>
+        <view class="modal-header">
+          <text class="modal-title">修改密码</text>
+          <view class="modal-close" @tap="closePasswordModal">
+            <uni-icons type="close" size="20" color="#6b7280"></uni-icons>
+          </view>
+        </view>
+
+        <view class="modal-body">
+          <!-- 旧密码 -->
+          <view class="form-item">
+            <text class="form-label">旧密码</text>
+            <input
+              class="form-input"
+              type="text"
+              password
+              v-model="passwordForm.oldPassword"
+              placeholder="请输入旧密码"
+              placeholder-class="input-placeholder"
+            />
+          </view>
+
+          <!-- 新密码 -->
+          <view class="form-item">
+            <text class="form-label">新密码</text>
+            <input
+              class="form-input"
+              type="text"
+              password
+              v-model="passwordForm.newPassword"
+              placeholder="请输入新密码"
+              placeholder-class="input-placeholder"
+            />
+          </view>
+
+          <!-- 重复输入新密码 -->
+          <view class="form-item">
+            <text class="form-label">确认密码</text>
+            <input
+              class="form-input"
+              type="text"
+              password
+              v-model="passwordForm.confirmPassword"
+              placeholder="请重复输入新密码"
+              placeholder-class="input-placeholder"
+            />
+          </view>
+        </view>
+
+        <view class="modal-footer">
+          <view class="modal-btn cancel" @tap="closePasswordModal">取消</view>
+          <view class="modal-btn confirm" @tap="submitPasswordChange">确定</view>
+        </view>
+      </view>
+    </view>
   </view>
 </template>
 
@@ -48,6 +106,20 @@ import { getMyInfo, editPassword } from '@/api/teacher/personal'
 const teacherInfo = ref({
   name: '',
   phone: '',
+})
+
+/**
+ * 控制修改密码弹窗显示
+ */
+const showPasswordModal = ref(false)
+
+/**
+ * 修改密码表单数据
+ */
+const passwordForm = ref({
+  oldPassword: '',
+  newPassword: '',
+  confirmPassword: '',
 })
 
 /**
@@ -76,52 +148,91 @@ onMounted(() => {
 })
 
 /**
- * 修改密码
+ * 打开修改密码弹窗
  */
 const handleChangePassword = () => {
-  let oldPassword = ''
-  let newPassword = ''
+  // 重置表单数据
+  passwordForm.value = {
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  }
+  // 显示弹窗
+  showPasswordModal.value = true
+}
 
-  // 第一步：输入旧密码
-  uni.showModal({
-    title: '修改密码',
-    editable: true,
-    placeholderText: '请输入旧密码',
-    success: (res1) => {
-      if (res1.confirm && res1.content) {
-        oldPassword = res1.content
+/**
+ * 关闭修改密码弹窗
+ */
+const closePasswordModal = () => {
+  showPasswordModal.value = false
+}
 
-        // 第二步：输入新密码
-        uni.showModal({
-          title: '修改密码',
-          editable: true,
-          placeholderText: '请输入新密码',
-          success: async (res2) => {
-            if (res2.confirm && res2.content) {
-              newPassword = res2.content
+/**
+ * 提交修改密码
+ */
+const submitPasswordChange = async () => {
+  // 校验表单是否填写完整
+  if (!passwordForm.value.oldPassword) {
+    await uni.showToast({
+      title: '请输入旧密码',
+      icon: 'none',
+    })
+    return
+  }
 
-              // 调用API修改密码
-              try {
-                const result = await editPassword({
-                  oldPassword,
-                  newPassword,
-                })
+  if (!passwordForm.value.newPassword) {
+    await uni.showToast({
+      title: '请输入新密码',
+      icon: 'none',
+    })
+    return
+  }
 
-                if (result.code === 200) {
-                  await uni.showToast({ title: '密码修改成功', icon: 'success' })
-                } else {
-                  await uni.showToast({ title: result.message || '密码修改失败', icon: 'none' })
-                }
-              } catch (error) {
-                console.error('修改密码失败:', error)
-                await uni.showToast({ title: '修改密码失败', icon: 'none' })
-              }
-            }
-          },
-        })
-      }
-    },
-  })
+  if (!passwordForm.value.confirmPassword) {
+    await uni.showToast({
+      title: '请重复输入新密码',
+      icon: 'none',
+    })
+    return
+  }
+
+  // 校验新密码和确认密码是否一致
+  if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
+    await uni.showToast({
+      title: '两次输入的新密码不一致',
+      icon: 'none',
+    })
+    return
+  }
+
+  // 调用API修改密码
+  try {
+    const result = await editPassword({
+      oldPassword: passwordForm.value.oldPassword,
+      newPassword: passwordForm.value.newPassword,
+    })
+
+    if (result.code === 200) {
+      await uni.showToast({
+        title: '密码修改成功',
+        icon: 'success',
+      })
+      // 关闭弹窗
+      closePasswordModal()
+    } else {
+      await uni.showToast({
+        title: result.message || '密码修改失败',
+        icon: 'none',
+      })
+    }
+  } catch (error) {
+    console.error('修改密码失败:', error)
+    await uni.showToast({
+      title: '修改密码失败',
+      icon: 'none',
+    })
+  }
 }
 </script>
 
@@ -201,5 +312,111 @@ const handleChangePassword = () => {
 
 .item-value.placeholder {
   color: #0ea5e9;
+}
+
+/* 修改密码弹窗 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  width: 600rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #f3f4f6;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.modal-close {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 32rpx;
+}
+
+.form-item {
+  margin-bottom: 32rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  color: #374151;
+  margin-bottom: 16rpx;
+  font-weight: 500;
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  color: #1f2937;
+  background: #f9fafb;
+  border: 1rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  box-sizing: border-box;
+}
+
+.input-placeholder {
+  color: #9ca3af;
+}
+
+.modal-footer {
+  display: flex;
+  border-top: 1rpx solid #f3f4f6;
+}
+
+.modal-btn {
+  flex: 1;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.modal-btn.cancel {
+  color: #6b7280;
+  border-right: 1rpx solid #f3f4f6;
+}
+
+.modal-btn.confirm {
+  color: #0ea5e9;
+  font-weight: bold;
 }
 </style>
