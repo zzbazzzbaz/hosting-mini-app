@@ -136,7 +136,7 @@ const loadScoreList = async () => {
     }
   } catch (error) {
     console.error('加载成绩列表失败:', error)
-    uni.showToast({ title: '加载失败', icon: 'none' })
+    await uni.showToast({ title: '加载失败', icon: 'none' })
   } finally {
     loading.value = false
   }

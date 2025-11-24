@@ -20,24 +20,24 @@ const checkAuthStatus = async () => {
     if (!response.data.isValid) {
       console.log('Token 已过期，跳转到未登录首页')
       clearAuth()
-      uni.reLaunch({ url: '/pages/common/home-unlogged' })
+      await uni.reLaunch({ url: '/pages/common/home-unlogged' })
     } else {
       // token 有效，根据用户类型跳转到对应首页
       const userInfo = getUserInfo()
       if (userInfo && userInfo.type) {
         if (userInfo.type === 2) {
           console.log('家长端，跳转到家长首页')
-          uni.reLaunch({ url: '/pages/parent/home/parent-home' })
+          await uni.reLaunch({ url: '/pages/parent/home/parent-home' })
         } else if (userInfo.type === 3) {
           console.log('教师端，跳转到教师首页')
-          uni.reLaunch({ url: '/pages/teacher/home/teacher-home' })
+          await uni.reLaunch({ url: '/pages/teacher/home/teacher-home' })
         }
       }
     }
   } catch (error) {
     console.error('Token 验证失败:', error)
     clearAuth()
-    uni.reLaunch({ url: '/pages/common/home-unlogged' })
+    await uni.reLaunch({ url: '/pages/common/home-unlogged' })
   }
 }
 

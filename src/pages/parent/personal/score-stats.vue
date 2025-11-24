@@ -83,7 +83,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import ParentTabBar from '@/components/ParentTabBar.vue'
 import { getScoreList } from '@/api/parent/score'
@@ -131,7 +131,7 @@ const loadScoreList = async () => {
     }
   } catch (error) {
     console.error('加载成绩列表失败:', error)
-    uni.showToast({ title: '加载失败', icon: 'none' })
+    await uni.showToast({ title: '加载失败', icon: 'none' })
   } finally {
     loading.value = false
   }

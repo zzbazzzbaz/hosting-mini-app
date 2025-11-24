@@ -87,7 +87,7 @@ const loadMyInfo = async () => {
     }
   } catch (error) {
     console.error('加载个人信息失败:', error)
-    uni.showToast({ title: '加载失败', icon: 'none' })
+    await uni.showToast({ title: '加载失败', icon: 'none' })
   }
 }
 

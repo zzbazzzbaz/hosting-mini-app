@@ -211,7 +211,7 @@ const uploadMissingImages = async (paths = []) => {
   const missing = paths.filter((path) => !imageIdMap.value[path])
   if (!missing.length) return
 
-  uni.showLoading({ title: '上传图片中', mask: true })
+  await uni.showLoading({ title: '上传图片中', mask: true })
   try {
     for (const path of missing) {
       const res = await uploadHomeworkImage(path)

@@ -123,7 +123,7 @@ const selectRole = (role) => {
 const handleLogin = async () => {
   // 表单验证
   if (!phone.value) {
-    uni.showToast({
+    await uni.showToast({
       title: '请输入手机号',
       icon: 'none',
     })
@@ -131,7 +131,7 @@ const handleLogin = async () => {
   }
 
   if (!password.value) {
-    uni.showToast({
+    await uni.showToast({
       title: '请输入密码',
       icon: 'none',
     })

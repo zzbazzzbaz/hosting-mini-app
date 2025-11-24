@@ -221,7 +221,7 @@ const loadStudentStates = async () => {
 }
 
 const syncStudentStateIndex = () => {
-  const idx = studentStates.value.findIndex((item) => item.id == completionForm.studentState)
+  const idx = studentStates.value.findIndex((item) => item.id === completionForm.studentState)
   studentStateIndex.value = idx >= 0 ? idx : 0
 }
 
@@ -242,7 +242,7 @@ const loadDetail = async (id) => {
 const previewImages = async (list, index = 0) => {
   const urls = (list || []).map((img) => img.url || img.path).filter(Boolean)
   if (!urls.length) return
-  uni.previewImage({
+  await uni.previewImage({
     current: urls[index] || urls[0],
     urls,
   })
@@ -288,7 +288,7 @@ const chooseFinishImages = () => {
     success: async (res) => {
       const paths = res.tempFilePaths || []
       if (!paths.length) return
-      uni.showLoading({ title: '上传中', mask: true })
+      await uni.showLoading({ title: '上传中', mask: true })
       try {
         for (const path of paths) {
           const uploadRes = await uploadTeacherHomeworkImage(path)

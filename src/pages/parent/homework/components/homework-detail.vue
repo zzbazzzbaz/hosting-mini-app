@@ -144,7 +144,7 @@ const fetchDetail = async (homeworkId) => {
     homeworkImages.value = (res?.data?.finishImages || []).map((item) => item.url || item.path)
   } catch (error) {
     console.error('加载作业详情失败', error)
-    uni.showToast({ title: '加载失败', icon: 'none' })
+    await uni.showToast({ title: '加载失败', icon: 'none' })
     setTimeout(() => {
       uni.navigateBack()
     }, 1200)

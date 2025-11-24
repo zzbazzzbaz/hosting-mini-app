@@ -187,7 +187,7 @@ const fetchHomeData = async () => {
     students.value = data.students || []
   } catch (error) {
     console.error('获取首页数据失败', error)
-    uni.showToast({
+    await uni.showToast({
       title: '获取首页数据失败',
       icon: 'none',
     })

@@ -50,7 +50,7 @@ const loadStudentList = async () => {
     }
   } catch (error) {
     console.error('加载学生列表失败:', error)
-    uni.showToast({ title: '加载失败', icon: 'none' })
+    await uni.showToast({ title: '加载失败', icon: 'none' })
   }
 }
 

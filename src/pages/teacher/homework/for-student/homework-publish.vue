@@ -154,7 +154,7 @@ const uploadMissingImages = async (paths = []) => {
   const missing = paths.filter((path) => !imageIdMap.value[path])
   if (!missing.length) return
 
-  uni.showLoading({ title: '上传图片中', mask: true })
+  await uni.showLoading({ title: '上传图片中', mask: true })
   try {
     for (const path of missing) {
       const res = await uploadTeacherHomeworkImage(path)
@@ -232,7 +232,7 @@ const handleSubmit = async () => {
 
     await uni.showToast({ title: '发布成功', icon: 'success' })
 
-    uni.navigateBack()
+    await uni.navigateBack()
   } catch (error) {
     console.error('发布作业失败', error)
     await uni.showToast({ title: '发布失败', icon: 'none' })

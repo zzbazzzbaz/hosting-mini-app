@@ -107,7 +107,7 @@ const fetchStudents = async () => {
     filters.studentIndex = 0
   } catch (error) {
     console.error('获取学生列表失败', error)
-    uni.showToast({ title: '学生列表获取失败', icon: 'none' })
+    await uni.showToast({ title: '学生列表获取失败', icon: 'none' })
   }
 }
 
@@ -135,7 +135,7 @@ const fetchCheckins = async (reset = false) => {
     }
   } catch (error) {
     console.error('获取签到列表失败', error)
-    uni.showToast({ title: '加载失败', icon: 'none' })
+    await uni.showToast({ title: '加载失败', icon: 'none' })
   } finally {
     loading.value = false
     if (reset) uni.stopPullDownRefresh()

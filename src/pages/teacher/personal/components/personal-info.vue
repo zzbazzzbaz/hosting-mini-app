@@ -108,13 +108,13 @@ const handleChangePassword = () => {
                 })
 
                 if (result.code === 200) {
-                  uni.showToast({ title: '密码修改成功', icon: 'success' })
+                  await uni.showToast({ title: '密码修改成功', icon: 'success' })
                 } else {
-                  uni.showToast({ title: result.message || '密码修改失败', icon: 'none' })
+                  await uni.showToast({ title: result.message || '密码修改失败', icon: 'none' })
                 }
               } catch (error) {
                 console.error('修改密码失败:', error)
-                uni.showToast({ title: '修改密码失败', icon: 'none' })
+                await uni.showToast({ title: '修改密码失败', icon: 'none' })
               }
             }
           },
