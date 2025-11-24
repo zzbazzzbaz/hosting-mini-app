@@ -82,7 +82,7 @@
 
         <!-- 其他选项 -->
         <view class="options-row">
-          <text class="option-link">忘记密码?</text>
+          <text class="option-link" @click="handleForgotPassword">忘记密码?</text>
         </view>
       </view>
     </view>
@@ -106,6 +106,17 @@ const isLoading = ref(false)
  */
 const selectRole = (role) => {
   selectedRole.value = role
+}
+
+/**
+ * 处理忘记密码
+ */
+const handleForgotPassword = () => {
+  uni.showModal({
+    title: '提示',
+    content: '请联系管理员重置密码',
+    showCancel: false,
+  })
 }
 
 /**
