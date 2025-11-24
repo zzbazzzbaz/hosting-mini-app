@@ -48,7 +48,8 @@
 			"path": "pages/parent/checkin/student-checkin",
 			"style": {
 				"navigationBarTitleText": "签到信息",
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"onReachBottomDistance": 50
 			}
 		},
 		{

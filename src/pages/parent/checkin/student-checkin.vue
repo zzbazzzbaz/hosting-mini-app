@@ -57,10 +57,10 @@
           <view v-else class="empty-inline">未上传签到照片</view>
         </view>
 
-        <view class="load-more" v-if="checkinList.length">
-          <button class="load-more-btn" :disabled="loading || noMore" @tap="loadMore">
-            {{ noMore ? '没有更多了' : loading ? '加载中...' : '加载更多' }}
-          </button>
+        <!-- 底部加载状态提示 -->
+        <view v-if="checkinList.length > 0" class="load-status">
+          <text v-if="loading" class="status-text">加载中...</text>
+          <text v-else-if="noMore" class="status-text">没有更多数据了</text>
         </view>
       </view>
     </view>
@@ -70,7 +70,7 @@
 
 <script setup>
 import { computed, reactive, ref } from 'vue'
-import { onLoad, onPullDownRefresh } from '@dcloudio/uni-app'
+import { onLoad, onPullDownRefresh, onReachBottom } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import ParentTabBar from '@/components/ParentTabBar.vue'
 import { getChildrenByParentId } from '@/api/parent/homework'
@@ -175,6 +175,11 @@ onLoad(() => {
 
 onPullDownRefresh(() => {
   fetchCheckins(true)
+})
+
+// 滑动到底部自动加载更多
+onReachBottom(() => {
+  loadMore()
 })
 </script>
 
@@ -331,16 +336,13 @@ onPullDownRefresh(() => {
   color: #94a3b8;
 }
 
-.load-more {
+.load-status {
   text-align: center;
-  padding: 20rpx 0;
+  padding: 32rpx 0;
 }
 
-.load-more-btn {
-  padding: 18rpx 40rpx;
-  font-size: 26rpx;
-  color: #2563eb;
-  background: transparent;
-  border: none;
+.status-text {
+  font-size: 24rpx;
+  color: #94a3b8;
 }
 </style>

@@ -75,7 +75,7 @@
       <!-- 底部加载状态提示 -->
       <view v-if="homeworkList.length > 0" class="load-status">
         <text v-if="loading" class="status-text">加载中...</text>
-        <text v-else-if="noMore" class="status-text">没有更多了</text>
+        <text v-else-if="noMore" class="status-text">没有更多数据了</text>
       </view>
     </view>
 
