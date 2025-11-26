@@ -5,7 +5,7 @@
       <view class="header-content">
         <!-- Logo图标 -->
         <view class="logo-circle">
-          <image src="https://test.project.ri.chatgqt.top/static/logo.png" class="logo-image" mode="aspectFit"></image>
+          <image src="/static/logo.svg" class="logo-image" mode="aspectFit"></image>
         </view>
 
         <!-- 欢迎文字 -->
