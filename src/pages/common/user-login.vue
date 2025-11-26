@@ -77,8 +77,43 @@
           </view>
         </view>
 
+        <!-- 协议勾选 -->
+        <view class="agreements">
+          <label class="agreement-item" @click="togglePrivacyAgreement">
+            <view :class="['checkbox', hasAgreedPrivacy ? 'checkbox-checked' : '']">
+              <uni-icons
+                v-if="hasAgreedPrivacy"
+                type="checkmarkempty"
+                size="18"
+                color="#ffffff"
+              ></uni-icons>
+            </view>
+            <text class="agreement-text">我已阅读并同意</text>
+            <text class="agreement-link" @click.stop="showPrivacyPolicy">《隐私政策》</text>
+          </label>
+          <label class="agreement-item" @click="toggleUserAgreement">
+            <view :class="['checkbox', hasAgreedUser ? 'checkbox-checked' : '']">
+              <uni-icons
+                v-if="hasAgreedUser"
+                type="checkmarkempty"
+                size="18"
+                color="#ffffff"
+              ></uni-icons>
+            </view>
+            <text class="agreement-text">我已阅读并同意</text>
+            <text class="agreement-link" @click.stop="showUserAgreement">《用户协议》</text>
+          </label>
+        </view>
+
         <!-- 登录按钮 -->
-        <button class="login-btn" @click="handleLogin">登录</button>
+        <button
+          class="login-btn"
+          :class="{ 'login-btn-disabled': !allAgreed || isLoading }"
+          :disabled="isLoading"
+          @click="handleLogin"
+        >
+          登录
+        </button>
 
         <!-- 其他选项 -->
         <view class="options-row">
@@ -90,7 +125,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { login } from '@/api/common/auth'
 import { setAuth } from '@/store/auth'
 
@@ -99,6 +134,65 @@ const selectedRole = ref('parent') // 默认选中家长
 const phone = ref('')
 const password = ref('')
 const isLoading = ref(false)
+const hasAgreedPrivacy = ref(false)
+const hasAgreedUser = ref(false)
+
+const allAgreed = computed(() => hasAgreedPrivacy.value && hasAgreedUser.value)
+
+const privacyContent = `一、引言
+本隐私政策旨在说明我们如何收集、使用、存储和保护您的个人信息，以及您如何行使自己的隐私权利。请在使用本小程序前认真阅读并理解本政策。
+
+二、信息收集
+- 基本信息：注册时需提供手机号、昵称等基本信息。
+
+三、信息使用
+- 提供服务：用于实现本小程序的基本功能，如消息推送。
+- 优化体验：分析用户使用习惯，提升服务质量。
+- 安全保障：预防欺诈、维护网络安全。
+- 法律要求：配合政府监管，响应司法调查。
+
+四、信息共享与披露
+除非得到您的明确同意，或基于法律规定、保护公共利益、维护平台安全等必要情形，我们不会向第三方共享您的个人信息。
+
+五、信息安全
+我们采用加密技术、防火墙等措施保护您的个人信息安全，但请注意，任何系统都无法完全避免安全风险，我们建议您定期更换密码，谨慎对待来自陌生人的请求。
+
+六、您的权利
+您有权查询、更正、删除自己的个人信息，撤回同意，投诉举报等。如需行使上述权利，请联系我们的客服进行操作。
+
+七、政策更新
+我们可能会适时更新本隐私政策，更新后的政策将通过公告形式告知用户，继续使用即视为接受新版本。`
+
+const userAgreementContent = `课后托管通用户协议
+
+一、总则
+（一）目的与范围
+本用户协议（以下简称“协议”）旨在明确您（以下简称“用户”）在使用课后托管通（以下简称“本小程序”）服务过程中的权利与义务，以及我们提供的服务内容、方式及相关规则。请您在注册、登录及使用本小程序前仔细阅读本协议，一旦开始使用即表示您已充分理解并同意接受本协议的全部条款。
+（二）协议生效
+用户完成注册并登录本小程序，即视为同意本协议的全部内容，本协议即在用户与服务商之间产生法律效力。
+（三）修改权
+我们有权根据法律法规变化、业务发展需要或技术升级等原因对本协议进行修改，修改后的协议将在本小程序内公布，不再单独通知用户。继续使用本小程序则视为接受修改后的协议。
+
+二、服务内容
+本小程序提供的服务包括但不限于：信息查询、业务咨询、预约装修等功能，具体服务内容以实际提供为准。
+
+三、用户账户管理
+（一）账户注册与登录
+用户需通过合法有效的手机号、微信号等方式完成注册与登录。
+（二）信息真实性
+用户应保证提供的个人信息真实有效，否则我们有权暂停或终止服务。
+（三）账户安全
+用户应妥善保管账号和密码，对因用户自身原因导致的账号被盗用、信息泄露等后果自行承担责任。
+
+四、知识产权
+本小程序内的所有内容（包括但不限于文字、图片、音频、视频等）的知识产权归我们或相关权利人所有，未经授权不得擅自复制、传播或使用。
+
+五、法律责任与免责声明
+我们不对因网络故障、第三方攻击等非我方因素导致的服务中断或数据丢失负责。
+用户应遵守国家法律法规及平台规定，对于违法违规行为，我们有权采取相应措施直至追究法律责任。
+
+六、争议解决
+双方因执行本协议发生争议，应首先通过友好协商解决；协商不成时，可提交至中国山东仲裁委员会按照申请仲裁时该会现行有效的仲裁规则进行仲裁。仲裁裁决是终局的，对双方均有约束力。`
 
 /**
  * 选择角色
@@ -120,9 +214,51 @@ const handleForgotPassword = () => {
 }
 
 /**
+ * 切换协议勾选
+ */
+const togglePrivacyAgreement = () => {
+  hasAgreedPrivacy.value = !hasAgreedPrivacy.value
+}
+
+const toggleUserAgreement = () => {
+  hasAgreedUser.value = !hasAgreedUser.value
+}
+
+/**
+ * 查看隐私政策
+ */
+const showPrivacyPolicy = () => {
+  uni.showModal({
+    title: '隐私政策',
+    content: privacyContent,
+    showCancel: false,
+  })
+}
+
+/**
+ * 查看用户协议
+ */
+const showUserAgreement = () => {
+  uni.showModal({
+    title: '用户协议',
+    content: userAgreementContent,
+    showCancel: false,
+  })
+}
+
+/**
  * 处理登录逻辑
  */
 const handleLogin = async () => {
+  if (!allAgreed.value) {
+    await uni.showModal({
+      title: '提示',
+      content: '请阅读并勾选《隐私政策》和《用户协议》后再登录',
+      showCancel: false,
+    })
+    return
+  }
+
   // 表单验证
   if (!phone.value) {
     await uni.showToast({
@@ -303,6 +439,49 @@ const handleLogin = async () => {
   gap: 40rpx;
 }
 
+.agreements {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16rpx;
+  font-size: 26rpx;
+  color: #6b7280;
+  margin-top: 8rpx;
+}
+
+.agreement-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.checkbox {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 8rpx;
+  border: 2rpx solid #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  transition: all 0.2s;
+}
+
+.checkbox-checked {
+  background-color: #0ea5e9;
+  border-color: #0ea5e9;
+  box-shadow: 0 8rpx 16rpx rgba(14, 165, 233, 0.25);
+}
+
+.agreement-text {
+  color: #6b7280;
+}
+
+.agreement-link {
+  color: #0ea5e9;
+  text-decoration: underline;
+}
+
 /* 表单字段 */
 .form-field {
   display: flex;
@@ -368,6 +547,12 @@ const handleLogin = async () => {
 .login-btn:active {
   transform: translateY(2rpx);
   box-shadow: 0 16rpx 32rpx rgba(14, 165, 233, 0.3);
+}
+
+.login-btn-disabled {
+  background: #d1d5db;
+  box-shadow: none;
+  color: #9ca3af;
 }
 
 /* 选项行 */
