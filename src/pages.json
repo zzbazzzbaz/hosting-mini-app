@@ -3,7 +3,7 @@
 		{
 			"path": "pages/common/home-unlogged",
 			"style": {
-				"navigationBarTitleText": "托管小程序",
+				"navigationBarTitleText": "课后托管通",
 				"navigationStyle": "custom"
 			}
 		},
@@ -158,7 +158,7 @@
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
-		"navigationBarTitleText": "托管小程序",
+		"navigationBarTitleText": "课后托管通",
 		"navigationBarBackgroundColor": "#0EA5E9",
 		"backgroundColor": "#F0F9FF"
 	},

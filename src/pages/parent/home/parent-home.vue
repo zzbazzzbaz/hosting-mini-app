@@ -7,7 +7,7 @@
             <uni-icons type="home" size="28" color="#fff" />
           </view>
           <view class="app-info">
-            <text class="app-name">托管小程序</text>
+            <text class="app-name">课后托管通</text>
           </view>
         </view>
       </view>

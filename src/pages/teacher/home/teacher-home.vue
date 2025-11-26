@@ -8,7 +8,7 @@
             <uni-icons type="home-filled" size="32" color="#fff"></uni-icons>
           </view>
           <view class="app-info">
-            <text class="app-name">托管小程序</text>
+            <text class="app-name">课后托管通</text>
             <text class="app-slogan">教师工作台</text>
           </view>
         </view>
