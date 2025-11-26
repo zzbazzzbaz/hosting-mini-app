@@ -15,6 +15,20 @@
 			}
 		},
 		{
+			"path": "pages/common/privacy-policy",
+			"style": {
+				"navigationBarTitleText": "隐私政策",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/common/user-agreement",
+			"style": {
+				"navigationBarTitleText": "用户协议",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/parent/home/parent-home",
 			"style": {
 				"navigationBarTitleText": "首页",
