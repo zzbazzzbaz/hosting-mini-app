@@ -21,8 +21,10 @@ import PrivacyPolicyContent from './components/PrivacyPolicyContent.vue'
 }
 
 .content-spacing {
-  margin-top: 24rpx;
+  margin-top: 36rpx;
+  padding: 0 20rpx 24rpx;
   flex: 1;
   display: flex;
+  box-sizing: border-box;
 }
 </style>

@@ -80,8 +80,9 @@
 <style scoped>
 .policy-wrapper {
   flex: 1;
-  padding: 32rpx;
+  padding: 24rpx;
   background: linear-gradient(135deg, #f8fafc, #eef2ff);
+  box-sizing: border-box;
 }
 
 .policy-card {
@@ -92,6 +93,8 @@
   display: flex;
   flex-direction: column;
   gap: 28rpx;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .policy-title {
