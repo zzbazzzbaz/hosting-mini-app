@@ -36,15 +36,21 @@
         <text class="section-title">三、用户账户管理</text>
         <view class="bullet">
           <view class="dot"></view>
-          <text class="section-text">账户注册与登录：用户需通过合法有效的手机号、微信号等方式完成注册与登录。</text>
+          <text class="section-text"
+            >账户注册与登录：用户需通过合法有效的手机号、微信号等方式完成注册与登录。</text
+          >
         </view>
         <view class="bullet">
           <view class="dot"></view>
-          <text class="section-text">信息真实性：用户应保证提供的个人信息真实有效，否则我们有权暂停或终止服务。</text>
+          <text class="section-text"
+            >信息真实性：用户应保证提供的个人信息真实有效，否则我们有权暂停或终止服务。</text
+          >
         </view>
         <view class="bullet">
           <view class="dot"></view>
-          <text class="section-text">账户安全：用户应妥善保管账号和密码，对因用户自身原因导致的账号被盗用、信息泄露等后果自行承担责任。</text>
+          <text class="section-text"
+            >账户安全：用户应妥善保管账号和密码，对因用户自身原因导致的账号被盗用、信息泄露等后果自行承担责任。</text
+          >
         </view>
       </view>
 
@@ -59,11 +65,15 @@
         <text class="section-title">五、法律责任与免责声明</text>
         <view class="bullet">
           <view class="dot"></view>
-          <text class="section-text">我们不对因网络故障、第三方攻击等非我方因素导致的服务中断或数据丢失负责。</text>
+          <text class="section-text"
+            >我们不对因网络故障、第三方攻击等非我方因素导致的服务中断或数据丢失负责。</text
+          >
         </view>
         <view class="bullet">
           <view class="dot"></view>
-          <text class="section-text">用户应遵守国家法律法规及平台规定，对于违法违规行为，我们有权采取相应措施直至追究法律责任。</text>
+          <text class="section-text"
+            >用户应遵守国家法律法规及平台规定，对于违法违规行为，我们有权采取相应措施直至追究法律责任。</text
+          >
         </view>
       </view>
 
