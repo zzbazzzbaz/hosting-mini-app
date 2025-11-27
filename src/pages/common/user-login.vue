@@ -7,7 +7,7 @@
         <!-- Logo图片 -->
         <image src="/static/logo.svg" class="logo-image" mode="aspectFit"></image>
       </view>
-      <text class="app-title">课后托管通</text>
+      <text class="app-title">思倍得托管</text>
       <text class="app-subtitle">家长与教师的沟通桥梁</text>
     </view>
 
