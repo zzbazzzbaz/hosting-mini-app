@@ -53,7 +53,7 @@
 
         <view class="section">
           <view class="section-header">
-            <text class="section-title">参考资料</text>
+            <text class="section-title">作业图片</text>
             <text class="section-subtitle">最多可上传9张图片</text>
           </view>
           <view class="upload-grid">
@@ -96,11 +96,17 @@ const subjectOptions = ref([])
 const initialForm = ref({})
 const imageIdMap = ref({})
 
+const formatToday = () => {
+  const now = new Date()
+  const pad = (n) => `${n}`.padStart(2, '0')
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
+}
+
 // 创建默认表单数据
 const createDefaultForm = () => ({
   subject: '', // 默认为空，显示占位文本
   subjectId: '', // 科目ID
-  homeworkTime: '', // 作业完成时间（必填）
+  homeworkTime: formatToday(), // 作业完成时间（默认当天）
   content: '', // 作业内容
   images: [], // 图片列表
 })
