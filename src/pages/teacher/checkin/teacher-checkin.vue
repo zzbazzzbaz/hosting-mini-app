@@ -105,13 +105,16 @@ const pageSize = 10
  */
 const filteredStudentList = computed(() => studentList.value)
 
+const unsignedStudents = computed(() =>
+  filteredStudentList.value.filter((item) => item.isSignin !== 1)
+)
+
 /**
  * 是否全选
  */
 const isAllSelected = computed(() => {
-  return (
-    filteredStudentList.value.length > 0 && filteredStudentList.value.every((item) => item.checked)
-  )
+  const unsigned = unsignedStudents.value
+  return unsigned.length > 0 && unsigned.every((item) => item.checked)
 })
 
 /**
@@ -228,7 +231,7 @@ const onTeacherChange = (e) => {
  */
 const toggleSelectAll = () => {
   const newState = !isAllSelected.value
-  filteredStudentList.value.forEach((item) => {
+  unsignedStudents.value.forEach((item) => {
     item.checked = newState
   })
 }
