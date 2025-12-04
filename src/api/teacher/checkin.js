@@ -1,5 +1,4 @@
 import request, { BASE_URL } from '@/utils/request'
-import { getToken } from '@/store/auth'
 import { getUserId, buildImageUrl } from '@/utils/util'
 
 /**
@@ -54,15 +53,11 @@ export const getStudentList = async (params = {}) => {
  * @returns {Promise<{code:number,message:string,data:Object}>} 返回上传结果
  */
 export const uploadSigninPic = (filePath) => {
-  const token = getToken()
-  const header = token ? { Authorization: `Bearer ${token}` } : {}
-
   return new Promise((resolve, reject) => {
     uni.uploadFile({
       url: `${BASE_URL}/teacher/home/addPic2`,
       filePath,
       name: 'file',
-      header,
       success: (res) => {
         try {
           const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data

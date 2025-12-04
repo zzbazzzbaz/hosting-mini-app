@@ -1,5 +1,4 @@
 import request, { BASE_URL } from '@/utils/request'
-import { getToken } from '@/store/auth'
 import { buildImageUrl, formatDate, getUserId } from '@/utils/util'
 
 const adaptChildren = (response) => {
@@ -134,15 +133,11 @@ export const getHomeworkDetail = async (homeworkId) => {
  * @returns {Promise<{code:number,message:string,data:Object}>}
  */
 export const uploadHomeworkImage = (filePath) => {
-  const token = getToken()
-  const header = token ? { Authorization: `Bearer ${token}` } : {}
-
   return new Promise((resolve, reject) => {
     uni.uploadFile({
       url: `${BASE_URL}/parent/home/addPic`,
       filePath,
       name: 'file',
-      header,
       success: (res) => {
         try {
           const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data

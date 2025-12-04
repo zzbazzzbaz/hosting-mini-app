@@ -1,5 +1,4 @@
 import request, { BASE_URL } from '@/utils/request'
-import { getToken } from '@/store/auth'
 import { buildImageUrl, formatDate, getUserId } from '@/utils/util'
 
 /**
@@ -168,15 +167,11 @@ export const getTeacherHomeworkDetail = async (homeworkId) => {
  * 上传作业图片
  */
 export const uploadTeacherHomeworkImage = (filePath) => {
-  const token = getToken()
-  const header = token ? { Authorization: `Bearer ${token}` } : {}
-
   return new Promise((resolve, reject) => {
     uni.uploadFile({
       url: `${BASE_URL}/teacher/home/addPic`,
       filePath,
       name: 'file',
-      header,
       success: (res) => {
         try {
           const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data
