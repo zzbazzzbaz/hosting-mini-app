@@ -3,7 +3,7 @@
 		{
 			"path": "pages/common/home-unlogged",
 			"style": {
-				"navigationBarTitleText": "易托管家",
+				"navigationBarTitleText": "开来伴学管家",
 				"navigationStyle": "custom"
 			}
 		},
@@ -175,7 +175,7 @@
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
-		"navigationBarTitleText": "易托管家",
+		"navigationBarTitleText": "开来伴学管家",
 		"navigationBarBackgroundColor": "#0EA5E9",
 		"backgroundColor": "#F0F9FF"
 	},

@@ -7,7 +7,7 @@
         <!-- Logo图片 -->
         <image src="/static/logo.svg" class="logo-image" mode="aspectFit"></image>
       </view>
-      <text class="app-title">易托管家</text>
+      <text class="app-title">开来伴学管家</text>
       <text class="app-subtitle">家长与教师的沟通桥梁</text>
     </view>
 
