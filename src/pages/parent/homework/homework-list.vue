@@ -84,7 +84,7 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, onUnmounted } from 'vue'
 import { onLoad, onPullDownRefresh, onReachBottom } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import ParentTabBar from '@/components/ParentTabBar.vue'
@@ -238,17 +238,29 @@ const gotoDetail = (item) => {
   })
 }
 
+const handlePublishedRefresh = (payload) => {
+  // 如果未传 childId 或与当前筛选学生匹配，刷新列表
+  if (!payload?.childId || payload.childId === currentChildId.value) {
+    fetchHomework(true)
+  }
+}
+
 const initPage = async () => {
   await Promise.all([fetchChildren(), fetchSubjects()])
   await fetchHomework(true)
 }
 
 onLoad(() => {
+  uni.$on('parent-homework-published', handlePublishedRefresh)
   initPage()
 })
 
 onPullDownRefresh(() => {
   fetchHomework(true)
+})
+
+onUnmounted(() => {
+  uni.$off('parent-homework-published', handlePublishedRefresh)
 })
 
 // 滚动到底部自动加载更多

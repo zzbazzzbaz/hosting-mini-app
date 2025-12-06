@@ -210,24 +210,28 @@ export const addTeacherHomework = async ({
   subjectId,
   homeworkTime2,
 }) => {
-  const params = {
+  const payload = {
     'student.id': studentId,
     content,
     workpicids,
     subjectId,
     homeworkTime2,
   }
-  Object.keys(params).forEach((key) => {
-    const value = params[key]
+  Object.keys(payload).forEach((key) => {
+    const value = payload[key]
     if (value === undefined || value === null || value === '') {
-      delete params[key]
+      delete payload[key]
     }
   })
 
   return request({
     url: '/teacher/home/addHomework',
     method: 'POST',
-    params,
+    data: payload,
+    header: {
+      // Use form encoding so large内容不会拼进 URL，避免超长导致 400
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
   })
 }
 
@@ -256,7 +260,10 @@ export const addHomeworkEvaluation = async ({
   return request({
     url: '/teacher/home/addHomeworkEvaluation',
     method: 'PUT',
-    params,
+    data: params,
+    header: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
   })
 }
 

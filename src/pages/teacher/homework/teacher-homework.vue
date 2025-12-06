@@ -92,7 +92,7 @@
   </view>
 </template>
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { onPullDownRefresh, onReachBottom } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import TeacherTabBar from '@/components/TeacherTabBar.vue'
@@ -255,12 +255,17 @@ const fetchHomeworkStudents = async (reset = false) => {
   }
 }
 
+const handlePublishedRefresh = () => {
+  fetchHomeworkStudents(true)
+}
+
 /**
  * 页面加载时的初始化逻辑
  * 1. 先加载筛选选项并设置默认教师
  * 2. 再根据默认教师获取作业数据
  */
 onMounted(async () => {
+  uni.$on('teacher-homework-published', handlePublishedRefresh)
   await fetchOptions() // 加载筛选选项并设置默认教师
   await fetchHomeworkStudents(true) // 获取当前教师的作业数据
 })
@@ -268,6 +273,10 @@ onMounted(async () => {
 onPullDownRefresh(async () => {
   await fetchHomeworkStudents(true)
   uni.stopPullDownRefresh()
+})
+
+onUnmounted(() => {
+  uni.$off('teacher-homework-published', handlePublishedRefresh)
 })
 
 onReachBottom(() => {

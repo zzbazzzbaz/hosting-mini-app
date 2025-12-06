@@ -76,7 +76,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { onPullDownRefresh, onReachBottom } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import TeacherTabBar from '@/components/TeacherTabBar.vue'
@@ -200,6 +200,18 @@ const loadStudentList = async (teacherName, reset = false) => {
 onMounted(() => {
   loadTeacherList()
   loadStudentList(currentTeacher.value, true)
+})
+
+const handleCheckinUpdated = () => {
+  loadStudentList(currentTeacher.value, true)
+}
+
+onMounted(() => {
+  uni.$on('teacher-checkin-updated', handleCheckinUpdated)
+})
+
+onUnmounted(() => {
+  uni.$off('teacher-checkin-updated', handleCheckinUpdated)
 })
 
 /**

@@ -361,6 +361,9 @@ const handleSubmit = async () => {
       subjectId,
     })
 
+    // 通知列表页刷新
+    uni.$emit('parent-homework-published', { childId: form.childId })
+
     await uni.showToast({ title: '发布成功', icon: 'success' })
     setTimeout(() => {
       uni.navigateBack()

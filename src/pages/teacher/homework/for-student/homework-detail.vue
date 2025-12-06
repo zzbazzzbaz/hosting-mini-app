@@ -127,7 +127,7 @@
               class="status-picker"
               :range="studentStateLabels"
               @change="onStudentStateChange"
-              :value="studentStateIndex"
+              :value="pickerValue"
             >
               <view class="picker-box">
                 <text>{{ currentStudentStateLabel }}</text>
@@ -181,13 +181,17 @@ const completionForm = reactive({
   studentState: '',
 })
 
-const studentStates = ref([{ id: '', name: '不选择状态' }])
-const studentStateIndex = ref(0)
+const studentStates = ref([])
+const studentStateIndex = ref(-1)
 const finishImages = ref([])
 
 const studentStateLabels = computed(() => studentStates.value.map((item) => item.name || ''))
-const currentStudentStateLabel = computed(
-  () => studentStateLabels.value[studentStateIndex.value] || '不选择状态'
+const currentStudentStateLabel = computed(() => {
+  if (studentStateIndex.value < 0) return '请选择学生状态'
+  return studentStateLabels.value[studentStateIndex.value] || '请选择学生状态'
+})
+const pickerValue = computed(() =>
+  studentStateIndex.value >= 0 ? studentStateIndex.value : 0
 )
 
 const isCompleted = computed(() => homework.value?.isCompleted || homework.value?.state === 1)
@@ -205,13 +209,12 @@ const finishPicIds = computed(() =>
 const loadStudentStates = async () => {
   try {
     const res = await getStudentStatusComboxList()
-    studentStates.value = [
-      { id: '', name: '不选择状态' },
-      ...(res || []).map((item) => ({
+    studentStates.value = (res || [])
+      .map((item) => ({
         id: item.id ?? item.value ?? '',
         name: item.name ?? item.label ?? item.text ?? '',
-      })),
-    ].filter((item) => item.name)
+      }))
+      .filter((item) => item.name)
   } catch (error) {
     console.error('获取学生状态失败', error)
   }
@@ -219,7 +222,7 @@ const loadStudentStates = async () => {
 
 const syncStudentStateIndex = () => {
   const idx = studentStates.value.findIndex((item) => item.id === completionForm.studentState)
-  studentStateIndex.value = idx >= 0 ? idx : 0
+  studentStateIndex.value = idx >= 0 ? idx : -1
 }
 
 const loadDetail = async (id) => {
@@ -256,12 +259,20 @@ const handleComplete = async () => {
     await uni.showToast({ title: '该作业已完成', icon: 'none' })
     return
   }
+  const hasStudentState =
+    completionForm.studentState !== '' &&
+    completionForm.studentState !== null &&
+    completionForm.studentState !== undefined
+  if (!hasStudentState) {
+    await uni.showToast({ title: '请选择学生状态', icon: 'none' })
+    return
+  }
   submitting.value = true
   try {
     await addHomeworkEvaluation({
       homeworkId: homework.value.id,
       evaluation: completionForm.evaluation || DEFAULT_EVALUATION,
-      studentState: completionForm.studentState || undefined,
+      studentState: completionForm.studentState,
       finishpicids: finishPicIds.value || undefined,
     })
     await uni.showToast({ title: '作业已完成', icon: 'success' })

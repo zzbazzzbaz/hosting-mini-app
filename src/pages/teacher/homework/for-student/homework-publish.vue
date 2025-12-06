@@ -45,9 +45,10 @@
             class="textarea"
             placeholder="请输入作业内容，例如需要完成的题目、提交方式等"
             rows="5"
+            :maxlength="1000"
           ></textarea>
           <view class="counter">
-            <text>{{ form.content.length }}/500</text>
+            <text>{{ form.content.length }}/1000</text>
           </view>
         </view>
 
@@ -236,6 +237,9 @@ const handleSubmit = async () => {
       homeworkTime2: form.homeworkTime,
     })
 
+    // 通知上级页面刷新列表
+    uni.$emit('teacher-homework-published', { studentId: studentId.value })
+
     await uni.showToast({ title: '发布成功', icon: 'success' })
 
     await uni.navigateBack()
@@ -295,9 +299,9 @@ const onDateChange = (event) => {
 watch(
   () => form.content,
   (value) => {
-    if (value.length > 500) {
-      form.content = value.slice(0, 500)
-      uni.showToast({ title: '内容最多500字', icon: 'none' })
+    if (value.length > 1000) {
+      form.content = value.slice(0, 1000)
+      uni.showToast({ title: '内容最多1000字', icon: 'none' })
     }
   }
 )

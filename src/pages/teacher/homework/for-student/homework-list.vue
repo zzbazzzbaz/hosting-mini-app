@@ -6,16 +6,14 @@
     <!-- 学生信息卡片 -->
     <view class="student-card">
       <view class="student-basic">
-        <text class="name">{{ studentInfo.name || '学生姓名' }}</text>
-        <view class="detail-row">
-          <text class="detail">{{ studentInfo.school || '学校未填' }}</text>
+        <view class="detail-row name-row">
+          <text class="name">{{ studentInfo.name || '学生姓名' }}</text>
           <text class="detail grade">{{ studentInfo.grade || '年级未填' }}</text>
           <text class="detail">{{ studentInfo.class || '班级未填' }}</text>
         </view>
-      </view>
-      <view class="student-stats">
-        <text class="stat completed">已完成: {{ studentInfo.completed }}</text>
-        <text class="stat pending">未完成: {{ studentInfo.pending }}</text>
+        <view class="detail-row school-row">
+          <text class="detail school">{{ studentInfo.school || '学校未填' }}</text>
+        </view>
       </view>
     </view>
 
@@ -103,7 +101,7 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, onUnmounted } from 'vue'
 import { onLoad, onPullDownRefresh, onReachBottom } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import { getTeacherHomeworkList } from '@/api/teacher/homework'
@@ -214,6 +212,13 @@ onReachBottom(() => {
   fetchHomeworkList()
 })
 
+const handlePublishedRefresh = (payload) => {
+  // 如果未传 studentId 或与当前学生匹配，则刷新
+  if (!payload?.studentId || payload.studentId === studentId.value) {
+    fetchHomeworkList(true)
+  }
+}
+
 const onSubjectChange = (e) => {
   const index = e.detail.value
   filters.subjectIndex = Number(index)
@@ -260,8 +265,13 @@ onLoad((options) => {
     completed: Number(options.finishCount ?? 0),
     pending: Number(options.noFinishCount ?? 0),
   }
+  uni.$on('teacher-homework-published', handlePublishedRefresh)
   fetchSubjects()
   fetchHomeworkList(true)
+})
+
+onUnmounted(() => {
+  uni.$off('teacher-homework-published', handlePublishedRefresh)
 })
 </script>
 
@@ -291,7 +301,7 @@ onLoad((options) => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
+  gap: 8rpx;
 }
 
 /* 学生姓名 */
@@ -306,6 +316,11 @@ onLoad((options) => {
   display: flex;
   align-items: center;
   gap: 20rpx;
+  flex-wrap: wrap;
+}
+
+.name-row {
+  flex-wrap: nowrap;
 }
 
 /* 详细信息 */
@@ -318,6 +333,14 @@ onLoad((options) => {
 .detail.grade {
   color: #0ea5e9;
   font-weight: 500;
+}
+
+.detail.school {
+  color: #6b7280;
+}
+
+.school-row {
+  margin-top: 4rpx;
 }
 
 /* 学生作业统计 */

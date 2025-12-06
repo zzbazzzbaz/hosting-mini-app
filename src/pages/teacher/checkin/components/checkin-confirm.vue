@@ -155,6 +155,9 @@ const handleSubmit = async () => {
       picIds: uploadResults.join(','),
     })
 
+    // 通知列表页刷新
+    uni.$emit('teacher-checkin-updated')
+
     await uni.showToast({ title: '签到成功', icon: 'success' })
     clearCheckinStudents()
     setTimeout(() => {

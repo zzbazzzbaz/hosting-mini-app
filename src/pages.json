@@ -63,6 +63,7 @@
 			"style": {
 				"navigationBarTitleText": "签到信息",
 				"navigationStyle": "custom",
+				"enablePullDownRefresh": true,
 				"onReachBottomDistance": 50
 			}
 		},
@@ -123,6 +124,7 @@
 			"style": {
 				"navigationBarTitleText": "作业详情列表",
 				"navigationStyle": "custom",
+				"enablePullDownRefresh": true,
 				"onReachBottomDistance": 50
 			}
 		},
@@ -131,6 +133,7 @@
 			"style": {
 				"navigationBarTitleText": "学生作业",
 				"navigationStyle": "custom",
+				"enablePullDownRefresh": true,
 				"onReachBottomDistance": 50
 			}
 		},
