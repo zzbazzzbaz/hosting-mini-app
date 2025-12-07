@@ -48,7 +48,7 @@ const adaptMyInfoResponse = (response) => {
  */
 export const getMyInfo = async (parentId) => {
   const response = await request({
-    url: '/parent/home/myInfo',
+    url: '/api/parent/home/myInfo',
     method: 'GET',
     params: {
       parentId: parentId ?? getUserId(),
@@ -68,7 +68,7 @@ export const getMyInfo = async (parentId) => {
  */
 export const editPassword = async (data) => {
   return request({
-    url: '/parent/home/editPassword',
+    url: '/api/parent/home/editPassword',
     method: 'POST',
     params: {
       parentId: data.parentId ?? getUserId(),

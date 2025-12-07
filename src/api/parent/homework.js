@@ -74,7 +74,7 @@ const adaptHomeworkDetail = (response) => {
  */
 export const getChildrenByParentId = async (parentId) => {
   const response = await request({
-    url: '/parent/home/getListByParentId',
+    url: '/api/parent/home/getListByParentId',
     method: 'GET',
     params: {
       parentId: parentId ?? getUserId(),
@@ -106,7 +106,7 @@ export const getParentHomeworkList = async (params = {}) => {
   })
 
   const response = await request({
-    url: '/parent/home/getHomeworkList',
+    url: '/api/parent/home/getHomeworkList',
     method: 'GET',
     params: query,
   })
@@ -119,7 +119,7 @@ export const getParentHomeworkList = async (params = {}) => {
  */
 export const getHomeworkDetail = async (homeworkId) => {
   const response = await request({
-    url: '/parent/home/getHomeworkById',
+    url: '/api/parent/home/getHomeworkById',
     method: 'GET',
     params: { homeworkId },
   })
@@ -135,7 +135,7 @@ export const getHomeworkDetail = async (homeworkId) => {
 export const uploadHomeworkImage = (filePath) => {
   return new Promise((resolve, reject) => {
     uni.uploadFile({
-      url: `${BASE_URL}/parent/home/addPic`,
+      url: `${BASE_URL}/api/parent/home/addPic`,
       filePath,
       name: 'file',
       success: (res) => {
@@ -191,7 +191,7 @@ export const publishHomework = async ({
   })
 
   return request({
-    url: '/parent/home/addHomework',
+    url: '/api/parent/home/addHomework',
     method: 'POST',
     params,
   })

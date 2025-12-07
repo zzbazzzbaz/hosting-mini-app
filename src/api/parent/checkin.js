@@ -69,7 +69,7 @@ export const getParentSigninList = async ({
   })
 
   const response = await request({
-    url: '/parent/home/getSigninList',
+    url: '/api/parent/home/getSigninList',
     method: 'GET',
     params,
   })

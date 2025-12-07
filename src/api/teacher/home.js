@@ -47,7 +47,7 @@ const adaptTeacherHomeData = (response) => {
  */
 export const getTeacherHomeData = async (teacherId) => {
   const response = await request({
-    url: '/teacher/home/getCountData',
+    url: '/api/teacher/home/getCountData',
     method: 'GET',
     params: {
       teacherId: teacherId ?? getUserId(),

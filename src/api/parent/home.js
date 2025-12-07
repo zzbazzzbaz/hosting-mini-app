@@ -63,7 +63,7 @@ const adaptParentHomeOverview = (response) => {
  */
 export const getParentHomeOverview = async (parentId) => {
   const response = await request({
-    url: '/parent/home/getCountData',
+    url: '/api/parent/home/getCountData',
     method: 'GET',
     params: {
       parentId: parentId ?? getUserId(),

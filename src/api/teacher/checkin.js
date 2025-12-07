@@ -35,7 +35,7 @@ const adaptStudentListResponse = (response) => {
  */
 export const getStudentList = async (params = {}) => {
   const response = await request({
-    url: '/teacher/home/getStudentList',
+    url: '/api/teacher/home/getStudentList',
     method: 'GET',
     params: {
       teacherId: params.teacherId ?? getUserId(),
@@ -55,7 +55,7 @@ export const getStudentList = async (params = {}) => {
 export const uploadSigninPic = (filePath) => {
   return new Promise((resolve, reject) => {
     uni.uploadFile({
-      url: `${BASE_URL}/teacher/home/addPic2`,
+      url: `${BASE_URL}/api/teacher/home/addPic2`,
       filePath,
       name: 'file',
       success: (res) => {
@@ -96,7 +96,7 @@ export const uploadSigninPic = (filePath) => {
  */
 export const addSignin = async (data) => {
   return request({
-    url: '/teacher/home/addSignin',
+    url: '/api/teacher/home/addSignin',
     method: 'POST',
     params: {
       teacherId: data.teacherId ?? getUserId(),

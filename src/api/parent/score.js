@@ -19,7 +19,7 @@ export const getScoreList = async (params = {}) => {
   })
 
   return request({
-    url: '/parent/home/getScoreList',
+    url: '/api/parent/home/getScoreList',
     method: 'GET',
     params: query,
   })

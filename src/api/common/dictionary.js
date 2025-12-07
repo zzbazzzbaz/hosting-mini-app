@@ -34,7 +34,7 @@ const adaptComboxResponse = (response) => {
  */
 export const getTeacherComboxList = async () => {
   const response = await request({
-    url: '/common/teacher/getComboxList',
+    url: '/api/common/teacher/getComboxList',
     method: 'GET',
   })
   return adaptComboxResponse(response)
@@ -56,7 +56,7 @@ export const getTeacherComboxList = async () => {
  */
 export const getParentComboxList = async () => {
   const response = await request({
-    url: '/common/parent/getComboxList',
+    url: '/api/common/parent/getComboxList',
     method: 'GET',
   })
   return adaptComboxResponse(response)
@@ -78,7 +78,7 @@ export const getParentComboxList = async () => {
  */
 export const getStudentComboxList = async () => {
   const response = await request({
-    url: '/common/student/getComboxList',
+    url: '/api/common/student/getComboxList',
     method: 'GET',
   })
   return adaptComboxResponse(response)
@@ -103,7 +103,7 @@ export const getStudentComboxList = async () => {
  */
 export const getDictionaryComboxList = async (type) => {
   const response = await request({
-    url: '/common/dictionary/getComboxList',
+    url: '/api/common/dictionary/getComboxList',
     method: 'GET',
     params: { type },
   })

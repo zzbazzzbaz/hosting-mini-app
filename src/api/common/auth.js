@@ -69,7 +69,7 @@ function adaptTokenCheckResponse(response) {
  */
 export const login = async (data) => {
   const response = await request({
-    url: '/front/user/login',
+    url: '/api/front/user/login',
     method: 'POST',
     params: {
       phone: data.phone,
@@ -88,7 +88,7 @@ export const login = async (data) => {
  */
 export const checkToken = async (token) => {
   const response = await request({
-    url: '/front/user/checkToken',
+    url: '/api/front/user/checkToken',
     method: 'POST',
     params: {
       token: token,
@@ -104,7 +104,7 @@ export const checkToken = async (token) => {
  */
 export const logOut = () => {
   return request({
-    url: '/front/user/logOut',
+    url: '/api/front/user/logOut',
     method: 'POST',
   })
 }

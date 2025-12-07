@@ -114,7 +114,7 @@ export const getHomeworkStudentList = async (params = {}) => {
   })
 
   const response = await request({
-    url: '/teacher/home/getHomeworkStudentList',
+    url: '/api/teacher/home/getHomeworkStudentList',
     method: 'GET',
     params: query,
   })
@@ -142,7 +142,7 @@ export const getTeacherHomeworkList = async (params = {}) => {
   })
 
   const response = await request({
-    url: '/teacher/home/getHomeworkList',
+    url: '/api/teacher/home/getHomeworkList',
     method: 'GET',
     params: query,
   })
@@ -155,7 +155,7 @@ export const getTeacherHomeworkList = async (params = {}) => {
  */
 export const getTeacherHomeworkDetail = async (homeworkId) => {
   const response = await request({
-    url: '/teacher/home/getHomeworkById',
+    url: '/api/teacher/home/getHomeworkById',
     method: 'GET',
     params: { homeworkId },
   })
@@ -169,7 +169,7 @@ export const getTeacherHomeworkDetail = async (homeworkId) => {
 export const uploadTeacherHomeworkImage = (filePath) => {
   return new Promise((resolve, reject) => {
     uni.uploadFile({
-      url: `${BASE_URL}/teacher/home/addPic`,
+      url: `${BASE_URL}/api/teacher/home/addPic`,
       filePath,
       name: 'file',
       success: (res) => {
@@ -225,7 +225,7 @@ export const addTeacherHomework = async ({
   })
 
   return request({
-    url: '/teacher/home/addHomework',
+    url: '/api/teacher/home/addHomework',
     method: 'POST',
     data: payload,
     header: {
@@ -258,7 +258,7 @@ export const addHomeworkEvaluation = async ({
   })
 
   return request({
-    url: '/teacher/home/addHomeworkEvaluation',
+    url: '/api/teacher/home/addHomeworkEvaluation',
     method: 'PUT',
     data: params,
     header: {

@@ -37,7 +37,7 @@ const adaptMyInfoResponse = (response) => {
  */
 export const getMyInfo = async (teacherId) => {
   const response = await request({
-    url: '/teacher/home/myInfo',
+    url: '/api/teacher/home/myInfo',
     method: 'GET',
     params: {
       teacherId: teacherId ?? getUserId(),
@@ -57,7 +57,7 @@ export const getMyInfo = async (teacherId) => {
  */
 export const editPassword = async (data) => {
   return request({
-    url: '/teacher/home/editPassword',
+    url: '/api/teacher/home/editPassword',
     method: 'POST',
     params: {
       teacherId: data.teacherId ?? getUserId(),
