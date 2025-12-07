@@ -34,7 +34,10 @@
             </view>
             <text class="parent-name">家长：{{ item.parentName }}</text>
           </view>
-          <text class="score-month">{{ item.yearmonth }}</text>
+          <view class="exam-info">
+            <text v-if="item.name" class="exam-name">{{ item.name }}</text>
+            <text class="score-month">{{ item.yearmonth }}</text>
+          </view>
         </view>
 
         <view class="score-grid">
@@ -252,6 +255,18 @@ onMounted(() => {
 .parent-name {
   font-size: 24rpx;
   color: #6b7280;
+}
+
+.exam-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8rpx;
+}
+
+.exam-name {
+  font-size: 26rpx;
+  color: #111827;
 }
 
 .score-month {
