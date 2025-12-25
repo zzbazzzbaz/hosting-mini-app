@@ -166,6 +166,15 @@
 			}
 		},
 		{
+			"path": "pages/teacher/personal/performance-list",
+			"style": {
+				"navigationBarTitleText": "绩效考核",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true,
+				"onReachBottomDistance": 50
+			}
+		},
+		{
 			"path": "pages/teacher/homework/for-student/homework-publish",
 			"style": {
 				"navigationBarTitleText": "发布作业",

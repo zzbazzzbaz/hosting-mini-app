@@ -163,6 +163,14 @@ export const getTeacherHomeworkDetail = async (homeworkId) => {
   return adaptHomeworkDetail(response)
 }
 
+export const deleteTeacherHomework = async (homeworkId) => {
+  return request({
+    url: '/api/teacher/home/deleteHomework',
+    method: 'DELETE',
+    params: { homeworkId },
+  })
+}
+
 /**
  * 上传作业图片
  */

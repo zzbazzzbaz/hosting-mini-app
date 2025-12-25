@@ -67,13 +67,16 @@
           <!-- 主信息行：科目 | 状态 -->
           <view class="homework-main">
             <text class="subject">{{ item.subjectName || '未分科目' }}</text>
-            <view
-              :class="[
-                'status-badge',
-                item.status === 'completed' ? 'status-completed' : 'status-pending',
-              ]"
-            >
-              <text>{{ item.status === 'completed' ? '已完成' : '未完成' }}</text>
+            <view class="homework-actions">
+              <view
+                :class="[
+                  'status-badge',
+                  item.status === 'completed' ? 'status-completed' : 'status-pending',
+                ]"
+              >
+                <text>{{ item.status === 'completed' ? '已完成' : '未完成' }}</text>
+              </view>
+              <view class="delete-action" @tap.stop="onDeleteHomework(item)">删除</view>
             </view>
           </view>
           <!-- 时间信息行 -->
@@ -104,7 +107,7 @@
 import { computed, reactive, ref, onUnmounted } from 'vue'
 import { onLoad, onPullDownRefresh, onReachBottom } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
-import { getTeacherHomeworkList } from '@/api/teacher/homework'
+import { deleteTeacherHomework, getTeacherHomeworkList } from '@/api/teacher/homework'
 import { getSubjectComboxList } from '@/api/common/dictionary'
 
 const studentId = ref('')
@@ -133,6 +136,7 @@ const statuses = [
 ]
 
 const homeworkList = ref([])
+const deletingId = ref('')
 const loading = ref(false)
 const noMore = ref(false)
 const page = ref(1)
@@ -234,6 +238,30 @@ const onStatusChange = (e) => {
 const onDateChange = (e) => {
   filters.date = e.detail.value
   fetchHomeworkList(true)
+}
+
+const onDeleteHomework = (item) => {
+  if (!item?.id || deletingId.value) return
+  uni.showModal({
+    title: '删除作业',
+    content: '确定要删除该作业吗？',
+    success: async (res) => {
+      if (!res.confirm) return
+      deletingId.value = item.id
+      uni.showLoading({ title: '删除中', mask: true })
+      try {
+        await deleteTeacherHomework(item.id)
+        homeworkList.value = homeworkList.value.filter((homework) => homework.id !== item.id)
+        await uni.showToast({ title: '作业删除成功', icon: 'success' })
+        fetchHomeworkList(true)
+      } catch (error) {
+        console.error('删除作业失败', error)
+      } finally {
+        uni.hideLoading()
+        deletingId.value = ''
+      }
+    },
+  })
 }
 
 const openHomeworkDetail = (item) => {
@@ -490,6 +518,28 @@ onUnmounted(() => {
   font-weight: 500;
   flex-shrink: 0;
   white-space: nowrap;
+}
+
+.homework-actions {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.delete-action {
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+  color: #ef4444;
+  border: 2rpx solid #fecaca;
+  background: #fff;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.delete-action:active {
+  opacity: 0.85;
 }
 
 /* 已完成状态 */

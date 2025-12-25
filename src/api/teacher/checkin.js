@@ -105,3 +105,13 @@ export const addSignin = async (data) => {
     },
   })
 }
+
+export const deleteSignin = async (studentId) => {
+  return request({
+    url: '/api/teacher/home/deleteSignin',
+    method: 'DELETE',
+    params: {
+      studentId,
+    },
+  })
+}

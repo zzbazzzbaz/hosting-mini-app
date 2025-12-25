@@ -51,6 +51,15 @@
         <view class="status-badge" :class="item.isSignin ? 'signed' : 'unsigned'">
           {{ item.isSignin ? '已签到' : '未签到' }}
         </view>
+
+        <button
+          v-if="item.isSignin === 1"
+          class="revoke-btn"
+          @tap.stop="handleRevokeSignin(item)"
+          :disabled="revokingId === item.id"
+        >
+          {{ revokingId === item.id ? '撤销中...' : '撤销签到' }}
+        </button>
       </view>
       <view class="empty-state" v-if="filteredStudentList.length === 0">
         <uni-icons type="info" size="48" color="#d1d5db"></uni-icons>
@@ -80,7 +89,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { onPullDownRefresh, onReachBottom } from '@dcloudio/uni-app'
 import PageHeader from '@/components/PageHeader.vue'
 import TeacherTabBar from '@/components/TeacherTabBar.vue'
-import { getStudentList } from '@/api/teacher/checkin'
+import { getStudentList, deleteSignin } from '@/api/teacher/checkin'
 import { getTeacherComboxList } from '@/api/common/dictionary'
 import { getUserInfo } from '@/store/auth'
 import { setCheckinStudents } from '@/store/checkin'
@@ -99,6 +108,7 @@ const loading = ref(false)
 const noMore = ref(false)
 const page = ref(1)
 const pageSize = 10
+const revokingId = ref(null)
 
 /**
  * 筛选后的学生列表
@@ -204,6 +214,36 @@ onMounted(() => {
 
 const handleCheckinUpdated = () => {
   loadStudentList(currentTeacher.value, true)
+}
+
+const confirmRevokeSignin = (studentName) => {
+  return new Promise((resolve) => {
+    uni.showModal({
+      title: '撤销签到',
+      content: `确认撤销 ${studentName || ''} 的签到吗？`,
+      success: (res) => resolve(!!res.confirm),
+      fail: () => resolve(false),
+    })
+  })
+}
+
+const handleRevokeSignin = async (item) => {
+  if (!item?.id || revokingId.value) return
+
+  const confirmed = await confirmRevokeSignin(item.studentName)
+  if (!confirmed) return
+
+  revokingId.value = item.id
+  try {
+    await deleteSignin(item.id)
+    await uni.showToast({ title: '撤销成功', icon: 'success' })
+    await loadStudentList(currentTeacher.value, true)
+  } catch (error) {
+    console.error('撤销签到失败:', error)
+    await uni.showToast({ title: '撤销失败，请重试', icon: 'none' })
+  } finally {
+    revokingId.value = null
+  }
 }
 
 onMounted(() => {
@@ -429,6 +469,26 @@ const handleBatchCheckin = () => {
 .status-badge.unsigned {
   background: #fee2e2;
   color: #dc2626;
+}
+
+.revoke-btn {
+  height: 56rpx;
+  line-height: 56rpx;
+  padding: 0 20rpx;
+  border-radius: 20rpx;
+  background: #fee2e2;
+  color: #dc2626;
+  font-size: 22rpx;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.revoke-btn::after {
+  border: none;
+}
+
+.revoke-btn:disabled {
+  opacity: 0.6;
 }
 
 /* 空状态 */

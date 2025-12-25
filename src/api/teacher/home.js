@@ -57,4 +57,51 @@ export const getTeacherHomeData = async (teacherId) => {
   return adaptTeacherHomeData(response)
 }
 
+const adaptLevelListResponse = (response) => {
+  const rawData = response?.data
+  const list = Array.isArray(rawData)
+    ? rawData
+    : Array.isArray(rawData?.rows)
+      ? rawData.rows
+      : Array.isArray(rawData?.list)
+        ? rawData.list
+        : []
+
+  return {
+    code: response?.code,
+    message: response?.message,
+    data: {
+      list: list.map((item, index) => ({
+        id: item?.id ?? `level-${index}`,
+        teacherName: item?.teacherName ?? '',
+        levelName: item?.levelName ?? '',
+        yearmonth: item?.yearmonth ?? '',
+        descption: item?.descption ?? item?.description ?? '',
+      })),
+    },
+  }
+}
+
+export const getLevelList = async (params = {}) => {
+  const query = {
+    page: params.page ?? 1,
+    pageSize: params.pageSize ?? 10,
+    'teacher.id': params.teacherId ?? getUserId(),
+  }
+  Object.keys(query).forEach((key) => {
+    const value = query[key]
+    if (value === undefined || value === null || value === '') {
+      delete query[key]
+    }
+  })
+
+  const response = await request({
+    url: '/api/teacher/home/getLevelList',
+    method: 'GET',
+    params: query,
+  })
+
+  return adaptLevelListResponse(response)
+}
+
 export { adaptTeacherHomeData }

@@ -43,6 +43,16 @@
           <uni-icons type="forward" size="18" color="#d1d5db"></uni-icons>
         </view>
 
+        <view class="menu-item" @tap="handlePerformanceList">
+          <view class="menu-left">
+            <view class="menu-icon-box icon-yellow">
+              <uni-icons type="star" size="22" color="#f59e0b"></uni-icons>
+            </view>
+            <text class="menu-title">绩效考核</text>
+          </view>
+          <uni-icons type="forward" size="18" color="#d1d5db"></uni-icons>
+        </view>
+
         <view class="menu-item" @tap="handlePersonalInfo">
           <view class="menu-left">
             <view class="menu-icon-box icon-blue">
@@ -124,6 +134,12 @@ onMounted(() => {
 const handleScoreStats = () => {
   uni.navigateTo({
     url: '/pages/teacher/personal/score-stats',
+  })
+}
+
+const handlePerformanceList = () => {
+  uni.navigateTo({
+    url: '/pages/teacher/personal/performance-list',
   })
 }
 
@@ -286,6 +302,10 @@ const handleLogout = () => {
 
 .icon-green {
   background: #d1fae5;
+}
+
+.icon-yellow {
+  background: #fef3c7;
 }
 
 .menu-title {
