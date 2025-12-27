@@ -275,4 +275,41 @@ export const addHomeworkEvaluation = async ({
   })
 }
 
+/**
+ * 批量发布作业给多个学生
+ * @param {Object} params
+ * @param {string} params.studentIds - 学生ID列表，逗号分隔，如 "2,3"
+ * @param {string} params.homeworkTime - 作业完成时间，如 "2025-11-15"
+ * @param {string} params.content - 作业内容
+ * @param {string} params.workpicids - 图片ID列表，逗号分隔
+ * @param {string} params.subjectId - 科目ID
+ */
+export const addBatchHomeworks = async ({
+  studentIds,
+  homeworkTime,
+  content,
+  workpicids,
+  subjectId,
+}) => {
+  const params = {
+    studentIds,
+    homeworkTime,
+    content,
+    workpicids,
+    subjectId,
+  }
+  Object.keys(params).forEach((key) => {
+    const value = params[key]
+    if (value === undefined || value === null || value === '') {
+      delete params[key]
+    }
+  })
+
+  return request({
+    url: '/api/teacher/home/addHomeworks',
+    method: 'POST',
+    params,
+  })
+}
+
 export { adaptHomeworkStudentList, adaptHomeworkList, adaptHomeworkDetail }
