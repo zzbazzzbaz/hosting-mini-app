@@ -103,6 +103,15 @@
 			}
 		},
 		{
+			"path": "pages/teacher/home/student-list",
+			"style": {
+				"navigationBarTitleText": "学生列表",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true,
+				"onReachBottomDistance": 50
+			}
+		},
+		{
 			"path": "pages/teacher/checkin/teacher-checkin",
 			"style": {
 				"navigationBarTitleText": "签到信息",

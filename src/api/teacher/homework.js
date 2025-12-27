@@ -126,11 +126,12 @@ export const getHomeworkStudentList = async (params = {}) => {
  * 获取某学生的作业列表
  */
 export const getTeacherHomeworkList = async (params = {}) => {
-  const { studentId, subjectId, state, page = 1, pageSize = 20 } = params
+  const { studentId, subjectId, state, homeworkTime, page = 1, pageSize = 20 } = params
   const query = {
     studentId,
     subjectId,
     state,
+    homeworkTime,
     page,
     pageSize,
   }

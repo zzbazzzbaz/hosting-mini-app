@@ -39,10 +39,6 @@
     </view>
 
     <view class="list-container">
-      <view class="publish-button-container">
-        <button class="publish-button" @tap="onPublishHomework">发布作业</button>
-      </view>
-
       <view v-if="!filteredList.length && !loading" class="empty-state">
         <text class="empty-text">暂无作业数据</text>
         <text class="empty-sub">调整筛选或下拉刷新试试</text>
@@ -222,16 +218,6 @@ const onDateChange = (e) => {
   filters.homeworkDate = e.detail.value
 }
 
-const onPublishHomework = () => {
-  const student = children.value[filters.childIndex]
-  const query = student?.id
-    ? `?studentId=${student.id}&studentName=${encodeURIComponent(student.name)}`
-    : ''
-  uni.navigateTo({
-    url: `/pages/parent/homework/components/homework-publish${query}`,
-  })
-}
-
 const gotoDetail = (item) => {
   uni.navigateTo({
     url: `/pages/parent/homework/components/homework-detail?homeworkId=${item.id}`,
@@ -333,26 +319,10 @@ onReachBottom(() => {
 }
 
 .list-container {
-  padding: 360rpx 48rpx 32rpx;
+  padding: 320rpx 48rpx 32rpx;
   display: flex;
   flex-direction: column;
   gap: 24rpx;
-}
-
-.publish-button-container {
-  margin-bottom: 12rpx;
-}
-
-.publish-button {
-  width: 100%;
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: #fff;
-  border: none;
-  border-radius: 24rpx;
-  padding: 28rpx;
-  font-size: 32rpx;
-  font-weight: 600;
-  box-shadow: 0 4rpx 12rpx rgba(16, 185, 129, 0.25);
 }
 
 .empty-state {

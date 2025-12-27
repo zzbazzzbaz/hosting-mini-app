@@ -22,7 +22,7 @@
       <!-- 顶部卡片行 -->
       <view class="top-cards">
         <!-- 学生总数卡片 -->
-        <view class="student-card">
+        <view class="student-card" @click="goStudentList">
           <view class="card-icon-wrapper student-bg">
             <uni-icons type="person-filled" size="28" color="#3b82f6"></uni-icons>
           </view>
@@ -189,6 +189,15 @@ onUnmounted(() => {
     timer = null
   }
 })
+
+/**
+ * 跳转到学生列表页面
+ */
+const goStudentList = () => {
+  uni.navigateTo({
+    url: '/pages/teacher/home/student-list',
+  })
+}
 </script>
 <style scoped>
 /* 页面容器 */
