@@ -119,10 +119,7 @@ const currentChildId = computed(() => children.value[filters.childIndex]?.id || 
 const currentSubjectId = computed(() => subjects.value[filters.subjectIndex]?.id || '')
 const currentState = computed(() => statuses[filters.statusIndex]?.value ?? '')
 
-const filteredList = computed(() => {
-  if (!filters.homeworkDate) return homeworkList.value
-  return homeworkList.value.filter((item) => item.homeworkDate === filters.homeworkDate)
-})
+const filteredList = computed(() => homeworkList.value)
 
 const normalizeOptions = (list = []) =>
   list
@@ -171,6 +168,7 @@ const fetchHomework = async (reset = false) => {
       studentId: currentChildId.value || undefined,
       subjectId: currentSubjectId.value || undefined,
       state: currentState.value === '' ? undefined : currentState.value,
+      homeworkTime: filters.homeworkDate || undefined,
     })
     const list = res?.data?.list || []
     homeworkList.value = reset ? list : [...homeworkList.value, ...list]
@@ -216,6 +214,7 @@ const onStatusChange = (e) => {
 
 const onDateChange = (e) => {
   filters.homeworkDate = e.detail.value
+  refreshList()
 }
 
 const gotoDetail = (item) => {

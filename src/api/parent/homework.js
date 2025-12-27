@@ -88,7 +88,7 @@ export const getChildrenByParentId = async (parentId) => {
  * 获取家长作业列表
  */
 export const getParentHomeworkList = async (params = {}) => {
-  const { page = 1, pageSize = 10, parentId, studentId, subjectId, state } = params
+  const { page = 1, pageSize = 10, parentId, studentId, subjectId, state, homeworkTime } = params
   const query = {
     page,
     pageSize,
@@ -96,6 +96,7 @@ export const getParentHomeworkList = async (params = {}) => {
     studentId,
     subjectId,
     state,
+    homeworkTime,
   }
   // 移除 undefined/null/空字符串，避免出现 key=undefined
   Object.keys(query).forEach((key) => {
