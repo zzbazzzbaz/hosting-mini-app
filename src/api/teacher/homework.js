@@ -294,7 +294,7 @@ export const addBatchHomeworks = async ({
 }) => {
   const params = {
     studentIds,
-    homeworkTime,
+    homeworkTime2: homeworkTime,
     content,
     workpicids,
     subjectId,
