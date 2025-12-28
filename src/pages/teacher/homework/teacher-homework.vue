@@ -3,59 +3,13 @@
     <!-- 使用PageHeader组件 -->
     <PageHeader title="作业信息" />
 
-    <!-- 筛选区域：教师、学校、年级、班级四个筛选项 -->
-    <view class="filter-section">
-      <!-- 第一行：教师、学校 -->
-      <view class="filter-row">
-        <picker
-          class="filter-picker"
-          :range="teacherOptions"
-          range-key="name"
-          @change="onTeacherChange"
-        >
-          <view class="picker-box">
-            <text class="label">{{ currentTeacherLabel }}</text>
-            <text class="arrow">▼</text>
-          </view>
-        </picker>
-        <picker
-          class="filter-picker"
-          :range="schoolOptions"
-          range-key="name"
-          @change="onSchoolChange"
-        >
-          <view class="picker-box">
-            <text class="label">{{ currentSchoolLabel }}</text>
-            <text class="arrow">▼</text>
-          </view>
-        </picker>
-      </view>
-      <view class="filter-row">
-        <picker
-          class="filter-picker"
-          :range="gradeOptions"
-          range-key="name"
-          @change="onGradeChange"
-        >
-          <view class="picker-box">
-            <text class="label">{{ currentGradeLabel }}</text>
-            <text class="arrow">▼</text>
-          </view>
-        </picker>
-        <picker
-          class="filter-picker"
-          :range="classOptions"
-          range-key="name"
-          @change="onClassChange"
-        >
-          <view class="picker-box">
-            <text class="label">{{ currentClassLabel }}</text>
-            <text class="arrow">▼</text>
-          </view>
-        </picker>
-      </view>
-      <!-- 批量操作栏 -->
-      <view class="batch-action-bar">
+    <!-- 操作栏：筛选按钮 + 批量操作 -->
+    <view class="action-bar">
+      <button class="filter-button" @click="openFilterPopup">
+        <text>筛选</text>
+        <text v-if="hasActiveFilters" class="filter-badge">●</text>
+      </button>
+      <view class="batch-action">
         <view class="select-all" @click="toggleSelectAll">
           <view class="checkbox" :class="{ checked: isAllSelected }">
             <text v-if="isAllSelected" class="check-icon">✓</text>
@@ -70,6 +24,86 @@
         >
           批量发布
         </button>
+      </view>
+    </view>
+
+    <!-- 筛选弹窗 -->
+    <view v-if="showFilterPopup" class="filter-popup-mask" @tap="showFilterPopup = false">
+      <view class="filter-popup" @tap.stop>
+        <view class="popup-header">
+          <text class="popup-title">筛选条件</text>
+          <text class="popup-close" @tap="showFilterPopup = false">✕</text>
+        </view>
+        <view class="popup-content">
+          <!-- 教师选择 -->
+          <view class="filter-item">
+            <text class="filter-label">教师</text>
+            <picker
+              class="filter-picker"
+              :range="teacherOptions"
+              range-key="name"
+              :value="tempFilters.teacherIndex"
+              @change="onTempTeacherChange"
+            >
+              <view class="picker-box">
+                <text class="label">{{ tempTeacherLabel }}</text>
+                <text class="arrow">▼</text>
+              </view>
+            </picker>
+          </view>
+          <!-- 学校选择 -->
+          <view class="filter-item">
+            <text class="filter-label">学校</text>
+            <picker
+              class="filter-picker"
+              :range="schoolOptions"
+              range-key="name"
+              :value="tempFilters.schoolIndex"
+              @change="onTempSchoolChange"
+            >
+              <view class="picker-box">
+                <text class="label">{{ tempSchoolLabel }}</text>
+                <text class="arrow">▼</text>
+              </view>
+            </picker>
+          </view>
+          <!-- 年级选择 -->
+          <view class="filter-item">
+            <text class="filter-label">年级</text>
+            <picker
+              class="filter-picker"
+              :range="gradeOptions"
+              range-key="name"
+              :value="tempFilters.gradeIndex"
+              @change="onTempGradeChange"
+            >
+              <view class="picker-box">
+                <text class="label">{{ tempGradeLabel }}</text>
+                <text class="arrow">▼</text>
+              </view>
+            </picker>
+          </view>
+          <!-- 班级选择 -->
+          <view class="filter-item">
+            <text class="filter-label">班级</text>
+            <picker
+              class="filter-picker"
+              :range="classOptions"
+              range-key="name"
+              :value="tempFilters.classIndex"
+              @change="onTempClassChange"
+            >
+              <view class="picker-box">
+                <text class="label">{{ tempClassLabel }}</text>
+                <text class="arrow">▼</text>
+              </view>
+            </picker>
+          </view>
+        </view>
+        <view class="popup-footer">
+          <button class="reset-button" @click="onResetFilters">重置</button>
+          <button class="confirm-button" @click="onConfirmFilters">确定</button>
+        </view>
       </view>
     </view>
 
@@ -215,6 +249,14 @@ const schoolIndex = ref(0)
 const gradeIndex = ref(0)
 const classIndex = ref(0)
 
+const showFilterPopup = ref(false)
+const tempFilters = reactive({
+  teacherIndex: 0,
+  schoolIndex: 0,
+  gradeIndex: 0,
+  classIndex: 0,
+})
+
 const homeworkList = ref([])
 const loading = ref(false)
 const noMore = ref(false)
@@ -292,6 +334,16 @@ const selectedTeacherId = computed(() => teacherOptions.value[teacherIndex.value
 const selectedSchoolId = computed(() => schoolOptions.value[schoolIndex.value]?.id || '')
 const selectedGradeId = computed(() => gradeOptions.value[gradeIndex.value]?.id || '')
 const selectedClassId = computed(() => classOptions.value[classIndex.value]?.id || '')
+
+const hasActiveFilters = computed(() => {
+  // 教师默认选中当前用户，所以不算激活筛选
+  return schoolIndex.value !== 0 || gradeIndex.value !== 0 || classIndex.value !== 0
+})
+
+const tempTeacherLabel = computed(() => teacherOptions.value[tempFilters.teacherIndex]?.name || '请选择教师')
+const tempSchoolLabel = computed(() => schoolOptions.value[tempFilters.schoolIndex]?.name || '全部学校')
+const tempGradeLabel = computed(() => gradeOptions.value[tempFilters.gradeIndex]?.name || '全部年级')
+const tempClassLabel = computed(() => classOptions.value[tempFilters.classIndex]?.name || '全部班级')
 
 const subjectNames = computed(() => subjectOptions.value.map((item) => item.name))
 
@@ -599,6 +651,46 @@ const onClassChange = (e) => {
   fetchHomeworkStudents(true)
 }
 
+const onTempTeacherChange = (e) => {
+  tempFilters.teacherIndex = Number(e.detail.value)
+}
+
+const onTempSchoolChange = (e) => {
+  tempFilters.schoolIndex = Number(e.detail.value)
+}
+
+const onTempGradeChange = (e) => {
+  tempFilters.gradeIndex = Number(e.detail.value)
+}
+
+const onTempClassChange = (e) => {
+  tempFilters.classIndex = Number(e.detail.value)
+}
+
+const onResetFilters = () => {
+  tempFilters.teacherIndex = 0
+  tempFilters.schoolIndex = 0
+  tempFilters.gradeIndex = 0
+  tempFilters.classIndex = 0
+}
+
+const onConfirmFilters = () => {
+  teacherIndex.value = tempFilters.teacherIndex
+  schoolIndex.value = tempFilters.schoolIndex
+  gradeIndex.value = tempFilters.gradeIndex
+  classIndex.value = tempFilters.classIndex
+  showFilterPopup.value = false
+  fetchHomeworkStudents(true)
+}
+
+const openFilterPopup = () => {
+  tempFilters.teacherIndex = teacherIndex.value
+  tempFilters.schoolIndex = schoolIndex.value
+  tempFilters.gradeIndex = gradeIndex.value
+  tempFilters.classIndex = classIndex.value
+  showFilterPopup.value = true
+}
+
 const goDetail = (item) => {
   if (!item?.id) return
   const query = [
@@ -622,6 +714,142 @@ const goDetail = (item) => {
   background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
   padding-top: 144rpx;
   padding-bottom: 128rpx;
+}
+
+/* 操作栏 */
+.action-bar {
+  position: fixed;
+  top: 144rpx;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
+  padding: 24rpx 32rpx;
+  background: #fff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 筛选按钮 */
+.filter-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  background: #fff;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  padding: 16rpx 28rpx;
+  font-size: 26rpx;
+  color: #374151;
+}
+
+.filter-button::after {
+  border: none;
+}
+
+.filter-badge {
+  color: #10b981;
+  font-size: 20rpx;
+}
+
+/* 批量操作 */
+.batch-action {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+/* 筛选弹窗遮罩 */
+.filter-popup-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+}
+
+/* 筛选弹窗 */
+.filter-popup {
+  width: 100%;
+  background: #fff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 32rpx;
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32rpx;
+}
+
+.popup-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.popup-close {
+  font-size: 36rpx;
+  color: #9ca3af;
+  padding: 8rpx;
+}
+
+.popup-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.filter-label {
+  font-size: 26rpx;
+  color: #6b7280;
+}
+
+.popup-footer {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 32rpx;
+}
+
+.reset-button,
+.confirm-button {
+  flex: 1;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.reset-button {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: none;
+}
+
+.reset-button::after,
+.confirm-button::after {
+  border: none;
+}
+
+.confirm-button {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  border: none;
 }
 
 /* 筛选区域：支持多行布局，固定在顶部 */
@@ -741,9 +969,9 @@ const goDetail = (item) => {
   font-weight: bold;
 }
 
-/* 作业列表 - 单行紧凑型，添加顶部间距避免被固定的筛选区域遮挡 */
+/* 作业列表 - 单行紧凑型，添加顶部间距避免被固定的操作栏遮挡 */
 .list {
-  padding: 340rpx 48rpx 32rpx;
+  padding: 200rpx 48rpx 32rpx;
   display: flex;
   flex-direction: column;
   gap: 12rpx;

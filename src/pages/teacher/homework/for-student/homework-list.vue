@@ -17,41 +17,63 @@
       </view>
     </view>
 
-    <!-- 发布作业按钮 -->
-    <view class="publish-button-container">
+    <!-- 操作按钮行 -->
+    <view class="action-buttons">
       <button class="publish-button" @click="onPublishHomework">发布作业</button>
+      <button class="filter-button" @click="showFilterPopup = true">
+        <text>筛选</text>
+        <text v-if="hasActiveFilters" class="filter-badge">●</text>
+      </button>
     </view>
 
-    <!-- 筛选区域 -->
-    <view class="filter-section">
-      <!-- 第一行：科目和状态 -->
-      <view class="filter-row">
-        <picker
-          class="filter-picker"
-          :range="subjectOptions"
-          range-key="name"
-          @change="onSubjectChange"
-        >
-          <view class="picker-box">
-            <text class="label">{{ currentSubject }}</text>
-            <text class="arrow">▼</text>
+    <!-- 筛选弹窗 -->
+    <view v-if="showFilterPopup" class="filter-popup-mask" @tap="showFilterPopup = false">
+      <view class="filter-popup" @tap.stop>
+        <view class="popup-header">
+          <text class="popup-title">筛选条件</text>
+          <text class="popup-close" @tap="showFilterPopup = false">✕</text>
+        </view>
+        <view class="popup-content">
+          <!-- 科目选择 -->
+          <view class="filter-item">
+            <text class="filter-label">科目</text>
+            <picker
+              class="filter-picker"
+              :range="subjectOptions"
+              range-key="name"
+              @change="onSubjectChange"
+            >
+              <view class="picker-box">
+                <text class="label">{{ currentSubject }}</text>
+                <text class="arrow">▼</text>
+              </view>
+            </picker>
           </view>
-        </picker>
-        <picker class="filter-picker" :range="statusLabels" @change="onStatusChange">
-          <view class="picker-box">
-            <text class="label">{{ currentStatus }}</text>
-            <text class="arrow">▼</text>
+          <!-- 状态选择 -->
+          <view class="filter-item">
+            <text class="filter-label">状态</text>
+            <picker class="filter-picker" :range="statusLabels" @change="onStatusChange">
+              <view class="picker-box">
+                <text class="label">{{ currentStatus }}</text>
+                <text class="arrow">▼</text>
+              </view>
+            </picker>
           </view>
-        </picker>
-      </view>
-      <!-- 第二行：日期 -->
-      <view class="filter-row">
-        <picker class="filter-picker" mode="date" :value="filters.date" @change="onDateChange">
-          <view class="picker-box">
-            <text class="label">{{ filters.date || '作业日期' }}</text>
-            <text class="arrow">▼</text>
+          <!-- 日期选择 -->
+          <view class="filter-item">
+            <text class="filter-label">作业日期</text>
+            <picker class="filter-picker" mode="date" :value="filters.date" @change="onDateChange">
+              <view class="picker-box">
+                <text class="label">{{ filters.date || '请选择日期' }}</text>
+                <text class="arrow">▼</text>
+              </view>
+            </picker>
           </view>
-        </picker>
+        </view>
+        <view class="popup-footer">
+          <button class="reset-button" @click="onResetFilters">重置</button>
+          <button class="confirm-button" @click="onConfirmFilters">确定</button>
+        </view>
       </view>
     </view>
 
@@ -76,7 +98,11 @@
               >
                 <text>{{ item.status === 'completed' ? '已完成' : '未完成' }}</text>
               </view>
-              <view class="delete-action" @tap.stop="onDeleteHomework(item)">删除</view>
+              <view
+                v-if="item.status !== 'completed'"
+                class="delete-action"
+                @tap.stop="onDeleteHomework(item)"
+              >删除</view>
             </view>
           </view>
           <!-- 时间信息行 -->
@@ -141,6 +167,7 @@ const loading = ref(false)
 const noMore = ref(false)
 const page = ref(1)
 const pageSize = 10
+const showFilterPopup = ref(false)
 
 const subjectOptions = computed(() => subjects.value)
 const subjectIds = computed(() => subjectOptions.value.map((item) => item.id))
@@ -152,6 +179,10 @@ const currentStatus = computed(() => statusLabels[filters.statusIndex] || '全�
 
 const currentSubjectId = computed(() => subjectIds.value[filters.subjectIndex] || '')
 const currentState = computed(() => statuses[filters.statusIndex]?.value ?? '')
+
+const hasActiveFilters = computed(() => {
+  return filters.subjectIndex !== 0 || filters.statusIndex !== 0 || filters.date !== ''
+})
 
 const filteredHomeworkList = computed(() => homeworkList.value)
 
@@ -226,17 +257,25 @@ const handlePublishedRefresh = (payload) => {
 const onSubjectChange = (e) => {
   const index = e.detail.value
   filters.subjectIndex = Number(index)
-  fetchHomeworkList(true)
 }
 
 const onStatusChange = (e) => {
   const index = e.detail.value
   filters.statusIndex = Number(index)
-  fetchHomeworkList(true)
 }
 
 const onDateChange = (e) => {
   filters.date = e.detail.value
+}
+
+const onResetFilters = () => {
+  filters.subjectIndex = 0
+  filters.statusIndex = 0
+  filters.date = ''
+}
+
+const onConfirmFilters = () => {
+  showFilterPopup.value = false
   fetchHomeworkList(true)
 }
 
@@ -392,27 +431,140 @@ onUnmounted(() => {
   color: #ef4444;
 }
 
-/* 发布作业按钮容器 */
-.publish-button-container {
+/* 操作按钮行 */
+.action-buttons {
+  display: flex;
+  gap: 24rpx;
   margin: 0 48rpx 24rpx;
-  padding: 0;
 }
 
 /* 发布作业按钮 */
 .publish-button {
-  width: 100%;
+  flex: 1;
   background: linear-gradient(135deg, #10b981, #059669);
   color: #fff;
   border: none;
-  border-radius: 24rpx;
-  padding: 28rpx;
-  font-size: 32rpx;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  font-size: 28rpx;
   font-weight: bold;
   box-shadow: 0 4rpx 12rpx rgba(16, 185, 129, 0.3);
-  transition: all 0.3s;
 }
 
 .publish-button::after {
+  border: none;
+}
+
+/* 筛选按钮 */
+.filter-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  background: #fff;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 16rpx;
+  padding: 20rpx 32rpx;
+  font-size: 28rpx;
+  color: #374151;
+}
+
+.filter-button::after {
+  border: none;
+}
+
+.filter-badge {
+  color: #10b981;
+  font-size: 20rpx;
+}
+
+/* 筛选弹窗遮罩 */
+.filter-popup-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+}
+
+/* 筛选弹窗 */
+.filter-popup {
+  width: 100%;
+  background: #fff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 32rpx;
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32rpx;
+}
+
+.popup-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.popup-close {
+  font-size: 36rpx;
+  color: #9ca3af;
+  padding: 8rpx;
+}
+
+.popup-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.filter-label {
+  font-size: 26rpx;
+  color: #6b7280;
+}
+
+.popup-footer {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 32rpx;
+}
+
+.reset-button,
+.confirm-button {
+  flex: 1;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.reset-button {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: none;
+}
+
+.reset-button::after,
+.confirm-button::after {
+  border: none;
+}
+
+.confirm-button {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
   border: none;
 }
 
