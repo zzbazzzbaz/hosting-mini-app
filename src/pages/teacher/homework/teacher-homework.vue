@@ -3,28 +3,26 @@
     <!-- 使用PageHeader组件 -->
     <PageHeader title="作业信息" />
 
-    <!-- 操作栏：筛选按钮 + 批量操作 -->
+    <!-- 操作栏：全选 + 批量发布 + 筛选 -->
     <view class="action-bar">
+      <view class="select-all" @click="toggleSelectAll">
+        <view class="checkbox" :class="{ checked: isAllSelected }">
+          <text v-if="isAllSelected" class="check-icon">✓</text>
+        </view>
+        <text class="select-all-text">全选</text>
+        <text class="selected-count">({{ selectedStudents.length }})</text>
+      </view>
+      <button
+        class="batch-publish-btn"
+        :disabled="selectedStudents.length === 0"
+        @click="openBatchPublish"
+      >
+        批量发布
+      </button>
       <button class="filter-button" @click="openFilterPopup">
         <text>筛选</text>
         <text v-if="hasActiveFilters" class="filter-badge">●</text>
       </button>
-      <view class="batch-action">
-        <view class="select-all" @click="toggleSelectAll">
-          <view class="checkbox" :class="{ checked: isAllSelected }">
-            <text v-if="isAllSelected" class="check-icon">✓</text>
-          </view>
-          <text class="select-all-text">全选</text>
-          <text class="selected-count">(已选 {{ selectedStudents.length }} 人)</text>
-        </view>
-        <button
-          class="batch-publish-btn"
-          :disabled="selectedStudents.length === 0"
-          @click="openBatchPublish"
-        >
-          批量发布
-        </button>
-      </view>
     </view>
 
     <!-- 筛选弹窗 -->
@@ -725,11 +723,47 @@ const goDetail = (item) => {
   z-index: 100;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 24rpx;
+  gap: 20rpx;
   padding: 24rpx 32rpx;
   background: #fff;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 全选 */
+.select-all {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.select-all-text {
+  font-size: 26rpx;
+  color: #374151;
+}
+
+.selected-count {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+/* 批量发布按钮 - 白色 */
+.batch-publish-btn {
+  flex: 1;
+  background: #fff;
+  color: #374151;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+  font-size: 26rpx;
+  font-weight: 400;
+}
+
+.batch-publish-btn::after {
+  border: none;
+}
+
+.batch-publish-btn:disabled {
+  opacity: 0.5;
 }
 
 /* 筛选按钮 */
@@ -927,19 +961,6 @@ const goDetail = (item) => {
 .selected-count {
   font-size: 24rpx;
   color: #6b7280;
-}
-
-.batch-publish-btn {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  color: #fff;
-  border: none;
-  border-radius: 8rpx;
-  padding: 10rpx 20rpx;
-  font-size: 22rpx;
-}
-
-.batch-publish-btn:disabled {
-  opacity: 0.5;
 }
 
 /* 复选框样式 */
