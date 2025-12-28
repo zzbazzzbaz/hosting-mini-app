@@ -58,7 +58,7 @@
           @tap.stop="handleRevokeSignin(item)"
           :disabled="revokingId === item.id"
         >
-          {{ revokingId === item.id ? '撤销中...' : '撤销签到' }}
+          {{ revokingId === item.id ? '撤销中...' : '撤销' }}
         </button>
       </view>
       <view class="empty-state" v-if="filteredStudentList.length === 0">
