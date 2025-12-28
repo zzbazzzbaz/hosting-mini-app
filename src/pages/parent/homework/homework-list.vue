@@ -2,39 +2,65 @@
   <view class="page">
     <PageHeader title="作业信息" />
 
-    <view class="filter-section">
-      <view class="filter-row">
-        <picker class="filter-picker" :range="childNames" @change="onChildChange">
-          <view class="picker-box">
-            <text class="label">{{ currentChildName }}</text>
-            <text class="arrow">▼</text>
+    <!-- 筛选浮窗按钮 -->
+    <view class="filter-fab" @click="openFilterPopup">
+      <text class="filter-fab-text">筛选</text>
+      <text v-if="hasActiveFilters" class="filter-fab-badge">●</text>
+    </view>
+
+    <!-- 筛选弹窗 -->
+    <view v-if="showFilterPopup" class="filter-popup-mask" @tap="showFilterPopup = false">
+      <view class="filter-popup" @tap.stop>
+        <view class="popup-header">
+          <text class="popup-title">筛选条件</text>
+          <text class="popup-close" @tap="showFilterPopup = false">✕</text>
+        </view>
+        <view class="popup-content">
+          <!-- 学生选择 -->
+          <view class="filter-item">
+            <text class="filter-label">学生</text>
+            <picker class="filter-picker" :range="childNames" :value="tempFilters.childIndex" @change="onTempChildChange">
+              <view class="picker-box">
+                <text class="label">{{ tempChildName }}</text>
+                <text class="arrow">▼</text>
+              </view>
+            </picker>
           </view>
-        </picker>
-        <picker class="filter-picker" :range="subjectNames" @change="onSubjectChange">
-          <view class="picker-box">
-            <text class="label">{{ currentSubjectName }}</text>
-            <text class="arrow">▼</text>
+          <!-- 科目选择 -->
+          <view class="filter-item">
+            <text class="filter-label">科目</text>
+            <picker class="filter-picker" :range="subjectNames" :value="tempFilters.subjectIndex" @change="onTempSubjectChange">
+              <view class="picker-box">
+                <text class="label">{{ tempSubjectName }}</text>
+                <text class="arrow">▼</text>
+              </view>
+            </picker>
           </view>
-        </picker>
-      </view>
-      <view class="filter-row">
-        <picker class="filter-picker" :range="statusLabels" @change="onStatusChange">
-          <view class="picker-box">
-            <text class="label">{{ currentStatusLabel }}</text>
-            <text class="arrow">▼</text>
+          <!-- 状态选择 -->
+          <view class="filter-item">
+            <text class="filter-label">状态</text>
+            <picker class="filter-picker" :range="statusLabels" :value="tempFilters.statusIndex" @change="onTempStatusChange">
+              <view class="picker-box">
+                <text class="label">{{ tempStatusLabel }}</text>
+                <text class="arrow">▼</text>
+              </view>
+            </picker>
           </view>
-        </picker>
-        <picker
-          class="filter-picker"
-          mode="date"
-          :value="filters.homeworkDate"
-          @change="onDateChange"
-        >
-          <view class="picker-box">
-            <text class="label">{{ filters.homeworkDate || '作业日期' }}</text>
-            <text class="arrow">▼</text>
+          <!-- 日期选择 -->
+          <view class="filter-item">
+            <text class="filter-label">作业日期</text>
+            <picker class="filter-picker" mode="date" :value="tempFilters.homeworkDate" @change="onTempDateChange">
+              <view class="picker-box">
+                <text class="label">{{ tempFilters.homeworkDate || '请选择日期' }}</text>
+                <text class="arrow">▼</text>
+              </view>
+            </picker>
           </view>
-        </picker>
+        </view>
+        <view class="popup-footer">
+          <button class="reset-button" @click="onResetFilters">重置</button>
+          <button class="confirm-button" @click="onConfirmFilters">确定</button>
+        </view>
       </view>
     </view>
 
@@ -102,6 +128,14 @@ const filters = reactive({
   homeworkDate: '',
 })
 
+const showFilterPopup = ref(false)
+const tempFilters = reactive({
+  childIndex: 0,
+  subjectIndex: 0,
+  statusIndex: 0,
+  homeworkDate: '',
+})
+
 const homeworkList = ref([])
 const loading = ref(false)
 const noMore = ref(false)
@@ -118,6 +152,14 @@ const currentStatusLabel = computed(() => statusLabels[filters.statusIndex] || '
 const currentChildId = computed(() => children.value[filters.childIndex]?.id || '')
 const currentSubjectId = computed(() => subjects.value[filters.subjectIndex]?.id || '')
 const currentState = computed(() => statuses[filters.statusIndex]?.value ?? '')
+
+const hasActiveFilters = computed(() => {
+  return filters.childIndex !== 0 || filters.subjectIndex !== 0 || filters.statusIndex !== 0 || filters.homeworkDate !== ''
+})
+
+const tempChildName = computed(() => childNames.value[tempFilters.childIndex] || '全部学生')
+const tempSubjectName = computed(() => subjectNames.value[tempFilters.subjectIndex] || '请选择科目')
+const tempStatusLabel = computed(() => statusLabels[tempFilters.statusIndex] || '全部状态')
 
 const filteredList = computed(() => homeworkList.value)
 
@@ -217,6 +259,46 @@ const onDateChange = (e) => {
   refreshList()
 }
 
+const onTempChildChange = (e) => {
+  tempFilters.childIndex = Number(e.detail.value)
+}
+
+const onTempSubjectChange = (e) => {
+  tempFilters.subjectIndex = Number(e.detail.value)
+}
+
+const onTempStatusChange = (e) => {
+  tempFilters.statusIndex = Number(e.detail.value)
+}
+
+const onTempDateChange = (e) => {
+  tempFilters.homeworkDate = e.detail.value
+}
+
+const openFilterPopup = () => {
+  tempFilters.childIndex = filters.childIndex
+  tempFilters.subjectIndex = filters.subjectIndex
+  tempFilters.statusIndex = filters.statusIndex
+  tempFilters.homeworkDate = filters.homeworkDate
+  showFilterPopup.value = true
+}
+
+const onResetFilters = () => {
+  tempFilters.childIndex = 0
+  tempFilters.subjectIndex = 0
+  tempFilters.statusIndex = 0
+  tempFilters.homeworkDate = ''
+}
+
+const onConfirmFilters = () => {
+  filters.childIndex = tempFilters.childIndex
+  filters.subjectIndex = tempFilters.subjectIndex
+  filters.statusIndex = tempFilters.statusIndex
+  filters.homeworkDate = tempFilters.homeworkDate
+  showFilterPopup.value = false
+  refreshList()
+}
+
 const gotoDetail = (item) => {
   uni.navigateTo({
     url: `/pages/parent/homework/components/homework-detail?homeworkId=${item.id}`,
@@ -259,6 +341,127 @@ onReachBottom(() => {
   min-height: 100vh;
   background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
   padding-bottom: 128rpx;
+}
+
+/* 筛选浮窗按钮 */
+.filter-fab {
+  position: fixed;
+  right: 32rpx;
+  bottom: 180rpx;
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+  width: 100rpx;
+  height: 100rpx;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 50%;
+  box-shadow: 0 8rpx 24rpx rgba(16, 185, 129, 0.4);
+}
+
+.filter-fab-text {
+  font-size: 26rpx;
+  color: #fff;
+  font-weight: 500;
+}
+
+.filter-fab-badge {
+  position: absolute;
+  top: 8rpx;
+  right: 8rpx;
+  color: #fbbf24;
+  font-size: 24rpx;
+}
+
+/* 筛选弹窗遮罩 */
+.filter-popup-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+}
+
+/* 筛选弹窗 */
+.filter-popup {
+  width: 100%;
+  background: #fff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 32rpx;
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32rpx;
+}
+
+.popup-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.popup-close {
+  font-size: 36rpx;
+  color: #9ca3af;
+  padding: 8rpx;
+}
+
+.popup-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.filter-label {
+  font-size: 26rpx;
+  color: #6b7280;
+}
+
+.popup-footer {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 32rpx;
+}
+
+.reset-button,
+.confirm-button {
+  flex: 1;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.reset-button {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: none;
+}
+
+.reset-button::after,
+.confirm-button::after {
+  border: none;
+}
+
+.confirm-button {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  border: none;
 }
 
 .filter-section {
@@ -318,7 +521,7 @@ onReachBottom(() => {
 }
 
 .list-container {
-  padding: 320rpx 48rpx 32rpx;
+  padding: 160rpx 48rpx 32rpx;
   display: flex;
   flex-direction: column;
   gap: 24rpx;
