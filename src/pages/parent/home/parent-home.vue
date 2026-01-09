@@ -7,7 +7,7 @@
             <uni-icons type="home" size="28" color="#fff" />
           </view>
           <view class="app-info">
-            <text class="app-name">开来伴学管家</text>
+            <text class="app-name">思倍得托管</text>
           </view>
         </view>
       </view>

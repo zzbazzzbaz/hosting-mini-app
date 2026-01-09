@@ -1,14 +1,14 @@
 <template>
   <scroll-view class="policy-wrapper" scroll-y>
     <view class="policy-card">
-      <text class="policy-title">开来伴学管家用户协议</text>
+      <text class="policy-title">思倍得托管用户协议</text>
 
       <view class="section">
         <text class="section-title">一、总则</text>
         <view class="subsection">
           <text class="sub-title">（一）目的与范围</text>
           <text class="section-text">
-            本用户协议（以下简称“协议”）旨在明确您（以下简称“用户”）在使用开来伴学管家（以下简称“本小程序”）服务过程中的权利与义务，以及我们提供的服务内容、方式及相关规则。请您在注册、登录及使用本小程序前仔细阅读本协议，一旦开始使用即表示您已充分理解并同意接受本协议的全部条款。
+            本用户协议（以下简称“协议”）旨在明确您（以下简称“用户”）在使用思倍得托管（以下简称“本小程序”）服务过程中的权利与义务，以及我们提供的服务内容、方式及相关规则。请您在注册、登录及使用本小程序前仔细阅读本协议，一旦开始使用即表示您已充分理解并同意接受本协议的全部条款。
           </text>
         </view>
         <view class="subsection">

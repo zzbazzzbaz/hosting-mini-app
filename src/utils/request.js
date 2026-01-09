@@ -3,7 +3,7 @@ import { getToken } from '@/store/auth'
 /**
  * 请求基础配置
  */
-export const BASE_URL = 'https://www.itshare.online:8443'
+export const BASE_URL = 'https://www.speedee.cn'
 const TIMEOUT = 15000
 
 const buildAuthHeader = (header = {}) => {

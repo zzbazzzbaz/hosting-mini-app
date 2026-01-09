@@ -3,7 +3,7 @@
 		{
 			"path": "pages/common/home-unlogged",
 			"style": {
-				"navigationBarTitleText": "开来伴学管家",
+				"navigationBarTitleText": "思倍得托管",
 				"navigationStyle": "custom"
 			}
 		},
@@ -193,7 +193,7 @@
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
-		"navigationBarTitleText": "开来伴学管家",
+		"navigationBarTitleText": "思倍得托管",
 		"navigationBarBackgroundColor": "#0EA5E9",
 		"backgroundColor": "#F0F9FF"
 	},

@@ -9,7 +9,7 @@
         </view>
 
         <!-- 欢迎文字 -->
-        <text class="header-title">开来伴学管家</text>
+        <text class="header-title">思倍得托管</text>
         <text class="header-subtitle">家长与教师的沟通桥梁</text>
       </view>
     </view>
