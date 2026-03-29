@@ -163,7 +163,7 @@ import {
 import { getStudentStatusComboxList } from '@/api/common/dictionary'
 
 const DEFAULT_EVALUATION =
-  '学生晚托纪律很好，没有交头接耳，自己专注做作业，能够按要求独立完成作业。理解能力强，计算准确率高，书写比较美观，继续加油！'
+  '学生'
 
 const homeworkId = ref('')
 const homework = ref(null)
